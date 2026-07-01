@@ -49,158 +49,200 @@
     "text": "Contacto\nSebastián Egaña Santibáñez Docente del módulo\n\nCorreo: sebaegana@gmail.com\nLinkedIn: linkedin.com/in/sebastian-egana-santibanez\nSitio web: segana.netlify.app\nGitHub: github.com/sebaegana\n\nSi tienes preguntas sobre el taller, escribe indicando la clase o el material al que haces referencia para poder responder con contexto."
   },
   {
-    "objectID": "clases/m05-clase05-reporteria-python.html#clase-5-reportería-en-python",
-    "href": "clases/m05-clase05-reporteria-python.html#clase-5-reportería-en-python",
+    "objectID": "clases/m05-clase05-reporteria-python.html#clase-5-deploy-en-streamlit-cloud-vía-github",
+    "href": "clases/m05-clase05-reporteria-python.html#clase-5-deploy-en-streamlit-cloud-vía-github",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Clase 5: Reportería en Python",
-    "text": "Clase 5: Reportería en Python\nAutomatización y despacho del modelo completo"
+    "section": "Clase 5: Deploy en Streamlit Cloud vía GitHub",
+    "text": "Clase 5: Deploy en Streamlit Cloud vía GitHub\nDe localhost a una URL pública — sin costo"
   },
   {
     "objectID": "clases/m05-clase05-reporteria-python.html#objetivo-de-la-sesión",
     "href": "clases/m05-clase05-reporteria-python.html#objetivo-de-la-sesión",
     "title": "Módulo V: Taller Integrativo",
     "section": "Objetivo de la sesión",
-    "text": "Objetivo de la sesión\n\nIntegrar gráficos Plotly en el reporte Excel\nConstruir el script maestro que automatiza el flujo completo\nConfigurar el envío automático del reporte por correo\nProgramar la ejecución periódica con Task Scheduler\nConsolidar el modelo de control de gestión integrado"
+    "text": "Objetivo de la sesión\n\nCrear un repositorio GitHub desde VS Code\nSubir el código de la app al repositorio\nConectar el repositorio con Streamlit Community Cloud\nObtener una URL pública del dashboard del proyecto\nPreparar la presentación del Taller Final"
   },
   {
-    "objectID": "clases/m05-clase05-reporteria-python.html#el-flujo-completo-automatizado",
-    "href": "clases/m05-clase05-reporteria-python.html#el-flujo-completo-automatizado",
+    "objectID": "clases/m05-clase05-reporteria-python.html#el-camino-recorrido",
+    "href": "clases/m05-clase05-reporteria-python.html#el-camino-recorrido",
     "title": "Módulo V: Taller Integrativo",
-    "section": "El flujo completo automatizado",
-    "text": "El flujo completo automatizado\ndatos_fuente.xlsx\n     ↓  pd.read_excel()\nDataFrame limpio\n     ↓  groupby / assign\nKPIs calculados\n     ↓  openpyxl\nReporte Excel formateado\n     ↓  smtplib\nCorreo a destinatarios\n     ↓  Task Scheduler\nEjecución mensual automática"
+    "section": "El camino recorrido",
+    "text": "El camino recorrido\nClase 3\n  └── App mínima: métricas + tabla\n       ↓\nClase 4\n  └── Dashboard completo: sidebar + gráficos + semáforo\n       ↓\nClase 5\n  └── App online con URL pública  ← hoy\n       ↓\nClase 6\n  └── Presentación del Taller Final"
   },
   {
-    "objectID": "clases/m05-clase05-reporteria-python.html#insertar-gráficos-plotly-en-excel",
-    "href": "clases/m05-clase05-reporteria-python.html#insertar-gráficos-plotly-en-excel",
+    "objectID": "clases/m05-clase05-reporteria-python.html#arquitectura-del-deploy",
+    "href": "clases/m05-clase05-reporteria-python.html#arquitectura-del-deploy",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Insertar gráficos Plotly en Excel",
-    "text": "Insertar gráficos Plotly en Excel\nimport plotly.express as px\nfrom openpyxl.drawing.image import Image as XLImage\nimport io, kaleido\n\n# Generar gráfico como imagen en memoria\nfig = px.line(resumen, x=\"mes\", y=\"margen\",\n              title=\"Margen Operacional\")\nfig.add_hline(y=20, line_dash=\"dash\", line_color=\"red\")\n\nbuf = io.BytesIO()\nfig.write_image(buf, format=\"png\", width=700, height=350)\nbuf.seek(0)\n\n# Insertar en la hoja Excel\nimg = XLImage(buf)\nimg.anchor = \"A20\"\nws.add_image(img)\nwb.save(\"reporte_control_gestion.xlsx\")"
+    "section": "Arquitectura del deploy",
+    "text": "Arquitectura del deploy\nTu computador\n  └── app.py + datos_kpis.csv + requirements.txt\n         ↓  git push\nGitHub (almacenamiento del código)\n         ↓  Streamlit Cloud lee el repo\nStreamlit Community Cloud\n  └── Instala dependencias del requirements.txt\n  └── Ejecuta app.py\n  └── Expone en URL pública\n         ↓\nhttps://tu-app.streamlit.app  ← accesible desde cualquier lugar"
   },
   {
-    "objectID": "clases/m05-clase05-reporteria-python.html#script-maestro-estructura",
-    "href": "clases/m05-clase05-reporteria-python.html#script-maestro-estructura",
+    "objectID": "clases/m05-clase05-reporteria-python.html#paso-1-verificar-el-requirements.txt",
+    "href": "clases/m05-clase05-reporteria-python.html#paso-1-verificar-el-requirements.txt",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Script maestro — estructura",
-    "text": "Script maestro — estructura\n# reporte_mensual.py\n\nimport pandas as pd\nfrom datetime import datetime\nfrom pathlib import Path\n\nPERIODO   = datetime.now().strftime(\"%Y-%m\")\nDATOS     = Path(\"datos/datos_organizacion.xlsx\")\nSALIDA    = Path(f\"reportes/reporte_{PERIODO}.xlsx\")\nDESTINOS  = [\"gerencia@empresa.cl\", \"control@empresa.cl\"]\n\ndef main():\n    df      = cargar_datos(DATOS)\n    kpis    = calcular_kpis(df)\n    reporte = generar_reporte(kpis, SALIDA)\n    enviar_reporte(reporte, DESTINOS)\n    print(f\"Reporte {PERIODO} enviado correctamente.\")\n\nif __name__ == \"__main__\":\n    main()"
+    "section": "Paso 1 — Verificar el requirements.txt",
+    "text": "Paso 1 — Verificar el requirements.txt\nStreamlit Cloud necesita saber qué librerías instalar. El archivo requirements.txt debe estar en la raíz del proyecto:\nstreamlit&gt;=1.35.0\npandas&gt;=2.0.0\nplotly&gt;=5.18.0\nopenpyxl&gt;=3.1.0\nSin este archivo, el deploy falla porque Streamlit Cloud no sabe qué instalar."
   },
   {
-    "objectID": "clases/m05-clase05-reporteria-python.html#funciones-del-script-maestro",
-    "href": "clases/m05-clase05-reporteria-python.html#funciones-del-script-maestro",
+    "objectID": "clases/m05-clase05-reporteria-python.html#paso-2-crear-cuenta-en-github",
+    "href": "clases/m05-clase05-reporteria-python.html#paso-2-crear-cuenta-en-github",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Funciones del script maestro",
-    "text": "Funciones del script maestro\ndef cargar_datos(ruta):\n    df = pd.read_excel(ruta)\n    df[\"periodo\"] = pd.to_datetime(df[\"periodo\"])\n    return df.dropna(subset=[\"ventas\"])\n\ndef calcular_kpis(df):\n    return df.groupby(df[\"periodo\"].dt.month).agg(\n        ventas=(\"ventas\", \"sum\"),\n        costos=(\"costos\", \"sum\")\n    ).assign(\n        margen=lambda x: (x.ventas - x.costos) / x.ventas * 100\n    )\n\ndef generar_reporte(kpis, ruta_salida):\n    # (código de Clase 4: openpyxl + semáforo + gráficos)\n    ...\n    return ruta_salida\n\ndef enviar_reporte(ruta, destinatarios):\n    # (código de envío por correo)\n    ..."
+    "section": "Paso 2 — Crear cuenta en GitHub",
+    "text": "Paso 2 — Crear cuenta en GitHub\n\nIr a github.com y crear una cuenta gratuita\nVerificar el correo electrónico\nEn VS Code → Source Control → Sign in to GitHub\n\n\nUn repositorio por grupo. Cada integrante puede tener acceso al mismo repo. Para este taller es suficiente que uno del grupo lo cree y comparta la URL."
   },
   {
-    "objectID": "clases/m05-clase05-reporteria-python.html#envío-automático-por-correo",
-    "href": "clases/m05-clase05-reporteria-python.html#envío-automático-por-correo",
+    "objectID": "clases/m05-clase05-reporteria-python.html#paso-3-publicar-el-proyecto-en-github-desde-vs-code",
+    "href": "clases/m05-clase05-reporteria-python.html#paso-3-publicar-el-proyecto-en-github-desde-vs-code",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Envío automático por correo",
-    "text": "Envío automático por correo\nimport smtplib\nfrom email.message import EmailMessage\n\ndef enviar_reporte(ruta_archivo, destinatarios):\n    msg = EmailMessage()\n    msg[\"Subject\"] = f\"Reporte Control de Gestión — {PERIODO}\"\n    msg[\"From\"]    = \"sistema.control@empresa.cl\"\n    msg[\"To\"]      = \", \".join(destinatarios)\n    msg.set_content(\n        f\"Se adjunta el reporte mensual de KPIs correspondiente a {PERIODO}.\"\n    )\n    with open(ruta_archivo, \"rb\") as f:\n        msg.add_attachment(\n            f.read(),\n            maintype=\"application\",\n            subtype=\"vnd.openxmlformats-officedocument.spreadsheetml.sheet\",\n            filename=ruta_archivo.name\n        )\n    with smtplib.SMTP_SSL(\"smtp.gmail.com\", 465) as smtp:\n        smtp.login(\"usuario@gmail.com\", \"app_password\")\n        smtp.send_message(msg)"
+    "section": "Paso 3 — Publicar el proyecto en GitHub desde VS Code",
+    "text": "Paso 3 — Publicar el proyecto en GitHub desde VS Code\n\nAbrir la carpeta del proyecto en VS Code (app.py + datos_kpis.csv + requirements.txt)\nPanel Source Control (ícono de rama en la barra lateral)\nClic en Publish to GitHub\nElegir nombre del repositorio (ej. dashboard-kpi-grupo1)\nSeleccionar Public (necesario para Streamlit Cloud gratuito)\nVS Code hace el git init, git add y git push automáticamente"
   },
   {
-    "objectID": "clases/m05-clase05-reporteria-python.html#automatización-con-task-scheduler",
-    "href": "clases/m05-clase05-reporteria-python.html#automatización-con-task-scheduler",
+    "objectID": "clases/m05-clase05-reporteria-python.html#estructura-del-repositorio",
+    "href": "clases/m05-clase05-reporteria-python.html#estructura-del-repositorio",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Automatización con Task Scheduler",
-    "text": "Automatización con Task Scheduler\nPasos para programar la ejecución mensual en Windows:\n\nAbrir Programador de tareas → Crear tarea básica\nDesencadenador: mensualmente, día 1 a las 08:00\nAcción: Iniciar un programa\n\nPrograma: C:\\Python312\\python.exe\nArgumentos: C:\\reportes\\reporte_mensual.py\n\nProbar la tarea manualmente antes de activarla"
+    "section": "Estructura del repositorio",
+    "text": "Estructura del repositorio\nAl subir, GitHub debe tener exactamente esto:\ndashboard-kpi-grupo1/\n├── app.py               ← app principal de Streamlit\n├── datos_kpis.csv       ← datos de KPIs del proyecto\n├── requirements.txt     ← dependencias de Python\n└── .streamlit/\n    └── config.toml      ← tema visual (opcional)\nSi falta algún archivo, el deploy puede fallar o la app no encontrará los datos."
   },
   {
-    "objectID": "clases/m05-clase05-reporteria-python.html#modelo-de-control-de-gestión-integrado",
-    "href": "clases/m05-clase05-reporteria-python.html#modelo-de-control-de-gestión-integrado",
+    "objectID": "clases/m05-clase05-reporteria-python.html#paso-4-crear-cuenta-en-streamlit-community-cloud",
+    "href": "clases/m05-clase05-reporteria-python.html#paso-4-crear-cuenta-en-streamlit-community-cloud",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Modelo de control de gestión integrado",
-    "text": "Modelo de control de gestión integrado\nPlan Estratégico (Clase 1)\n  └── Misión · Visión · BSC · Objetivos SMART\n       ↓\nSet de KPIs (Clase 2)\n  └── Fichas · Perspectivas · Fuentes de datos\n       ↓\nCálculo y visualización (Clase 3)\n  └── Pandas · Plotly · DataFrame consolidado\n       ↓\nReporte Excel formateado (Clase 4)\n  └── Formato · Semáforo · Colores institucionales\n       ↓\nAutomatización y despacho (Clase 5)\n  └── Script maestro · Correo · Task Scheduler\n       ↓\nPresentación del modelo (Clase 6)"
+    "section": "Paso 4 — Crear cuenta en Streamlit Community Cloud",
+    "text": "Paso 4 — Crear cuenta en Streamlit Community Cloud\n\nIr a share.streamlit.io\nClic en Sign in with GitHub — usa la misma cuenta que creaste\nAutorizar a Streamlit a acceder a tus repositorios\n\nStreamlit Cloud es gratuito para repositorios públicos. No se requiere tarjeta de crédito."
+  },
+  {
+    "objectID": "clases/m05-clase05-reporteria-python.html#paso-5-deployar-la-app",
+    "href": "clases/m05-clase05-reporteria-python.html#paso-5-deployar-la-app",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Paso 5 — Deployar la app",
+    "text": "Paso 5 — Deployar la app\n\nEn Streamlit Cloud → New app\nSeleccionar el repositorio: dashboard-kpi-grupo1\nBranch: main\nMain file path: app.py\nClic en Deploy\n\nStreamlit Cloud: - Clona el repositorio - Instala los paquetes del requirements.txt - Ejecuta streamlit run app.py - Entrega una URL pública en 1-3 minutos"
+  },
+  {
+    "objectID": "clases/m05-clase05-reporteria-python.html#la-url-pública",
+    "href": "clases/m05-clase05-reporteria-python.html#la-url-pública",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "La URL pública",
+    "text": "La URL pública\nLa app queda disponible en una URL con este formato:\nhttps://[usuario]-[repo]-app-[hash].streamlit.app\nEjemplo:\nhttps://grupo1-dashboard-kpi-app-a3f7b2.streamlit.app\nCualquier persona con el enlace puede ver el dashboard desde el browser, sin instalar nada."
+  },
+  {
+    "objectID": "clases/m05-clase05-reporteria-python.html#actualizar-la-app-después-del-deploy",
+    "href": "clases/m05-clase05-reporteria-python.html#actualizar-la-app-después-del-deploy",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Actualizar la app después del deploy",
+    "text": "Actualizar la app después del deploy\nCada vez que el grupo modifica el código y lo sube a GitHub, Streamlit Cloud actualiza la app automáticamente:\nModificar app.py en VS Code\n     ↓\nSource Control → mensaje de commit → Commit → Push\n     ↓\nStreamlit Cloud detecta el cambio y redeploya (&lt; 1 min)\n     ↓\nLa URL pública refleja los cambios\nNo es necesario volver a hacer el proceso de deploy desde cero."
+  },
+  {
+    "objectID": "clases/m05-clase05-reporteria-python.html#preparar-la-presentación",
+    "href": "clases/m05-clase05-reporteria-python.html#preparar-la-presentación",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Preparar la presentación",
+    "text": "Preparar la presentación\nLa Clase 6 es la presentación del Taller Final. El dashboard online es parte central de la demostración.\nChecklist antes de la Clase 6:\n\n App funcionando en la URL pública\n Datos reales de la organización cargados\n KPIs del plan estratégico reflejados en la app\n Semáforo mostrando estado de cumplimiento\n URL lista para compartir en la presentación"
   },
   {
     "objectID": "clases/m05-clase05-reporteria-python.html#trabajo-de-la-sesión",
     "href": "clases/m05-clase05-reporteria-python.html#trabajo-de-la-sesión",
     "title": "Módulo V: Taller Integrativo",
     "section": "Trabajo de la sesión",
-    "text": "Trabajo de la sesión\n\nInsertar gráficos Plotly en el reporte Excel (Clase 4)\nEnsamblar el script maestro completo\nProbar el flujo de punta a punta con datos reales\nConfigurar envío automático\nPreparar la presentación del Taller Final"
+    "text": "Trabajo de la sesión\n\nCrear cuenta en GitHub\nPublicar el proyecto desde VS Code con Publish to GitHub\nCrear cuenta en Streamlit Community Cloud\nDeployar la app y obtener la URL pública\nCompartir la URL con el docente"
   },
   {
     "objectID": "clases/m05-clase05-reporteria-python.html#próxima-clase",
     "href": "clases/m05-clase05-reporteria-python.html#próxima-clase",
     "title": "Módulo V: Taller Integrativo",
     "section": "Próxima clase",
-    "text": "Próxima clase\nClase 6 — Presentación del Taller Final\n\nPresentación del modelo de control de gestión aplicado\n15 minutos por grupo + 5 de preguntas\nCriterios de evaluación"
+    "text": "Próxima clase\nClase 6 — Presentación del Taller Final\n\nPresentación del modelo de control de gestión aplicado\nDemostración del dashboard en vivo desde la URL pública\n15 minutos por grupo + 5 de preguntas"
   },
   {
-    "objectID": "clases/m05-clase03-kpi-diseno.html#clase-3-reportería-en-python",
-    "href": "clases/m05-clase03-kpi-diseno.html#clase-3-reportería-en-python",
+    "objectID": "clases/m05-clase03-kpi-diseno.html#clase-3-entorno-y-primeros-pasos-en-streamlit",
+    "href": "clases/m05-clase03-kpi-diseno.html#clase-3-entorno-y-primeros-pasos-en-streamlit",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Clase 3: Reportería en Python",
-    "text": "Clase 3: Reportería en Python\nCálculo y visualización de KPIs con Pandas y Plotly"
+    "section": "Clase 3: Entorno y primeros pasos en Streamlit",
+    "text": "Clase 3: Entorno y primeros pasos en Streamlit\nVS Code · Ollama · Qwen · vibe coding"
   },
   {
     "objectID": "clases/m05-clase03-kpi-diseno.html#objetivo-de-la-sesión",
     "href": "clases/m05-clase03-kpi-diseno.html#objetivo-de-la-sesión",
     "title": "Módulo V: Taller Integrativo",
     "section": "Objetivo de la sesión",
-    "text": "Objetivo de la sesión\n\nCargar y limpiar los datos de la organización con Pandas\nCalcular los KPIs definidos en la Clase 2\nVisualizar indicadores con Plotly\nEstructurar un DataFrame de resultados consolidado"
+    "text": "Objetivo de la sesión\n\nInstalar y configurar el entorno de trabajo: VS Code + Ollama + Continue.dev\nEntender qué es vibe coding y cómo usarlo para aprender más rápido\nConstruir la primera app Streamlit con los KPIs del proyecto\nTener la app corriendo en localhost al final de la clase"
   },
   {
-    "objectID": "clases/m05-clase03-kpi-diseno.html#flujo-de-trabajo",
-    "href": "clases/m05-clase03-kpi-diseno.html#flujo-de-trabajo",
+    "objectID": "clases/m05-clase03-kpi-diseno.html#el-stack-de-esta-clase",
+    "href": "clases/m05-clase03-kpi-diseno.html#el-stack-de-esta-clase",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Flujo de trabajo",
-    "text": "Flujo de trabajo\nDatos fuente (Excel / CSV)\n     ↓\nCarga con Pandas\n     ↓\nLimpieza y transformación\n     ↓\nCálculo de KPIs\n     ↓\nVisualización (Plotly)\n     ↓\nExportación de resultados\n     ↓\nReporte formal  ← Clase 4"
+    "section": "El stack de esta clase",
+    "text": "El stack de esta clase\nVS Code          ← editor de código\n    +\nOllama           ← servidor de LLM local (sin internet, sin cuenta)\n    +\nQwen2.5-Coder   ← modelo especializado en código\n    +\nContinue.dev     ← extensión que conecta el LLM con VS Code\n    +\nStreamlit        ← framework para construir la app"
   },
   {
-    "objectID": "clases/m05-clase03-kpi-diseno.html#carga-de-datos",
-    "href": "clases/m05-clase03-kpi-diseno.html#carga-de-datos",
+    "objectID": "clases/m05-clase03-kpi-diseno.html#paso-1-instalar-vs-code",
+    "href": "clases/m05-clase03-kpi-diseno.html#paso-1-instalar-vs-code",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Carga de datos",
-    "text": "Carga de datos\nimport pandas as pd\n\n# Desde Excel\ndf = pd.read_excel(\"datos_organizacion.xlsx\", sheet_name=\"ventas\")\n\n# Desde CSV\ndf = pd.read_csv(\"datos_organizacion.csv\", encoding=\"utf-8\")\n\n# Vista rápida\ndf.head()\ndf.info()\ndf.describe()"
+    "section": "Paso 1 — Instalar VS Code",
+    "text": "Paso 1 — Instalar VS Code\n\nIr a code.visualstudio.com\nDescargar e instalar para Windows\nExtensiones recomendadas:\n\nPython (Microsoft)\nContinue (Continue.dev)"
   },
   {
-    "objectID": "clases/m05-clase03-kpi-diseno.html#limpieza-básica",
-    "href": "clases/m05-clase03-kpi-diseno.html#limpieza-básica",
+    "objectID": "clases/m05-clase03-kpi-diseno.html#paso-2-instalar-ollama",
+    "href": "clases/m05-clase03-kpi-diseno.html#paso-2-instalar-ollama",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Limpieza básica",
-    "text": "Limpieza básica\n# Eliminar filas con valores nulos en columnas clave\ndf = df.dropna(subset=[\"ventas\", \"periodo\"])\n\n# Convertir fechas\ndf[\"periodo\"] = pd.to_datetime(df[\"periodo\"])\n\n# Renombrar columnas\ndf = df.rename(columns={\"Ventas Netas\": \"ventas\", \"Costos Op.\": \"costos\"})\n\n# Filtrar período relevante\ndf = df[df[\"periodo\"].dt.year == 2024]"
+    "section": "Paso 2 — Instalar Ollama",
+    "text": "Paso 2 — Instalar Ollama\n\nIr a ollama.com y descargar el instalador para Windows\nInstalar — Ollama corre como servicio en segundo plano\nAbrir una terminal y descargar el modelo:\n\nollama pull qwen2.5-coder:7b\nEl modelo pesa ~4GB, se descarga una sola vez.\n\n¿Computador con menos de 8GB RAM? Usar qwen2.5-coder:1.5b — pesa ~1GB y sigue siendo útil para código Python."
   },
   {
-    "objectID": "clases/m05-clase03-kpi-diseno.html#cálculo-de-kpis",
-    "href": "clases/m05-clase03-kpi-diseno.html#cálculo-de-kpis",
+    "objectID": "clases/m05-clase03-kpi-diseno.html#paso-3-configurar-continue.dev-en-vs-code",
+    "href": "clases/m05-clase03-kpi-diseno.html#paso-3-configurar-continue.dev-en-vs-code",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Cálculo de KPIs",
-    "text": "Cálculo de KPIs\n# Margen operacional\ndf[\"margen\"] = (df[\"ventas\"] - df[\"costos\"]) / df[\"ventas\"] * 100\n\n# Tasa de conversión\ndf[\"tasa_conv\"] = df[\"ventas_cerradas\"] / df[\"contactos\"] * 100\n\n# Agrupado por mes\nresumen = df.groupby(df[\"periodo\"].dt.month).agg(\n    ventas=(\"ventas\", \"sum\"),\n    costos=(\"costos\", \"sum\")\n).assign(margen=lambda x: (x[\"ventas\"] - x[\"costos\"]) / x[\"ventas\"] * 100)"
+    "section": "Paso 3 — Configurar Continue.dev en VS Code",
+    "text": "Paso 3 — Configurar Continue.dev en VS Code\n\nEn VS Code → Extensions → buscar Continue\nInstalar y abrir el panel de Continue (ícono en la barra lateral)\nSeleccionar modelo: Ollama → qwen2.5-coder:7b\nProbar: escribir en el chat \"escribe una función que sume dos números\" → el modelo responde con código"
   },
   {
-    "objectID": "clases/m05-clase03-kpi-diseno.html#visualización-con-plotly",
-    "href": "clases/m05-clase03-kpi-diseno.html#visualización-con-plotly",
+    "objectID": "clases/m05-clase03-kpi-diseno.html#qué-es-vibe-coding",
+    "href": "clases/m05-clase03-kpi-diseno.html#qué-es-vibe-coding",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Visualización con Plotly",
-    "text": "Visualización con Plotly\nimport plotly.express as px\n\n# Gráfico de línea con meta\nfig = px.line(\n    resumen.reset_index(),\n    x=\"periodo\",\n    y=\"margen\",\n    title=\"Margen Operacional Mensual\",\n    labels={\"margen\": \"Margen (%)\", \"periodo\": \"Mes\"}\n)\nfig.add_hline(y=20, line_dash=\"dash\",\n              annotation_text=\"Meta: 20%\",\n              line_color=\"red\")\nfig.show()"
+    "section": "¿Qué es vibe coding?",
+    "text": "¿Qué es vibe coding?\nProgramar describiendo en lenguaje natural lo que quieres y dejando que el LLM genere el código.\n\n\nSin vibe coding\nBuscar documentación → leer ejemplos → escribir código → depurar errores → repetir\n\nCon vibe coding\nDescribir lo que quieres → el LLM genera el código → entender qué hace → ajustar → avanzar\n\nEl objetivo no es no aprender — es aprender más rápido viendo código funcional que puedes modificar."
   },
   {
-    "objectID": "clases/m05-clase03-kpi-diseno.html#visualización-de-múltiples-kpis",
-    "href": "clases/m05-clase03-kpi-diseno.html#visualización-de-múltiples-kpis",
+    "objectID": "clases/m05-clase03-kpi-diseno.html#cómo-describir-bien-lo-que-quieres",
+    "href": "clases/m05-clase03-kpi-diseno.html#cómo-describir-bien-lo-que-quieres",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Visualización de múltiples KPIs",
-    "text": "Visualización de múltiples KPIs\nimport plotly.graph_objects as go\nfrom plotly.subplots import make_subplots\n\nfig = make_subplots(rows=2, cols=2,\n    subplot_titles=[\"Margen\", \"Conversión\", \"Retención\", \"NPS\"])\n\nfig.add_trace(go.Scatter(x=df[\"mes\"], y=df[\"margen\"]),  row=1, col=1)\nfig.add_trace(go.Bar(x=df[\"mes\"],    y=df[\"tasa_conv\"]), row=1, col=2)\nfig.add_trace(go.Scatter(x=df[\"mes\"], y=df[\"retencion\"]),row=2, col=1)\nfig.add_trace(go.Bar(x=df[\"mes\"],    y=df[\"nps\"]),       row=2, col=2)\n\nfig.update_layout(title=\"Dashboard de KPIs\", showlegend=False)\nfig.show()"
+    "section": "Cómo describir bien lo que quieres",
+    "text": "Cómo describir bien lo que quieres\nUn buen prompt para vibe coding incluye:\n\nQué hace la app — contexto general\nQué quieres en este paso — acción específica\nCon qué datos — estructura del CSV o DataFrame\nQué librerías usar — Streamlit, Pandas, Plotly\n\nEjemplo:\n\n“Tengo un CSV con columnas: indicador, valor, meta, perspectiva, periodo. Crea una app Streamlit que muestre una tarjeta st.metric por cada indicador del periodo seleccionado en un st.selectbox del sidebar.”"
   },
   {
-    "objectID": "clases/m05-clase03-kpi-diseno.html#exportar-resultados",
-    "href": "clases/m05-clase03-kpi-diseno.html#exportar-resultados",
+    "objectID": "clases/m05-clase03-kpi-diseno.html#paso-4-instalar-streamlit",
+    "href": "clases/m05-clase03-kpi-diseno.html#paso-4-instalar-streamlit",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Exportar resultados",
-    "text": "Exportar resultados\n# Exportar DataFrame de KPIs\nresumen.to_excel(\"kpis_calculados.xlsx\", index=True)\nresumen.to_csv(\"kpis_calculados.csv\",   index=True)\n\n# Exportar gráfico como imagen\nfig.write_image(\"dashboard_kpis.png\")\nfig.write_html(\"dashboard_kpis.html\")"
+    "section": "Paso 4 — Instalar Streamlit",
+    "text": "Paso 4 — Instalar Streamlit\nEn la terminal de VS Code:\npip install streamlit pandas plotly\nVerificar que funciona:\nstreamlit hello\nSe abre una app de demostración en el browser — eso confirma que la instalación está correcta."
+  },
+  {
+    "objectID": "clases/m05-clase03-kpi-diseno.html#primera-app-estructura-mínima",
+    "href": "clases/m05-clase03-kpi-diseno.html#primera-app-estructura-mínima",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Primera app — estructura mínima",
+    "text": "Primera app — estructura mínima\n# app.py\nimport streamlit as st\nimport pandas as pd\n\nst.set_page_config(page_title=\"Dashboard KPI\", layout=\"wide\")\n\n# Carga de datos\ndf = pd.read_csv(\"datos_kpis.csv\")\n\n# Título\nst.title(\"Dashboard de Control de Gestión\")\n\n# Tabla de datos\nst.dataframe(df, use_container_width=True)\nCorrer con:\nstreamlit run app.py"
+  },
+  {
+    "objectID": "clases/m05-clase03-kpi-diseno.html#agregar-métricas-con-st.metric",
+    "href": "clases/m05-clase03-kpi-diseno.html#agregar-métricas-con-st.metric",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Agregar métricas con st.metric",
+    "text": "Agregar métricas con st.metric\nimport streamlit as st\nimport pandas as pd\n\ndf    = pd.read_csv(\"datos_kpis.csv\")\ndf_ult = df[df[\"periodo\"] == df[\"periodo\"].max()]\n\nst.title(\"KPIs del período\")\n\ncols = st.columns(len(df_ult))\n\nfor col, (_, row) in zip(cols, df_ult.iterrows()):\n    delta = row[\"valor\"] - row[\"meta\"]\n    col.metric(\n        label=row[\"indicador\"],\n        value=f\"{row['valor']} {row['unidad']}\",\n        delta=f\"{delta:+.1f} vs meta\",\n    )"
   },
   {
     "objectID": "clases/m05-clase03-kpi-diseno.html#trabajo-de-la-sesión",
     "href": "clases/m05-clase03-kpi-diseno.html#trabajo-de-la-sesión",
     "title": "Módulo V: Taller Integrativo",
     "section": "Trabajo de la sesión",
-    "text": "Trabajo de la sesión\n\nCargar los datos de la organización en Python\nLimpiar y preparar el DataFrame\nCalcular los KPIs definidos en la Clase 2\nGenerar al menos un gráfico por indicador\nExportar el DataFrame de resultados a Excel"
+    "text": "Trabajo de la sesión\n\nInstalar VS Code + Ollama + Qwen2.5-Coder + Continue.dev\nInstalar Streamlit y verificar con streamlit hello\nCrear app.py con la app mínima (título + tabla)\nAgregar las tarjetas st.metric con los KPIs del proyecto\nUsar Continue.dev para pedirle al LLM que agregue algo nuevo"
   },
   {
     "objectID": "clases/m05-clase03-kpi-diseno.html#próxima-clase",
     "href": "clases/m05-clase03-kpi-diseno.html#próxima-clase",
     "title": "Módulo V: Taller Integrativo",
     "section": "Próxima clase",
-    "text": "Próxima clase\nClase 4 — Reportería en Python: generación de reportes Excel\n\nEstructura de un reporte de control de gestión\nFormato profesional con openpyxl\nSemáforo de cumplimiento de metas\nIntegración de gráficos en el reporte"
+    "text": "Próxima clase\nClase 4 — Dashboard completo con vibe coding\n\nSidebar con filtros interactivos\nGráficos de tendencia y cumplimiento con Plotly\nSemáforo 🟢🟡🔴 aplicado a cada indicador\nCada grupo amplía su app con vibe coding"
   },
   {
     "objectID": "clases/m05-clase01-introduccion-diagnostico.html#clase-1-plan-estratégico",
@@ -319,21 +361,21 @@
     "href": "clases/index.html",
     "title": "Clases y materiales",
     "section": "",
-    "text": "En esta sección se encuentran las diapositivas y materiales de cada sesión del módulo.\n\n\n\nClase 1: Plan Estratégico\nClase 2: Diseño de Indicadores KPI\nClase 3: Reportería en Python — cálculo y visualización\nClase 4: Reportería en Python — generación de reportes Excel\nClase 5: Reportería en Python — automatización y despacho\nClase 6: Presentación del Taller Final\n\n\n\n\n\n\n\nClase\nContenido\nUnidad\n\n\n\n\n1\nPlan Estratégico: diagnóstico y construcción\nPlan Estratégico\n\n\n2\nDiseño de Indicadores KPI y fichas\nKPI\n\n\n3\nCálculo y visualización de KPIs en Python\nReportería\n\n\n4\nGeneración de reportes Excel con formato\nReportería\n\n\n5\nAutomatización, despacho y script maestro\nReportería\n\n\n6\nPresentación del Taller Final\nModelo aplicado"
+    "text": "En esta sección se encuentran las diapositivas y materiales de cada sesión del módulo.\n\n\n\nClase 1: Plan Estratégico\nClase 2: Diseño de Indicadores KPI\nClase 3: Entorno y primeros pasos en Streamlit\nClase 4: Dashboard completo con vibe coding\nClase 5: Deploy en Streamlit Cloud vía GitHub\nClase 6: Presentación del Taller Final\n\n\n\n\n\n\n\n\n\n\n\n\nClase\nContenido\nHerramientas\n\n\n\n\n1\nPlan Estratégico: diagnóstico y construcción\nFODA, PESTEL, BSC\n\n\n2\nDiseño de Indicadores KPI\nFicha KPI, perspectivas BSC\n\n\n3\nEntorno y primeros pasos en Streamlit\nVS Code, Ollama, Qwen, Streamlit\n\n\n4\nDashboard completo con vibe coding\nPlotly, semáforo, Continue.dev\n\n\n5\nDeploy en Streamlit Cloud vía GitHub\nGitHub, Streamlit Cloud\n\n\n6\nPresentación del Taller Final\nDashboard online"
   },
   {
     "objectID": "clases/index.html#clases",
     "href": "clases/index.html#clases",
     "title": "Clases y materiales",
     "section": "",
-    "text": "Clase 1: Plan Estratégico\nClase 2: Diseño de Indicadores KPI\nClase 3: Reportería en Python — cálculo y visualización\nClase 4: Reportería en Python — generación de reportes Excel\nClase 5: Reportería en Python — automatización y despacho\nClase 6: Presentación del Taller Final"
+    "text": "Clase 1: Plan Estratégico\nClase 2: Diseño de Indicadores KPI\nClase 3: Entorno y primeros pasos en Streamlit\nClase 4: Dashboard completo con vibe coding\nClase 5: Deploy en Streamlit Cloud vía GitHub\nClase 6: Presentación del Taller Final"
   },
   {
     "objectID": "clases/index.html#distribución-del-módulo",
     "href": "clases/index.html#distribución-del-módulo",
     "title": "Clases y materiales",
     "section": "",
-    "text": "Clase\nContenido\nUnidad\n\n\n\n\n1\nPlan Estratégico: diagnóstico y construcción\nPlan Estratégico\n\n\n2\nDiseño de Indicadores KPI y fichas\nKPI\n\n\n3\nCálculo y visualización de KPIs en Python\nReportería\n\n\n4\nGeneración de reportes Excel con formato\nReportería\n\n\n5\nAutomatización, despacho y script maestro\nReportería\n\n\n6\nPresentación del Taller Final\nModelo aplicado"
+    "text": "Clase\nContenido\nHerramientas\n\n\n\n\n1\nPlan Estratégico: diagnóstico y construcción\nFODA, PESTEL, BSC\n\n\n2\nDiseño de Indicadores KPI\nFicha KPI, perspectivas BSC\n\n\n3\nEntorno y primeros pasos en Streamlit\nVS Code, Ollama, Qwen, Streamlit\n\n\n4\nDashboard completo con vibe coding\nPlotly, semáforo, Continue.dev\n\n\n5\nDeploy en Streamlit Cloud vía GitHub\nGitHub, Streamlit Cloud\n\n\n6\nPresentación del Taller Final\nDashboard online"
   },
   {
     "objectID": "clases/m05-clase02-plan-estrategico.html#clase-2-diseño-de-indicadores-kpi",
@@ -406,81 +448,88 @@
     "text": "Próxima clase\nClase 3 — Reportería en Python: cálculo y visualización\n\nCarga de datos con Pandas\nCálculo de KPIs definidos en esta clase\nVisualización con Plotly\nExportación de resultados"
   },
   {
-    "objectID": "clases/m05-clase04-kpi-python.html#clase-4-reportería-en-python",
-    "href": "clases/m05-clase04-kpi-python.html#clase-4-reportería-en-python",
+    "objectID": "clases/m05-clase04-kpi-python.html#clase-4-dashboard-completo-con-vibe-coding",
+    "href": "clases/m05-clase04-kpi-python.html#clase-4-dashboard-completo-con-vibe-coding",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Clase 4: Reportería en Python",
-    "text": "Clase 4: Reportería en Python\nGeneración de reportes Excel con formato profesional"
+    "section": "Clase 4: Dashboard completo con vibe coding",
+    "text": "Clase 4: Dashboard completo con vibe coding\nSidebar · Plotly · Semáforo · Vibe coding en práctica"
   },
   {
     "objectID": "clases/m05-clase04-kpi-python.html#objetivo-de-la-sesión",
     "href": "clases/m05-clase04-kpi-python.html#objetivo-de-la-sesión",
     "title": "Módulo V: Taller Integrativo",
     "section": "Objetivo de la sesión",
-    "text": "Objetivo de la sesión\n\nEstructurar un reporte de control de gestión\nGenerar archivos Excel con formato profesional usando openpyxl\nImplementar semáforo de cumplimiento de metas\nIntegrar gráficos de Plotly en el reporte"
+    "text": "Objetivo de la sesión\n\nAgregar sidebar con filtros interactivos a la app\nIncorporar gráficos de tendencia y cumplimiento con Plotly\nImplementar semáforo de cumplimiento de metas\nPracticar vibe coding: cada grupo amplía su app con el LLM"
   },
   {
-    "objectID": "clases/m05-clase04-kpi-python.html#qué-hace-un-buen-reporte-de-control-de-gestión",
-    "href": "clases/m05-clase04-kpi-python.html#qué-hace-un-buen-reporte-de-control-de-gestión",
+    "objectID": "clases/m05-clase04-kpi-python.html#dónde-quedamos",
+    "href": "clases/m05-clase04-kpi-python.html#dónde-quedamos",
     "title": "Módulo V: Taller Integrativo",
-    "section": "¿Qué hace un buen reporte de control de gestión?",
-    "text": "¿Qué hace un buen reporte de control de gestión?\nUn reporte efectivo debe:\n\nMostrar los KPIs respecto de su meta\nIndicar la tendencia (mejora / deterioro)\nSeñalar desviaciones que requieren acción\nLlegar al tomador de decisiones en el momento adecuado\nSer reproducible: mismo script, mismo resultado"
+    "section": "Dónde quedamos",
+    "text": "Dónde quedamos\nAl final de la Clase 3 cada grupo tiene:\napp.py\n  ├── st.title()          ← título de la app\n  ├── pd.read_csv()       ← carga de datos KPIs\n  └── st.metric()         ← tarjetas por indicador\nHoy construimos sobre eso."
   },
   {
-    "objectID": "clases/m05-clase04-kpi-python.html#estructura-del-reporte",
-    "href": "clases/m05-clase04-kpi-python.html#estructura-del-reporte",
+    "objectID": "clases/m05-clase04-kpi-python.html#agregar-sidebar-con-filtros",
+    "href": "clases/m05-clase04-kpi-python.html#agregar-sidebar-con-filtros",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Estructura del reporte",
-    "text": "Estructura del reporte\nPortada\n  └── Nombre organización, período, fecha\nResumen ejecutivo\n  └── KPIs principales con semáforo\nDetalle por perspectiva BSC\n  ├── Perspectiva Financiera\n  ├── Perspectiva Clientes\n  ├── Perspectiva Procesos\n  └── Perspectiva Aprendizaje\nGráficos de tendencia\nConclusiones y alertas"
+    "section": "Agregar sidebar con filtros",
+    "text": "Agregar sidebar con filtros\nwith st.sidebar:\n    st.markdown(\"## Filtros\")\n\n    # Filtro por perspectiva BSC\n    perspectivas = [\"Todas\"] + sorted(df[\"perspectiva\"].unique().tolist())\n    perspectiva_sel = st.selectbox(\"Perspectiva\", perspectivas)\n\n    # Filtro por período\n    periodos = sorted(df[\"periodo\"].unique().tolist())\n    periodo_sel = st.selectbox(\"Período\", periodos,\n                               index=len(periodos) - 1)\n\n# Aplicar filtros al DataFrame\ndf_filtrado = df[df[\"periodo\"] == periodo_sel]\nif perspectiva_sel != \"Todas\":\n    df_filtrado = df_filtrado[\n        df_filtrado[\"perspectiva\"] == perspectiva_sel\n    ]"
   },
   {
-    "objectID": "clases/m05-clase04-kpi-python.html#crear-el-libro-excel-con-openpyxl",
-    "href": "clases/m05-clase04-kpi-python.html#crear-el-libro-excel-con-openpyxl",
+    "objectID": "clases/m05-clase04-kpi-python.html#gráfico-de-tendencia-con-plotly",
+    "href": "clases/m05-clase04-kpi-python.html#gráfico-de-tendencia-con-plotly",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Crear el libro Excel con openpyxl",
-    "text": "Crear el libro Excel con openpyxl\nfrom openpyxl import Workbook\nfrom openpyxl.styles import Font, PatternFill, Alignment, Border, Side\n\nwb = Workbook()\nws = wb.active\nws.title = \"Resumen KPIs\"\n\n# Ajustar ancho de columnas\nws.column_dimensions[\"A\"].width = 35\nws.column_dimensions[\"B\"].width = 18\nws.column_dimensions[\"C\"].width = 18\nws.column_dimensions[\"D\"].width = 18\nws.column_dimensions[\"E\"].width = 12"
+    "section": "Gráfico de tendencia con Plotly",
+    "text": "Gráfico de tendencia con Plotly\nimport plotly.graph_objects as go\n\n# El usuario elige el indicador a visualizar\nindicador_sel = st.selectbox(\"Indicador\", df[\"indicador\"].unique())\n\ndf_ind = df[df[\"indicador\"] == indicador_sel].sort_values(\"mes\")\nmeta   = df_ind[\"meta\"].iloc[0]\nunidad = df_ind[\"unidad\"].iloc[0]\n\nfig = go.Figure()\nfig.add_trace(go.Scatter(\n    x=df_ind[\"periodo\"], y=df_ind[\"valor\"],\n    mode=\"lines+markers\",\n    line=dict(color=\"#1D5C35\", width=3),\n))\nfig.add_hline(y=meta, line_dash=\"dash\", line_color=\"red\",\n              annotation_text=f\"Meta: {meta} {unidad}\")\n\nst.plotly_chart(fig, use_container_width=True)"
   },
   {
-    "objectID": "clases/m05-clase04-kpi-python.html#encabezado-con-formato-ust",
-    "href": "clases/m05-clase04-kpi-python.html#encabezado-con-formato-ust",
+    "objectID": "clases/m05-clase04-kpi-python.html#gráfico-de-cumplimiento-con-plotly-express",
+    "href": "clases/m05-clase04-kpi-python.html#gráfico-de-cumplimiento-con-plotly-express",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Encabezado con formato UST",
-    "text": "Encabezado con formato UST\n# Colores UST\nVERDE_UST  = \"1D5C35\"\nLIMA_UST   = \"8FA62A\"\nVERDE_SOFT = \"E8F0EB\"\n\n# Título del reporte\nws[\"A1\"] = \"Reporte de Control de Gestión\"\nws[\"A1\"].font = Font(bold=True, size=16, color=\"FFFFFF\")\nws[\"A1\"].fill = PatternFill(\"solid\", fgColor=VERDE_UST)\nws[\"A1\"].alignment = Alignment(horizontal=\"center\")\nws.merge_cells(\"A1:E1\")\n\n# Subtítulo\nws[\"A2\"] = f\"Período: {periodo} | Organización: {nombre_org}\"\nws[\"A2\"].font = Font(italic=True, size=11, color=VERDE_UST)\nws.merge_cells(\"A2:E2\")"
+    "section": "Gráfico de cumplimiento con Plotly Express",
+    "text": "Gráfico de cumplimiento con Plotly Express\nimport plotly.express as px\n\ndf_ult = df[df[\"periodo\"] == periodo_sel].copy()\n\n# % de cumplimiento: distinto según si mayor es mejor o no\ndf_ult[\"cumplimiento\"] = df_ult.apply(\n    lambda r: min(r[\"valor\"] / r[\"meta\"] * 100, 150)\n    if r[\"mayor_es_mejor\"]\n    else min(r[\"meta\"] / r[\"valor\"] * 100, 150),\n    axis=1,\n)\n\nfig_bar = px.bar(\n    df_ult.sort_values(\"cumplimiento\"),\n    x=\"cumplimiento\", y=\"indicador\",\n    orientation=\"h\", color=\"perspectiva\",\n    title=\"% de cumplimiento por indicador\",\n)\nfig_bar.add_vline(x=100, line_dash=\"dash\", line_color=\"red\")\n\nst.plotly_chart(fig_bar, use_container_width=True)"
   },
   {
-    "objectID": "clases/m05-clase04-kpi-python.html#encabezados-de-tabla",
-    "href": "clases/m05-clase04-kpi-python.html#encabezados-de-tabla",
+    "objectID": "clases/m05-clase04-kpi-python.html#semáforo-de-cumplimiento",
+    "href": "clases/m05-clase04-kpi-python.html#semáforo-de-cumplimiento",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Encabezados de tabla",
-    "text": "Encabezados de tabla\nheaders = [\"Indicador\", \"Valor actual\", \"Meta\", \"Desviación\", \"Estado\"]\ncol_colors = [VERDE_UST] * 5\n\nfor col, (header, color) in enumerate(zip(headers, col_colors), start=1):\n    cell = ws.cell(row=4, column=col, value=header)\n    cell.font      = Font(bold=True, color=\"FFFFFF\")\n    cell.fill      = PatternFill(\"solid\", fgColor=color)\n    cell.alignment = Alignment(horizontal=\"center\")"
+    "section": "Semáforo de cumplimiento",
+    "text": "Semáforo de cumplimiento\ndef semaforo(valor, meta, mayor_es_mejor):\n    ratio = valor / meta if meta != 0 else 0\n    if mayor_es_mejor:\n        if ratio &gt;= 1.0:    return \"🟢\"\n        elif ratio &gt;= 0.85: return \"🟡\"\n        else:               return \"🔴\"\n    else:\n        if ratio &lt;= 1.0:    return \"🟢\"\n        elif ratio &lt;= 1.15: return \"🟡\"\n        else:               return \"🔴\"\n\n# Aplicar a las métricas del período\ncols = st.columns(len(df_filtrado))\nfor col, (_, row) in zip(cols, df_filtrado.iterrows()):\n    icono = semaforo(row[\"valor\"], row[\"meta\"], row[\"mayor_es_mejor\"])\n    delta = row[\"valor\"] - row[\"meta\"]\n    col.metric(\n        label=f\"{icono} {row['indicador']}\",\n        value=f\"{row['valor']} {row['unidad']}\",\n        delta=f\"{delta:+.1f} vs meta\",\n        delta_color=\"normal\" if row[\"mayor_es_mejor\"] else \"inverse\",\n    )"
   },
   {
-    "objectID": "clases/m05-clase04-kpi-python.html#semáforo-de-indicadores",
-    "href": "clases/m05-clase04-kpi-python.html#semáforo-de-indicadores",
+    "objectID": "clases/m05-clase04-kpi-python.html#tabla-con-semáforo",
+    "href": "clases/m05-clase04-kpi-python.html#tabla-con-semáforo",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Semáforo de indicadores",
-    "text": "Semáforo de indicadores\ndef estado_kpi(valor, meta, mayor_es_mejor=True):\n    ratio = valor / meta if meta != 0 else 0\n    if mayor_es_mejor:\n        if ratio &gt;= 1.0:    return \"Verde\",    \"70AD47\"\n        elif ratio &gt;= 0.85: return \"Amarillo\", \"FFC000\"\n        else:               return \"Rojo\",     \"FF0000\"\n    else:\n        if ratio &lt;= 1.0:    return \"Verde\",    \"70AD47\"\n        elif ratio &lt;= 1.15: return \"Amarillo\", \"FFC000\"\n        else:               return \"Rojo\",     \"FF0000\"\n\n# Aplicar a cada fila\nfor i, row in df_kpis.iterrows():\n    estado, color = estado_kpi(row[\"valor\"], row[\"meta\"])\n    cell = ws.cell(row=5+i, column=5, value=estado)\n    cell.fill = PatternFill(\"solid\", fgColor=color)\n    cell.font = Font(bold=True, color=\"FFFFFF\")"
+    "section": "Tabla con semáforo",
+    "text": "Tabla con semáforo\nst.subheader(\"Tabla de cumplimiento\")\n\nfilas = []\nfor _, row in df_filtrado.iterrows():\n    icono = semaforo(row[\"valor\"], row[\"meta\"], row[\"mayor_es_mejor\"])\n    filas.append({\n        \"Estado\":       icono,\n        \"Indicador\":    row[\"indicador\"],\n        \"Perspectiva\":  row[\"perspectiva\"],\n        \"Valor actual\": f\"{row['valor']} {row['unidad']}\",\n        \"Meta\":         f\"{row['meta']} {row['unidad']}\",\n        \"Desviación\":   f\"{row['valor'] - row['meta']:+.1f}\",\n    })\n\nst.dataframe(pd.DataFrame(filas),\n             use_container_width=True,\n             hide_index=True)"
   },
   {
-    "objectID": "clases/m05-clase04-kpi-python.html#escribir-filas-de-kpis",
-    "href": "clases/m05-clase04-kpi-python.html#escribir-filas-de-kpis",
+    "objectID": "clases/m05-clase04-kpi-python.html#vibe-coding-en-práctica",
+    "href": "clases/m05-clase04-kpi-python.html#vibe-coding-en-práctica",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Escribir filas de KPIs",
-    "text": "Escribir filas de KPIs\nfor i, row in df_kpis.iterrows():\n    desviacion = row[\"valor\"] - row[\"meta\"]\n    estado, color = estado_kpi(row[\"valor\"], row[\"meta\"],\n                               row[\"mayor_es_mejor\"])\n    fila = 5 + i\n\n    ws.cell(row=fila, column=1, value=row[\"nombre\"])\n    ws.cell(row=fila, column=2, value=row[\"valor\"])\n    ws.cell(row=fila, column=3, value=row[\"meta\"])\n    ws.cell(row=fila, column=4, value=desviacion)\n\n    estado_cell = ws.cell(row=fila, column=5, value=estado)\n    estado_cell.fill = PatternFill(\"solid\", fgColor=color)\n    estado_cell.font = Font(bold=True, color=\"FFFFFF\")\n\n    # Filas alternas\n    if i % 2 == 0:\n        for col in range(1, 5):\n            ws.cell(row=fila, column=col).fill = PatternFill(\n                \"solid\", fgColor=VERDE_SOFT)\n\nwb.save(\"reporte_control_gestion.xlsx\")"
+    "section": "Vibe coding en práctica",
+    "text": "Vibe coding en práctica\nCada grupo le pide al LLM (Continue.dev) una funcionalidad nueva para su app.\nEjemplos de prompts para practicar:\n\n“Agrega una sección que muestre el indicador con peor cumplimiento del período seleccionado, con un texto de alerta en rojo.”\n\n\n“Agrega un st.download_button que permita descargar la tabla de cumplimiento como CSV.”\n\n\n“Crea una segunda página en la app usando st.tabs con una pestaña para el dashboard y otra para el detalle de un indicador.”"
+  },
+  {
+    "objectID": "clases/m05-clase04-kpi-python.html#estructura-de-la-app-al-final-de-esta-clase",
+    "href": "clases/m05-clase04-kpi-python.html#estructura-de-la-app-al-final-de-esta-clase",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Estructura de la app al final de esta clase",
+    "text": "Estructura de la app al final de esta clase\napp.py\n  ├── Sidebar: filtros perspectiva + período\n  ├── st.metric() con semáforo por indicador\n  ├── Gráfico de tendencia (Plotly)\n  ├── Gráfico de cumplimiento (Plotly Express)\n  └── Tabla semáforo (st.dataframe)\nTodo con los datos reales del proyecto integrador."
   },
   {
     "objectID": "clases/m05-clase04-kpi-python.html#trabajo-de-la-sesión",
     "href": "clases/m05-clase04-kpi-python.html#trabajo-de-la-sesión",
     "title": "Módulo V: Taller Integrativo",
     "section": "Trabajo de la sesión",
-    "text": "Trabajo de la sesión\n\nIntegrar los KPIs calculados en Clase 3 en la plantilla de reporte\nAgregar formato: encabezado, colores UST, bordes\nImplementar el semáforo de cumplimiento\nGuardar el archivo Excel formateado"
+    "text": "Trabajo de la sesión\n\nAgregar sidebar con filtros a la app de la Clase 3\nImplementar la función semaforo() en las métricas\nAgregar el gráfico de tendencia\nAgregar el gráfico de barras de cumplimiento\nUsar Continue.dev para agregar una funcionalidad nueva"
   },
   {
     "objectID": "clases/m05-clase04-kpi-python.html#próxima-clase",
     "href": "clases/m05-clase04-kpi-python.html#próxima-clase",
     "title": "Módulo V: Taller Integrativo",
     "section": "Próxima clase",
-    "text": "Próxima clase\nClase 5 — Reportería en Python: automatización y despacho\n\nIntegrar gráficos en el reporte Excel\nAutomatizar el flujo completo (carga → cálculo → reporte)\nConfigurar envío automático por correo\nProgramar ejecución periódica con Task Scheduler"
+    "text": "Próxima clase\nClase 5 — Deploy en Streamlit Cloud vía GitHub\n\nCrear repositorio en GitHub desde VS Code\nSubir el código del proyecto\nConectar con Streamlit Community Cloud\nObtener la URL pública del dashboard"
   },
   {
     "objectID": "clases/m05-clase06-presentacion-taller.html#clase-6-presentación-del-taller-final",

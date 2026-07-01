@@ -1,6 +1,6 @@
 ---
 title: "Módulo V: Taller Integrativo"
-subtitle: "Clase 5 — Reportería en Python: automatización y despacho"
+subtitle: "Clase 5 — Deploy en Streamlit Cloud vía GitHub"
 institution: "Universidad Santo Tomás"
 lang: es
 date: today
@@ -37,191 +37,200 @@ library(fontawesome)
 
 # Módulo V
 
-## Clase 5: Reportería en Python
+## Clase 5: Deploy en Streamlit Cloud vía GitHub
 
-### Automatización y despacho del modelo completo
+### De localhost a una URL pública — sin costo
 
 ---
 
 ## Objetivo de la sesión
 
-- Integrar gráficos Plotly en el reporte Excel
-- Construir el script maestro que automatiza el flujo completo
-- Configurar el envío automático del reporte por correo
-- Programar la ejecución periódica con Task Scheduler
-- Consolidar el modelo de control de gestión integrado
+- Crear un repositorio GitHub desde VS Code
+- Subir el código de la app al repositorio
+- Conectar el repositorio con Streamlit Community Cloud
+- Obtener una URL pública del dashboard del proyecto
+- Preparar la presentación del Taller Final
 
 ---
 
-## El flujo completo automatizado
+## El camino recorrido
 
 ```
-datos_fuente.xlsx
-     ↓  pd.read_excel()
-DataFrame limpio
-     ↓  groupby / assign
-KPIs calculados
-     ↓  openpyxl
-Reporte Excel formateado
-     ↓  smtplib
-Correo a destinatarios
-     ↓  Task Scheduler
-Ejecución mensual automática
-```
-
----
-
-## Insertar gráficos Plotly en Excel
-
-```python
-import plotly.express as px
-from openpyxl.drawing.image import Image as XLImage
-import io, kaleido
-
-# Generar gráfico como imagen en memoria
-fig = px.line(resumen, x="mes", y="margen",
-              title="Margen Operacional")
-fig.add_hline(y=20, line_dash="dash", line_color="red")
-
-buf = io.BytesIO()
-fig.write_image(buf, format="png", width=700, height=350)
-buf.seek(0)
-
-# Insertar en la hoja Excel
-img = XLImage(buf)
-img.anchor = "A20"
-ws.add_image(img)
-wb.save("reporte_control_gestion.xlsx")
-```
-
----
-
-## Script maestro — estructura
-
-```python
-# reporte_mensual.py
-
-import pandas as pd
-from datetime import datetime
-from pathlib import Path
-
-PERIODO   = datetime.now().strftime("%Y-%m")
-DATOS     = Path("datos/datos_organizacion.xlsx")
-SALIDA    = Path(f"reportes/reporte_{PERIODO}.xlsx")
-DESTINOS  = ["gerencia@empresa.cl", "control@empresa.cl"]
-
-def main():
-    df      = cargar_datos(DATOS)
-    kpis    = calcular_kpis(df)
-    reporte = generar_reporte(kpis, SALIDA)
-    enviar_reporte(reporte, DESTINOS)
-    print(f"Reporte {PERIODO} enviado correctamente.")
-
-if __name__ == "__main__":
-    main()
-```
-
----
-
-## Funciones del script maestro
-
-```python
-def cargar_datos(ruta):
-    df = pd.read_excel(ruta)
-    df["periodo"] = pd.to_datetime(df["periodo"])
-    return df.dropna(subset=["ventas"])
-
-def calcular_kpis(df):
-    return df.groupby(df["periodo"].dt.month).agg(
-        ventas=("ventas", "sum"),
-        costos=("costos", "sum")
-    ).assign(
-        margen=lambda x: (x.ventas - x.costos) / x.ventas * 100
-    )
-
-def generar_reporte(kpis, ruta_salida):
-    # (código de Clase 4: openpyxl + semáforo + gráficos)
-    ...
-    return ruta_salida
-
-def enviar_reporte(ruta, destinatarios):
-    # (código de envío por correo)
-    ...
-```
-
----
-
-## Envío automático por correo
-
-```python
-import smtplib
-from email.message import EmailMessage
-
-def enviar_reporte(ruta_archivo, destinatarios):
-    msg = EmailMessage()
-    msg["Subject"] = f"Reporte Control de Gestión — {PERIODO}"
-    msg["From"]    = "sistema.control@empresa.cl"
-    msg["To"]      = ", ".join(destinatarios)
-    msg.set_content(
-        f"Se adjunta el reporte mensual de KPIs correspondiente a {PERIODO}."
-    )
-    with open(ruta_archivo, "rb") as f:
-        msg.add_attachment(
-            f.read(),
-            maintype="application",
-            subtype="vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            filename=ruta_archivo.name
-        )
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-        smtp.login("usuario@gmail.com", "app_password")
-        smtp.send_message(msg)
-```
-
----
-
-## Automatización con Task Scheduler
-
-Pasos para programar la ejecución mensual en Windows:
-
-1. Abrir **Programador de tareas** → Crear tarea básica
-2. **Desencadenador**: mensualmente, día 1 a las 08:00
-3. **Acción**: Iniciar un programa
-   - Programa: `C:\Python312\python.exe`
-   - Argumentos: `C:\reportes\reporte_mensual.py`
-4. Probar la tarea manualmente antes de activarla
-
----
-
-## Modelo de control de gestión integrado
-
-```
-Plan Estratégico (Clase 1)
-  └── Misión · Visión · BSC · Objetivos SMART
+Clase 3
+  └── App mínima: métricas + tabla
        ↓
-Set de KPIs (Clase 2)
-  └── Fichas · Perspectivas · Fuentes de datos
+Clase 4
+  └── Dashboard completo: sidebar + gráficos + semáforo
        ↓
-Cálculo y visualización (Clase 3)
-  └── Pandas · Plotly · DataFrame consolidado
+Clase 5
+  └── App online con URL pública  ← hoy
        ↓
-Reporte Excel formateado (Clase 4)
-  └── Formato · Semáforo · Colores institucionales
-       ↓
-Automatización y despacho (Clase 5)
-  └── Script maestro · Correo · Task Scheduler
-       ↓
-Presentación del modelo (Clase 6)
+Clase 6
+  └── Presentación del Taller Final
 ```
+
+---
+
+## Arquitectura del deploy
+
+```
+Tu computador
+  └── app.py + datos_kpis.csv + requirements.txt
+         ↓  git push
+GitHub (almacenamiento del código)
+         ↓  Streamlit Cloud lee el repo
+Streamlit Community Cloud
+  └── Instala dependencias del requirements.txt
+  └── Ejecuta app.py
+  └── Expone en URL pública
+         ↓
+https://tu-app.streamlit.app  ← accesible desde cualquier lugar
+```
+
+---
+
+## Paso 1 — Verificar el requirements.txt
+
+Streamlit Cloud necesita saber qué librerías instalar.
+El archivo `requirements.txt` debe estar en la raíz del proyecto:
+
+```
+streamlit>=1.35.0
+pandas>=2.0.0
+plotly>=5.18.0
+openpyxl>=3.1.0
+```
+
+Sin este archivo, el deploy falla porque Streamlit Cloud no sabe qué instalar.
+
+---
+
+## Paso 2 — Crear cuenta en GitHub
+
+1. Ir a [github.com](https://github.com) y crear una cuenta gratuita
+2. Verificar el correo electrónico
+3. En VS Code → Source Control → Sign in to GitHub
+
+:::{.ust-box}
+**Un repositorio por grupo.**
+Cada integrante puede tener acceso al mismo repo.
+Para este taller es suficiente que uno del grupo lo cree y comparta la URL.
+:::
+
+---
+
+## Paso 3 — Publicar el proyecto en GitHub desde VS Code
+
+1. Abrir la carpeta del proyecto en VS Code (`app.py` + `datos_kpis.csv` + `requirements.txt`)
+2. Panel **Source Control** (ícono de rama en la barra lateral)
+3. Clic en **Publish to GitHub**
+4. Elegir nombre del repositorio (ej. `dashboard-kpi-grupo1`)
+5. Seleccionar **Public** (necesario para Streamlit Cloud gratuito)
+6. VS Code hace el `git init`, `git add` y `git push` automáticamente
+
+---
+
+## Estructura del repositorio
+
+Al subir, GitHub debe tener exactamente esto:
+
+```
+dashboard-kpi-grupo1/
+├── app.py               ← app principal de Streamlit
+├── datos_kpis.csv       ← datos de KPIs del proyecto
+├── requirements.txt     ← dependencias de Python
+└── .streamlit/
+    └── config.toml      ← tema visual (opcional)
+```
+
+Si falta algún archivo, el deploy puede fallar o la app no encontrará los datos.
+
+---
+
+## Paso 4 — Crear cuenta en Streamlit Community Cloud
+
+1. Ir a [share.streamlit.io](https://share.streamlit.io)
+2. Clic en **Sign in with GitHub** — usa la misma cuenta que creaste
+3. Autorizar a Streamlit a acceder a tus repositorios
+
+Streamlit Cloud es **gratuito** para repositorios públicos.
+No se requiere tarjeta de crédito.
+
+---
+
+## Paso 5 — Deployar la app
+
+1. En Streamlit Cloud → **New app**
+2. Seleccionar el repositorio: `dashboard-kpi-grupo1`
+3. Branch: `main`
+4. Main file path: `app.py`
+5. Clic en **Deploy**
+
+Streamlit Cloud:
+- Clona el repositorio
+- Instala los paquetes del `requirements.txt`
+- Ejecuta `streamlit run app.py`
+- Entrega una URL pública en 1-3 minutos
+
+---
+
+## La URL pública
+
+La app queda disponible en una URL con este formato:
+
+```
+https://[usuario]-[repo]-app-[hash].streamlit.app
+```
+
+**Ejemplo:**
+```
+https://grupo1-dashboard-kpi-app-a3f7b2.streamlit.app
+```
+
+Cualquier persona con el enlace puede ver el dashboard desde el browser, sin instalar nada.
+
+---
+
+## Actualizar la app después del deploy
+
+Cada vez que el grupo modifica el código y lo sube a GitHub, Streamlit Cloud actualiza la app automáticamente:
+
+```
+Modificar app.py en VS Code
+     ↓
+Source Control → mensaje de commit → Commit → Push
+     ↓
+Streamlit Cloud detecta el cambio y redeploya (< 1 min)
+     ↓
+La URL pública refleja los cambios
+```
+
+No es necesario volver a hacer el proceso de deploy desde cero.
+
+---
+
+## Preparar la presentación
+
+La Clase 6 es la presentación del Taller Final.
+El dashboard online es parte central de la demostración.
+
+**Checklist antes de la Clase 6:**
+
+- `r fa("check", fill = "#1D5C35")` App funcionando en la URL pública
+- `r fa("check", fill = "#1D5C35")` Datos reales de la organización cargados
+- `r fa("check", fill = "#1D5C35")` KPIs del plan estratégico reflejados en la app
+- `r fa("check", fill = "#1D5C35")` Semáforo mostrando estado de cumplimiento
+- `r fa("check", fill = "#1D5C35")` URL lista para compartir en la presentación
 
 ---
 
 ## Trabajo de la sesión
 
-1. Insertar gráficos Plotly en el reporte Excel (Clase 4)
-2. Ensamblar el script maestro completo
-3. Probar el flujo de punta a punta con datos reales
-4. Configurar envío automático
-5. Preparar la presentación del Taller Final
+1. Crear cuenta en GitHub
+2. Publicar el proyecto desde VS Code con **Publish to GitHub**
+3. Crear cuenta en Streamlit Community Cloud
+4. Deployar la app y obtener la URL pública
+5. Compartir la URL con el docente
 
 ---
 
@@ -230,5 +239,5 @@ Presentación del modelo (Clase 6)
 **Clase 6 — Presentación del Taller Final**
 
 - Presentación del modelo de control de gestión aplicado
+- Demostración del dashboard en vivo desde la URL pública
 - 15 minutos por grupo + 5 de preguntas
-- Criterios de evaluación

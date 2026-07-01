@@ -10,18 +10,18 @@ En esta sección se encuentran las diapositivas y materiales de cada sesión del
 
 - [Clase 1: Plan Estratégico](m05-clase01-introduccion-diagnostico.qmd)
 - [Clase 2: Diseño de Indicadores KPI](m05-clase02-plan-estrategico.qmd)
-- [Clase 3: Reportería en Python — cálculo y visualización](m05-clase03-kpi-diseno.qmd)
-- [Clase 4: Reportería en Python — generación de reportes Excel](m05-clase04-kpi-python.qmd)
-- [Clase 5: Reportería en Python — automatización y despacho](m05-clase05-reporteria-python.qmd)
+- [Clase 3: Entorno y primeros pasos en Streamlit](m05-clase03-kpi-diseno.qmd)
+- [Clase 4: Dashboard completo con vibe coding](m05-clase04-kpi-python.qmd)
+- [Clase 5: Deploy en Streamlit Cloud vía GitHub](m05-clase05-reporteria-python.qmd)
 - [Clase 6: Presentación del Taller Final](m05-clase06-presentacion-taller.qmd)
 
 ## Distribución del módulo
 
-| Clase | Contenido | Unidad |
+| Clase | Contenido | Herramientas |
 |---|---|---|
-| 1 | Plan Estratégico: diagnóstico y construcción | Plan Estratégico |
-| 2 | Diseño de Indicadores KPI y fichas | KPI |
-| 3 | Cálculo y visualización de KPIs en Python | Reportería |
-| 4 | Generación de reportes Excel con formato | Reportería |
-| 5 | Automatización, despacho y script maestro | Reportería |
-| 6 | Presentación del Taller Final | Modelo aplicado |
+| 1 | Plan Estratégico: diagnóstico y construcción | FODA, PESTEL, BSC |
+| 2 | Diseño de Indicadores KPI | Ficha KPI, perspectivas BSC |
+| 3 | Entorno y primeros pasos en Streamlit | VS Code, Ollama, Qwen, Streamlit |
+| 4 | Dashboard completo con vibe coding | Plotly, semáforo, Continue.dev |
+| 5 | Deploy en Streamlit Cloud vía GitHub | GitHub, Streamlit Cloud |
+| 6 | Presentación del Taller Final | Dashboard online |

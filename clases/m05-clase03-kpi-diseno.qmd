@@ -1,6 +1,6 @@
 ---
 title: "Módulo V: Taller Integrativo"
-subtitle: "Clase 3 — Reportería en Python: cálculo y visualización"
+subtitle: "Clase 3 — Entorno y primeros pasos en Streamlit"
 institution: "Universidad Santo Tomás"
 lang: es
 date: today
@@ -37,166 +37,196 @@ library(fontawesome)
 
 # Módulo V
 
-## Clase 3: Reportería en Python
+## Clase 3: Entorno y primeros pasos en Streamlit
 
-### Cálculo y visualización de KPIs con Pandas y Plotly
+### VS Code · Ollama · Qwen · vibe coding
 
 ---
 
 ## Objetivo de la sesión
 
-- Cargar y limpiar los datos de la organización con Pandas
-- Calcular los KPIs definidos en la Clase 2
-- Visualizar indicadores con Plotly
-- Estructurar un DataFrame de resultados consolidado
+- Instalar y configurar el entorno de trabajo: VS Code + Ollama + Continue.dev
+- Entender qué es vibe coding y cómo usarlo para aprender más rápido
+- Construir la primera app Streamlit con los KPIs del proyecto
+- Tener la app corriendo en `localhost` al final de la clase
 
 ---
 
-## Flujo de trabajo
+## El stack de esta clase
 
 ```
-Datos fuente (Excel / CSV)
-     ↓
-Carga con Pandas
-     ↓
-Limpieza y transformación
-     ↓
-Cálculo de KPIs
-     ↓
-Visualización (Plotly)
-     ↓
-Exportación de resultados
-     ↓
-Reporte formal  ← Clase 4
+VS Code          ← editor de código
+    +
+Ollama           ← servidor de LLM local (sin internet, sin cuenta)
+    +
+Qwen2.5-Coder   ← modelo especializado en código
+    +
+Continue.dev     ← extensión que conecta el LLM con VS Code
+    +
+Streamlit        ← framework para construir la app
 ```
 
 ---
 
-## Carga de datos
+## Paso 1 — Instalar VS Code
+
+1. Ir a [code.visualstudio.com](https://code.visualstudio.com)
+2. Descargar e instalar para Windows
+3. Extensiones recomendadas:
+   - **Python** (Microsoft)
+   - **Continue** (Continue.dev)
+
+---
+
+## Paso 2 — Instalar Ollama
+
+1. Ir a [ollama.com](https://ollama.com) y descargar el instalador para Windows
+2. Instalar — Ollama corre como servicio en segundo plano
+3. Abrir una terminal y descargar el modelo:
+
+```bash
+ollama pull qwen2.5-coder:7b
+```
+
+El modelo pesa ~4GB, se descarga una sola vez.
+
+:::{.ust-box}
+**¿Computador con menos de 8GB RAM?**
+Usar `qwen2.5-coder:1.5b` — pesa ~1GB y sigue siendo útil para código Python.
+:::
+
+---
+
+## Paso 3 — Configurar Continue.dev en VS Code
+
+1. En VS Code → Extensions → buscar **Continue**
+2. Instalar y abrir el panel de Continue (ícono en la barra lateral)
+3. Seleccionar modelo: **Ollama → qwen2.5-coder:7b**
+4. Probar: escribir en el chat `"escribe una función que sume dos números"` → el modelo responde con código
+
+---
+
+## ¿Qué es vibe coding?
+
+Programar describiendo en lenguaje natural lo que quieres y dejando que el LLM genere el código.
+
+:::: {.columns}
+::: {.column width="50%"}
+**Sin vibe coding**
+
+Buscar documentación → leer ejemplos → escribir código → depurar errores → repetir
+:::
+::: {.column width="50%"}
+**Con vibe coding**
+
+Describir lo que quieres → el LLM genera el código → entender qué hace → ajustar → avanzar
+:::
+::::
+
+El objetivo no es no aprender — es aprender más rápido viendo código funcional que puedes modificar.
+
+---
+
+## Cómo describir bien lo que quieres
+
+Un buen prompt para vibe coding incluye:
+
+1. **Qué hace la app** — contexto general
+2. **Qué quieres en este paso** — acción específica
+3. **Con qué datos** — estructura del CSV o DataFrame
+4. **Qué librerías usar** — Streamlit, Pandas, Plotly
+
+**Ejemplo:**
+
+> "Tengo un CSV con columnas: indicador, valor, meta, perspectiva, periodo.
+> Crea una app Streamlit que muestre una tarjeta st.metric por cada indicador
+> del periodo seleccionado en un st.selectbox del sidebar."
+
+---
+
+## Paso 4 — Instalar Streamlit
+
+En la terminal de VS Code:
+
+```bash
+pip install streamlit pandas plotly
+```
+
+Verificar que funciona:
+
+```bash
+streamlit hello
+```
+
+Se abre una app de demostración en el browser — eso confirma que la instalación está correcta.
+
+---
+
+## Primera app — estructura mínima
 
 ```python
+# app.py
+import streamlit as st
 import pandas as pd
 
-# Desde Excel
-df = pd.read_excel("datos_organizacion.xlsx", sheet_name="ventas")
+st.set_page_config(page_title="Dashboard KPI", layout="wide")
 
-# Desde CSV
-df = pd.read_csv("datos_organizacion.csv", encoding="utf-8")
+# Carga de datos
+df = pd.read_csv("datos_kpis.csv")
 
-# Vista rápida
-df.head()
-df.info()
-df.describe()
+# Título
+st.title("Dashboard de Control de Gestión")
+
+# Tabla de datos
+st.dataframe(df, use_container_width=True)
+```
+
+Correr con:
+```bash
+streamlit run app.py
 ```
 
 ---
 
-## Limpieza básica
+## Agregar métricas con st.metric
 
 ```python
-# Eliminar filas con valores nulos en columnas clave
-df = df.dropna(subset=["ventas", "periodo"])
+import streamlit as st
+import pandas as pd
 
-# Convertir fechas
-df["periodo"] = pd.to_datetime(df["periodo"])
+df    = pd.read_csv("datos_kpis.csv")
+df_ult = df[df["periodo"] == df["periodo"].max()]
 
-# Renombrar columnas
-df = df.rename(columns={"Ventas Netas": "ventas", "Costos Op.": "costos"})
+st.title("KPIs del período")
 
-# Filtrar período relevante
-df = df[df["periodo"].dt.year == 2024]
-```
+cols = st.columns(len(df_ult))
 
----
-
-## Cálculo de KPIs
-
-```python
-# Margen operacional
-df["margen"] = (df["ventas"] - df["costos"]) / df["ventas"] * 100
-
-# Tasa de conversión
-df["tasa_conv"] = df["ventas_cerradas"] / df["contactos"] * 100
-
-# Agrupado por mes
-resumen = df.groupby(df["periodo"].dt.month).agg(
-    ventas=("ventas", "sum"),
-    costos=("costos", "sum")
-).assign(margen=lambda x: (x["ventas"] - x["costos"]) / x["ventas"] * 100)
-```
-
----
-
-## Visualización con Plotly
-
-```python
-import plotly.express as px
-
-# Gráfico de línea con meta
-fig = px.line(
-    resumen.reset_index(),
-    x="periodo",
-    y="margen",
-    title="Margen Operacional Mensual",
-    labels={"margen": "Margen (%)", "periodo": "Mes"}
-)
-fig.add_hline(y=20, line_dash="dash",
-              annotation_text="Meta: 20%",
-              line_color="red")
-fig.show()
-```
-
----
-
-## Visualización de múltiples KPIs
-
-```python
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-
-fig = make_subplots(rows=2, cols=2,
-    subplot_titles=["Margen", "Conversión", "Retención", "NPS"])
-
-fig.add_trace(go.Scatter(x=df["mes"], y=df["margen"]),  row=1, col=1)
-fig.add_trace(go.Bar(x=df["mes"],    y=df["tasa_conv"]), row=1, col=2)
-fig.add_trace(go.Scatter(x=df["mes"], y=df["retencion"]),row=2, col=1)
-fig.add_trace(go.Bar(x=df["mes"],    y=df["nps"]),       row=2, col=2)
-
-fig.update_layout(title="Dashboard de KPIs", showlegend=False)
-fig.show()
-```
-
----
-
-## Exportar resultados
-
-```python
-# Exportar DataFrame de KPIs
-resumen.to_excel("kpis_calculados.xlsx", index=True)
-resumen.to_csv("kpis_calculados.csv",   index=True)
-
-# Exportar gráfico como imagen
-fig.write_image("dashboard_kpis.png")
-fig.write_html("dashboard_kpis.html")
+for col, (_, row) in zip(cols, df_ult.iterrows()):
+    delta = row["valor"] - row["meta"]
+    col.metric(
+        label=row["indicador"],
+        value=f"{row['valor']} {row['unidad']}",
+        delta=f"{delta:+.1f} vs meta",
+    )
 ```
 
 ---
 
 ## Trabajo de la sesión
 
-1. Cargar los datos de la organización en Python
-2. Limpiar y preparar el DataFrame
-3. Calcular los KPIs definidos en la Clase 2
-4. Generar al menos un gráfico por indicador
-5. Exportar el DataFrame de resultados a Excel
+1. Instalar VS Code + Ollama + Qwen2.5-Coder + Continue.dev
+2. Instalar Streamlit y verificar con `streamlit hello`
+3. Crear `app.py` con la app mínima (título + tabla)
+4. Agregar las tarjetas `st.metric` con los KPIs del proyecto
+5. Usar Continue.dev para pedirle al LLM que agregue algo nuevo
 
 ---
 
 ## Próxima clase
 
-**Clase 4 — Reportería en Python: generación de reportes Excel**
+**Clase 4 — Dashboard completo con vibe coding**
 
-- Estructura de un reporte de control de gestión
-- Formato profesional con openpyxl
-- Semáforo de cumplimiento de metas
-- Integración de gráficos en el reporte
+- Sidebar con filtros interactivos
+- Gráficos de tendencia y cumplimiento con Plotly
+- Semáforo 🟢🟡🔴 aplicado a cada indicador
+- Cada grupo amplía su app con vibe coding

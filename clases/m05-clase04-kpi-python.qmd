@@ -1,6 +1,6 @@
 ---
 title: "Módulo V: Taller Integrativo"
-subtitle: "Clase 4 — Reportería en Python: generación de reportes Excel"
+subtitle: "Clase 4 — Dashboard completo con vibe coding"
 institution: "Universidad Santo Tomás"
 lang: es
 date: today
@@ -37,176 +37,212 @@ library(fontawesome)
 
 # Módulo V
 
-## Clase 4: Reportería en Python
+## Clase 4: Dashboard completo con vibe coding
 
-### Generación de reportes Excel con formato profesional
+### Sidebar · Plotly · Semáforo · Vibe coding en práctica
 
 ---
 
 ## Objetivo de la sesión
 
-- Estructurar un reporte de control de gestión
-- Generar archivos Excel con formato profesional usando openpyxl
+- Agregar sidebar con filtros interactivos a la app
+- Incorporar gráficos de tendencia y cumplimiento con Plotly
 - Implementar semáforo de cumplimiento de metas
-- Integrar gráficos de Plotly en el reporte
+- Practicar vibe coding: cada grupo amplía su app con el LLM
 
 ---
 
-## ¿Qué hace un buen reporte de control de gestión?
+## Dónde quedamos
 
-Un reporte efectivo debe:
-
-- Mostrar los KPIs respecto de su **meta**
-- Indicar la **tendencia** (mejora / deterioro)
-- Señalar **desviaciones** que requieren acción
-- Llegar al tomador de decisiones **en el momento adecuado**
-- Ser **reproducible**: mismo script, mismo resultado
-
----
-
-## Estructura del reporte
+Al final de la Clase 3 cada grupo tiene:
 
 ```
-Portada
-  └── Nombre organización, período, fecha
-Resumen ejecutivo
-  └── KPIs principales con semáforo
-Detalle por perspectiva BSC
-  ├── Perspectiva Financiera
-  ├── Perspectiva Clientes
-  ├── Perspectiva Procesos
-  └── Perspectiva Aprendizaje
-Gráficos de tendencia
-Conclusiones y alertas
+app.py
+  ├── st.title()          ← título de la app
+  ├── pd.read_csv()       ← carga de datos KPIs
+  └── st.metric()         ← tarjetas por indicador
 ```
+
+Hoy construimos sobre eso.
 
 ---
 
-## Crear el libro Excel con openpyxl
+## Agregar sidebar con filtros
 
 ```python
-from openpyxl import Workbook
-from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+with st.sidebar:
+    st.markdown("## Filtros")
 
-wb = Workbook()
-ws = wb.active
-ws.title = "Resumen KPIs"
+    # Filtro por perspectiva BSC
+    perspectivas = ["Todas"] + sorted(df["perspectiva"].unique().tolist())
+    perspectiva_sel = st.selectbox("Perspectiva", perspectivas)
 
-# Ajustar ancho de columnas
-ws.column_dimensions["A"].width = 35
-ws.column_dimensions["B"].width = 18
-ws.column_dimensions["C"].width = 18
-ws.column_dimensions["D"].width = 18
-ws.column_dimensions["E"].width = 12
+    # Filtro por período
+    periodos = sorted(df["periodo"].unique().tolist())
+    periodo_sel = st.selectbox("Período", periodos,
+                               index=len(periodos) - 1)
+
+# Aplicar filtros al DataFrame
+df_filtrado = df[df["periodo"] == periodo_sel]
+if perspectiva_sel != "Todas":
+    df_filtrado = df_filtrado[
+        df_filtrado["perspectiva"] == perspectiva_sel
+    ]
 ```
 
 ---
 
-## Encabezado con formato UST
+## Gráfico de tendencia con Plotly
 
 ```python
-# Colores UST
-VERDE_UST  = "1D5C35"
-LIMA_UST   = "8FA62A"
-VERDE_SOFT = "E8F0EB"
+import plotly.graph_objects as go
 
-# Título del reporte
-ws["A1"] = "Reporte de Control de Gestión"
-ws["A1"].font = Font(bold=True, size=16, color="FFFFFF")
-ws["A1"].fill = PatternFill("solid", fgColor=VERDE_UST)
-ws["A1"].alignment = Alignment(horizontal="center")
-ws.merge_cells("A1:E1")
+# El usuario elige el indicador a visualizar
+indicador_sel = st.selectbox("Indicador", df["indicador"].unique())
 
-# Subtítulo
-ws["A2"] = f"Período: {periodo} | Organización: {nombre_org}"
-ws["A2"].font = Font(italic=True, size=11, color=VERDE_UST)
-ws.merge_cells("A2:E2")
+df_ind = df[df["indicador"] == indicador_sel].sort_values("mes")
+meta   = df_ind["meta"].iloc[0]
+unidad = df_ind["unidad"].iloc[0]
+
+fig = go.Figure()
+fig.add_trace(go.Scatter(
+    x=df_ind["periodo"], y=df_ind["valor"],
+    mode="lines+markers",
+    line=dict(color="#1D5C35", width=3),
+))
+fig.add_hline(y=meta, line_dash="dash", line_color="red",
+              annotation_text=f"Meta: {meta} {unidad}")
+
+st.plotly_chart(fig, use_container_width=True)
 ```
 
 ---
 
-## Encabezados de tabla
+## Gráfico de cumplimiento con Plotly Express
 
 ```python
-headers = ["Indicador", "Valor actual", "Meta", "Desviación", "Estado"]
-col_colors = [VERDE_UST] * 5
+import plotly.express as px
 
-for col, (header, color) in enumerate(zip(headers, col_colors), start=1):
-    cell = ws.cell(row=4, column=col, value=header)
-    cell.font      = Font(bold=True, color="FFFFFF")
-    cell.fill      = PatternFill("solid", fgColor=color)
-    cell.alignment = Alignment(horizontal="center")
+df_ult = df[df["periodo"] == periodo_sel].copy()
+
+# % de cumplimiento: distinto según si mayor es mejor o no
+df_ult["cumplimiento"] = df_ult.apply(
+    lambda r: min(r["valor"] / r["meta"] * 100, 150)
+    if r["mayor_es_mejor"]
+    else min(r["meta"] / r["valor"] * 100, 150),
+    axis=1,
+)
+
+fig_bar = px.bar(
+    df_ult.sort_values("cumplimiento"),
+    x="cumplimiento", y="indicador",
+    orientation="h", color="perspectiva",
+    title="% de cumplimiento por indicador",
+)
+fig_bar.add_vline(x=100, line_dash="dash", line_color="red")
+
+st.plotly_chart(fig_bar, use_container_width=True)
 ```
 
 ---
 
-## Semáforo de indicadores
+## Semáforo de cumplimiento
 
 ```python
-def estado_kpi(valor, meta, mayor_es_mejor=True):
+def semaforo(valor, meta, mayor_es_mejor):
     ratio = valor / meta if meta != 0 else 0
     if mayor_es_mejor:
-        if ratio >= 1.0:    return "Verde",    "70AD47"
-        elif ratio >= 0.85: return "Amarillo", "FFC000"
-        else:               return "Rojo",     "FF0000"
+        if ratio >= 1.0:    return "🟢"
+        elif ratio >= 0.85: return "🟡"
+        else:               return "🔴"
     else:
-        if ratio <= 1.0:    return "Verde",    "70AD47"
-        elif ratio <= 1.15: return "Amarillo", "FFC000"
-        else:               return "Rojo",     "FF0000"
+        if ratio <= 1.0:    return "🟢"
+        elif ratio <= 1.15: return "🟡"
+        else:               return "🔴"
 
-# Aplicar a cada fila
-for i, row in df_kpis.iterrows():
-    estado, color = estado_kpi(row["valor"], row["meta"])
-    cell = ws.cell(row=5+i, column=5, value=estado)
-    cell.fill = PatternFill("solid", fgColor=color)
-    cell.font = Font(bold=True, color="FFFFFF")
+# Aplicar a las métricas del período
+cols = st.columns(len(df_filtrado))
+for col, (_, row) in zip(cols, df_filtrado.iterrows()):
+    icono = semaforo(row["valor"], row["meta"], row["mayor_es_mejor"])
+    delta = row["valor"] - row["meta"]
+    col.metric(
+        label=f"{icono} {row['indicador']}",
+        value=f"{row['valor']} {row['unidad']}",
+        delta=f"{delta:+.1f} vs meta",
+        delta_color="normal" if row["mayor_es_mejor"] else "inverse",
+    )
 ```
 
 ---
 
-## Escribir filas de KPIs
+## Tabla con semáforo
 
 ```python
-for i, row in df_kpis.iterrows():
-    desviacion = row["valor"] - row["meta"]
-    estado, color = estado_kpi(row["valor"], row["meta"],
-                               row["mayor_es_mejor"])
-    fila = 5 + i
+st.subheader("Tabla de cumplimiento")
 
-    ws.cell(row=fila, column=1, value=row["nombre"])
-    ws.cell(row=fila, column=2, value=row["valor"])
-    ws.cell(row=fila, column=3, value=row["meta"])
-    ws.cell(row=fila, column=4, value=desviacion)
+filas = []
+for _, row in df_filtrado.iterrows():
+    icono = semaforo(row["valor"], row["meta"], row["mayor_es_mejor"])
+    filas.append({
+        "Estado":       icono,
+        "Indicador":    row["indicador"],
+        "Perspectiva":  row["perspectiva"],
+        "Valor actual": f"{row['valor']} {row['unidad']}",
+        "Meta":         f"{row['meta']} {row['unidad']}",
+        "Desviación":   f"{row['valor'] - row['meta']:+.1f}",
+    })
 
-    estado_cell = ws.cell(row=fila, column=5, value=estado)
-    estado_cell.fill = PatternFill("solid", fgColor=color)
-    estado_cell.font = Font(bold=True, color="FFFFFF")
-
-    # Filas alternas
-    if i % 2 == 0:
-        for col in range(1, 5):
-            ws.cell(row=fila, column=col).fill = PatternFill(
-                "solid", fgColor=VERDE_SOFT)
-
-wb.save("reporte_control_gestion.xlsx")
+st.dataframe(pd.DataFrame(filas),
+             use_container_width=True,
+             hide_index=True)
 ```
+
+---
+
+## Vibe coding en práctica
+
+Cada grupo le pide al LLM (Continue.dev) una funcionalidad nueva para su app.
+
+**Ejemplos de prompts para practicar:**
+
+> "Agrega una sección que muestre el indicador con peor cumplimiento del período seleccionado, con un texto de alerta en rojo."
+
+> "Agrega un st.download_button que permita descargar la tabla de cumplimiento como CSV."
+
+> "Crea una segunda página en la app usando st.tabs con una pestaña para el dashboard y otra para el detalle de un indicador."
+
+---
+
+## Estructura de la app al final de esta clase
+
+```
+app.py
+  ├── Sidebar: filtros perspectiva + período
+  ├── st.metric() con semáforo por indicador
+  ├── Gráfico de tendencia (Plotly)
+  ├── Gráfico de cumplimiento (Plotly Express)
+  └── Tabla semáforo (st.dataframe)
+```
+
+Todo con los datos reales del proyecto integrador.
 
 ---
 
 ## Trabajo de la sesión
 
-1. Integrar los KPIs calculados en Clase 3 en la plantilla de reporte
-2. Agregar formato: encabezado, colores UST, bordes
-3. Implementar el semáforo de cumplimiento
-4. Guardar el archivo Excel formateado
+1. Agregar sidebar con filtros a la app de la Clase 3
+2. Implementar la función `semaforo()` en las métricas
+3. Agregar el gráfico de tendencia
+4. Agregar el gráfico de barras de cumplimiento
+5. Usar Continue.dev para agregar una funcionalidad nueva
 
 ---
 
 ## Próxima clase
 
-**Clase 5 — Reportería en Python: automatización y despacho**
+**Clase 5 — Deploy en Streamlit Cloud vía GitHub**
 
-- Integrar gráficos en el reporte Excel
-- Automatizar el flujo completo (carga → cálculo → reporte)
-- Configurar envío automático por correo
-- Programar ejecución periódica con Task Scheduler
+- Crear repositorio en GitHub desde VS Code
+- Subir el código del proyecto
+- Conectar con Streamlit Community Cloud
+- Obtener la URL pública del dashboard
