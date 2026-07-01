@@ -16,12 +16,16 @@ Este módulo integra los aprendizajes de los cuatro módulos anteriores en un pr
 
 ## Estructura del módulo
 
-El taller se desarrolla en **6 clases** que cubren las cuatro unidades del módulo:
+El taller se desarrolla en **6 clases**:
 
-- **Clases 1–2** — Plan Estratégico: diagnóstico y construcción
-- **Clases 3–4** — Indicadores KPI: diseño y desarrollo en Python
-- **Clase 5** — Reportería automatizada en Python
-- **Clase 6** — Presentación del Taller Final
+| Clase | Contenido |
+|---|---|
+| **1** | Plan Estratégico: diagnóstico y construcción del plan |
+| **2** | Diseño de Indicadores KPI |
+| **3** | Reportería en Python: cálculo y visualización |
+| **4** | Reportería en Python: generación de reportes Excel |
+| **5** | Reportería en Python: automatización y despacho |
+| **6** | Presentación del Taller Final |
 
 ## Cómo usar este sitio
 

@@ -1140,7 +1140,7 @@ margin: 0.5em 0;
 
 <section id="title-slide" class="quarto-title-block center">
   <h1 class="title">Módulo V: Taller Integrativo</h1>
-  <p class="subtitle">Clase 5 — Reportería Automatizada en Python</p>
+  <p class="subtitle">Clase 5 — Reportería en Python: automatización y despacho</p>
 
 <div class="quarto-title-authors">
 </div>
@@ -1165,100 +1165,167 @@ margin: 0.5em 0;
 <h1>Módulo V</h1>
 
 </section>
-<section id="clase-5-reportería-automatizada-en-python" class="slide level2">
-<h2>Clase 5: Reportería Automatizada en Python</h2>
-<h3 id="del-cálculo-de-kpis-al-despacho-automático-de-informes">Del cálculo de KPIs al despacho automático de informes</h3>
+<section id="clase-5-reportería-en-python" class="slide level2">
+<h2>Clase 5: Reportería en Python</h2>
+<h3 id="automatización-y-despacho-del-modelo-completo">Automatización y despacho del modelo completo</h3>
 </section>
 <section id="objetivo-de-la-sesión" class="slide level2">
 <h2>Objetivo de la sesión</h2>
 <ul>
-<li>Estructurar un informe de control de gestión</li>
-<li>Generar reportes en Excel con formato y gráficos desde Python</li>
-<li>Automatizar el proceso de reporte con un script</li>
-<li>Configurar el envío automático de informes</li>
+<li>Integrar gráficos Plotly en el reporte Excel</li>
+<li>Construir el script maestro que automatiza el flujo completo</li>
+<li>Configurar el envío automático del reporte por correo</li>
+<li>Programar la ejecución periódica con Task Scheduler</li>
+<li>Consolidar el modelo de control de gestión integrado</li>
 </ul>
 </section>
-<section id="qué-hace-un-buen-reporte-de-control-de-gestión" class="slide level2">
-<h2>¿Qué hace un buen reporte de control de gestión?</h2>
-<p>Un reporte efectivo debe:</p>
-<ul>
-<li>Mostrar los KPIs respecto de su <strong>meta</strong></li>
-<li>Indicar la <strong>tendencia</strong> (mejora / deterioro)</li>
-<li>Señalar <strong>desviaciones</strong> que requieren acción</li>
-<li>Llegar al tomador de decisiones <strong>en el momento adecuado</strong></li>
-</ul>
+<section id="el-flujo-completo-automatizado" class="slide level2">
+<h2>El flujo completo automatizado</h2>
+<pre><code>datos_fuente.xlsx
+     ↓  pd.read_excel()
+DataFrame limpio
+     ↓  groupby / assign
+KPIs calculados
+     ↓  openpyxl
+Reporte Excel formateado
+     ↓  smtplib
+Correo a destinatarios
+     ↓  Task Scheduler
+Ejecución mensual automática</code></pre>
 </section>
-<section id="generación-de-reportes-en-excel" class="slide level2">
-<h2>Generación de reportes en Excel</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-2"><a></a><span class="im">from</span> openpyxl <span class="im">import</span> Workbook</span>
-<span id="cb1-3"><a></a><span class="im">from</span> openpyxl.styles <span class="im">import</span> Font, PatternFill, Alignment</span>
-<span id="cb1-4"><a></a></span>
-<span id="cb1-5"><a></a><span class="co"># Crear libro de trabajo</span></span>
-<span id="cb1-6"><a></a>wb <span class="op">=</span> Workbook()</span>
-<span id="cb1-7"><a></a>ws <span class="op">=</span> wb.active</span>
-<span id="cb1-8"><a></a>ws.title <span class="op">=</span> <span class="st">&quot;Reporte KPIs&quot;</span></span>
-<span id="cb1-9"><a></a></span>
-<span id="cb1-10"><a></a><span class="co"># Encabezados con formato</span></span>
-<span id="cb1-11"><a></a>encabezados <span class="op">=</span> [<span class="st">&quot;Indicador&quot;</span>, <span class="st">&quot;Valor actual&quot;</span>, <span class="st">&quot;Meta&quot;</span>, <span class="st">&quot;Desviación&quot;</span>, <span class="st">&quot;Estado&quot;</span>]</span>
-<span id="cb1-12"><a></a><span class="cf">for</span> col, enc <span class="kw">in</span> <span class="bu">enumerate</span>(encabezados, start<span class="op">=</span><span class="dv">1</span>):</span>
-<span id="cb1-13"><a></a>    celda <span class="op">=</span> ws.cell(row<span class="op">=</span><span class="dv">1</span>, column<span class="op">=</span>col, value<span class="op">=</span>enc)</span>
-<span id="cb1-14"><a></a>    celda.font <span class="op">=</span> Font(bold<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-15"><a></a>    celda.fill <span class="op">=</span> PatternFill(<span class="st">&quot;solid&quot;</span>, fgColor<span class="op">=</span><span class="st">&quot;1a3a6b&quot;</span>)</span>
-<span id="cb1-16"><a></a></span>
-<span id="cb1-17"><a></a>wb.save(<span class="st">&quot;reporte_kpis.xlsx&quot;</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="insertar-gráficos-plotly-en-excel" class="slide level2">
+<h2>Insertar gráficos Plotly en Excel</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
+<span id="cb2-2"><a></a><span class="im">from</span> openpyxl.drawing.image <span class="im">import</span> Image <span class="im">as</span> XLImage</span>
+<span id="cb2-3"><a></a><span class="im">import</span> io, kaleido</span>
+<span id="cb2-4"><a></a></span>
+<span id="cb2-5"><a></a><span class="co"># Generar gráfico como imagen en memoria</span></span>
+<span id="cb2-6"><a></a>fig <span class="op">=</span> px.line(resumen, x<span class="op">=</span><span class="st">&quot;mes&quot;</span>, y<span class="op">=</span><span class="st">&quot;margen&quot;</span>,</span>
+<span id="cb2-7"><a></a>              title<span class="op">=</span><span class="st">&quot;Margen Operacional&quot;</span>)</span>
+<span id="cb2-8"><a></a>fig.add_hline(y<span class="op">=</span><span class="dv">20</span>, line_dash<span class="op">=</span><span class="st">&quot;dash&quot;</span>, line_color<span class="op">=</span><span class="st">&quot;red&quot;</span>)</span>
+<span id="cb2-9"><a></a></span>
+<span id="cb2-10"><a></a>buf <span class="op">=</span> io.BytesIO()</span>
+<span id="cb2-11"><a></a>fig.write_image(buf, <span class="bu">format</span><span class="op">=</span><span class="st">&quot;png&quot;</span>, width<span class="op">=</span><span class="dv">700</span>, height<span class="op">=</span><span class="dv">350</span>)</span>
+<span id="cb2-12"><a></a>buf.seek(<span class="dv">0</span>)</span>
+<span id="cb2-13"><a></a></span>
+<span id="cb2-14"><a></a><span class="co"># Insertar en la hoja Excel</span></span>
+<span id="cb2-15"><a></a>img <span class="op">=</span> XLImage(buf)</span>
+<span id="cb2-16"><a></a>img.anchor <span class="op">=</span> <span class="st">&quot;A20&quot;</span></span>
+<span id="cb2-17"><a></a>ws.add_image(img)</span>
+<span id="cb2-18"><a></a>wb.save(<span class="st">&quot;reporte_control_gestion.xlsx&quot;</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="semáforo-de-indicadores" class="slide level2">
-<h2>Semáforo de indicadores</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a><span class="kw">def</span> estado_kpi(valor, meta, mayor_es_mejor<span class="op">=</span><span class="va">True</span>):</span>
-<span id="cb2-2"><a></a>    ratio <span class="op">=</span> valor <span class="op">/</span> meta</span>
-<span id="cb2-3"><a></a>    <span class="cf">if</span> mayor_es_mejor:</span>
-<span id="cb2-4"><a></a>        <span class="cf">if</span> ratio <span class="op">&gt;=</span> <span class="fl">1.0</span>:   <span class="cf">return</span> <span class="st">&quot;Verde&quot;</span></span>
-<span id="cb2-5"><a></a>        <span class="cf">elif</span> ratio <span class="op">&gt;=</span> <span class="fl">0.8</span>: <span class="cf">return</span> <span class="st">&quot;Amarillo&quot;</span></span>
-<span id="cb2-6"><a></a>        <span class="cf">else</span>:              <span class="cf">return</span> <span class="st">&quot;Rojo&quot;</span></span>
-<span id="cb2-7"><a></a>    <span class="cf">else</span>:</span>
-<span id="cb2-8"><a></a>        <span class="cf">if</span> ratio <span class="op">&lt;=</span> <span class="fl">1.0</span>:   <span class="cf">return</span> <span class="st">&quot;Verde&quot;</span></span>
-<span id="cb2-9"><a></a>        <span class="cf">elif</span> ratio <span class="op">&lt;=</span> <span class="fl">1.2</span>: <span class="cf">return</span> <span class="st">&quot;Amarillo&quot;</span></span>
-<span id="cb2-10"><a></a>        <span class="cf">else</span>:              <span class="cf">return</span> <span class="st">&quot;Rojo&quot;</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="script-maestro-estructura" class="slide level2">
+<h2>Script maestro — estructura</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a><span class="co"># reporte_mensual.py</span></span>
+<span id="cb3-2"><a></a></span>
+<span id="cb3-3"><a></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-4"><a></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb3-5"><a></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb3-6"><a></a></span>
+<span id="cb3-7"><a></a>PERIODO   <span class="op">=</span> datetime.now().strftime(<span class="st">&quot;%Y-%m&quot;</span>)</span>
+<span id="cb3-8"><a></a>DATOS     <span class="op">=</span> Path(<span class="st">&quot;datos/datos_organizacion.xlsx&quot;</span>)</span>
+<span id="cb3-9"><a></a>SALIDA    <span class="op">=</span> Path(<span class="ss">f&quot;reportes/reporte_</span><span class="sc">{</span>PERIODO<span class="sc">}</span><span class="ss">.xlsx&quot;</span>)</span>
+<span id="cb3-10"><a></a>DESTINOS  <span class="op">=</span> [<span class="st">&quot;gerencia@empresa.cl&quot;</span>, <span class="st">&quot;control@empresa.cl&quot;</span>]</span>
+<span id="cb3-11"><a></a></span>
+<span id="cb3-12"><a></a><span class="kw">def</span> main():</span>
+<span id="cb3-13"><a></a>    df      <span class="op">=</span> cargar_datos(DATOS)</span>
+<span id="cb3-14"><a></a>    kpis    <span class="op">=</span> calcular_kpis(df)</span>
+<span id="cb3-15"><a></a>    reporte <span class="op">=</span> generar_reporte(kpis, SALIDA)</span>
+<span id="cb3-16"><a></a>    enviar_reporte(reporte, DESTINOS)</span>
+<span id="cb3-17"><a></a>    <span class="bu">print</span>(<span class="ss">f&quot;Reporte </span><span class="sc">{</span>PERIODO<span class="sc">}</span><span class="ss"> enviado correctamente.&quot;</span>)</span>
+<span id="cb3-18"><a></a></span>
+<span id="cb3-19"><a></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&quot;__main__&quot;</span>:</span>
+<span id="cb3-20"><a></a>    main()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="envío-automático-de-informes" class="slide level2">
-<h2>Envío automático de informes</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a><span class="im">import</span> smtplib</span>
-<span id="cb3-2"><a></a><span class="im">from</span> email.message <span class="im">import</span> EmailMessage</span>
-<span id="cb3-3"><a></a></span>
-<span id="cb3-4"><a></a><span class="kw">def</span> enviar_reporte(destinatario, archivo):</span>
-<span id="cb3-5"><a></a>    msg <span class="op">=</span> EmailMessage()</span>
-<span id="cb3-6"><a></a>    msg[<span class="st">&quot;Subject&quot;</span>] <span class="op">=</span> <span class="st">&quot;Reporte mensual de KPIs&quot;</span></span>
-<span id="cb3-7"><a></a>    msg[<span class="st">&quot;From&quot;</span>] <span class="op">=</span> <span class="st">&quot;control.gestion@organizacion.cl&quot;</span></span>
-<span id="cb3-8"><a></a>    msg[<span class="st">&quot;To&quot;</span>] <span class="op">=</span> destinatario</span>
-<span id="cb3-9"><a></a>    msg.set_content(<span class="st">&quot;Adjunto el reporte mensual de indicadores.&quot;</span>)</span>
-<span id="cb3-10"><a></a></span>
-<span id="cb3-11"><a></a>    <span class="cf">with</span> <span class="bu">open</span>(archivo, <span class="st">&quot;rb&quot;</span>) <span class="im">as</span> f:</span>
-<span id="cb3-12"><a></a>        msg.add_attachment(f.read(), maintype<span class="op">=</span><span class="st">&quot;application&quot;</span>,</span>
-<span id="cb3-13"><a></a>                          subtype<span class="op">=</span><span class="st">&quot;vnd.openxmlformats-officedocument.spreadsheetml.sheet&quot;</span>,</span>
-<span id="cb3-14"><a></a>                          filename<span class="op">=</span>archivo)</span>
-<span id="cb3-15"><a></a></span>
-<span id="cb3-16"><a></a>    <span class="cf">with</span> smtplib.SMTP_SSL(<span class="st">&quot;smtp.gmail.com&quot;</span>, <span class="dv">465</span>) <span class="im">as</span> smtp:</span>
-<span id="cb3-17"><a></a>        smtp.login(<span class="st">&quot;usuario&quot;</span>, <span class="st">&quot;contraseña&quot;</span>)</span>
-<span id="cb3-18"><a></a>        smtp.send_message(msg)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="funciones-del-script-maestro" class="slide level2">
+<h2>Funciones del script maestro</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a></a><span class="kw">def</span> cargar_datos(ruta):</span>
+<span id="cb4-2"><a></a>    df <span class="op">=</span> pd.read_excel(ruta)</span>
+<span id="cb4-3"><a></a>    df[<span class="st">&quot;periodo&quot;</span>] <span class="op">=</span> pd.to_datetime(df[<span class="st">&quot;periodo&quot;</span>])</span>
+<span id="cb4-4"><a></a>    <span class="cf">return</span> df.dropna(subset<span class="op">=</span>[<span class="st">&quot;ventas&quot;</span>])</span>
+<span id="cb4-5"><a></a></span>
+<span id="cb4-6"><a></a><span class="kw">def</span> calcular_kpis(df):</span>
+<span id="cb4-7"><a></a>    <span class="cf">return</span> df.groupby(df[<span class="st">&quot;periodo&quot;</span>].dt.month).agg(</span>
+<span id="cb4-8"><a></a>        ventas<span class="op">=</span>(<span class="st">&quot;ventas&quot;</span>, <span class="st">&quot;sum&quot;</span>),</span>
+<span id="cb4-9"><a></a>        costos<span class="op">=</span>(<span class="st">&quot;costos&quot;</span>, <span class="st">&quot;sum&quot;</span>)</span>
+<span id="cb4-10"><a></a>    ).assign(</span>
+<span id="cb4-11"><a></a>        margen<span class="op">=</span><span class="kw">lambda</span> x: (x.ventas <span class="op">-</span> x.costos) <span class="op">/</span> x.ventas <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb4-12"><a></a>    )</span>
+<span id="cb4-13"><a></a></span>
+<span id="cb4-14"><a></a><span class="kw">def</span> generar_reporte(kpis, ruta_salida):</span>
+<span id="cb4-15"><a></a>    <span class="co"># (código de Clase 4: openpyxl + semáforo + gráficos)</span></span>
+<span id="cb4-16"><a></a>    ...</span>
+<span id="cb4-17"><a></a>    <span class="cf">return</span> ruta_salida</span>
+<span id="cb4-18"><a></a></span>
+<span id="cb4-19"><a></a><span class="kw">def</span> enviar_reporte(ruta, destinatarios):</span>
+<span id="cb4-20"><a></a>    <span class="co"># (código de envío por correo)</span></span>
+<span id="cb4-21"><a></a>    ...</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="envío-automático-por-correo" class="slide level2">
+<h2>Envío automático por correo</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a></a><span class="im">import</span> smtplib</span>
+<span id="cb5-2"><a></a><span class="im">from</span> email.message <span class="im">import</span> EmailMessage</span>
+<span id="cb5-3"><a></a></span>
+<span id="cb5-4"><a></a><span class="kw">def</span> enviar_reporte(ruta_archivo, destinatarios):</span>
+<span id="cb5-5"><a></a>    msg <span class="op">=</span> EmailMessage()</span>
+<span id="cb5-6"><a></a>    msg[<span class="st">&quot;Subject&quot;</span>] <span class="op">=</span> <span class="ss">f&quot;Reporte Control de Gestión — </span><span class="sc">{</span>PERIODO<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb5-7"><a></a>    msg[<span class="st">&quot;From&quot;</span>]    <span class="op">=</span> <span class="st">&quot;sistema.control@empresa.cl&quot;</span></span>
+<span id="cb5-8"><a></a>    msg[<span class="st">&quot;To&quot;</span>]      <span class="op">=</span> <span class="st">&quot;, &quot;</span>.join(destinatarios)</span>
+<span id="cb5-9"><a></a>    msg.set_content(</span>
+<span id="cb5-10"><a></a>        <span class="ss">f&quot;Se adjunta el reporte mensual de KPIs correspondiente a </span><span class="sc">{</span>PERIODO<span class="sc">}</span><span class="ss">.&quot;</span></span>
+<span id="cb5-11"><a></a>    )</span>
+<span id="cb5-12"><a></a>    <span class="cf">with</span> <span class="bu">open</span>(ruta_archivo, <span class="st">&quot;rb&quot;</span>) <span class="im">as</span> f:</span>
+<span id="cb5-13"><a></a>        msg.add_attachment(</span>
+<span id="cb5-14"><a></a>            f.read(),</span>
+<span id="cb5-15"><a></a>            maintype<span class="op">=</span><span class="st">&quot;application&quot;</span>,</span>
+<span id="cb5-16"><a></a>            subtype<span class="op">=</span><span class="st">&quot;vnd.openxmlformats-officedocument.spreadsheetml.sheet&quot;</span>,</span>
+<span id="cb5-17"><a></a>            filename<span class="op">=</span>ruta_archivo.name</span>
+<span id="cb5-18"><a></a>        )</span>
+<span id="cb5-19"><a></a>    <span class="cf">with</span> smtplib.SMTP_SSL(<span class="st">&quot;smtp.gmail.com&quot;</span>, <span class="dv">465</span>) <span class="im">as</span> smtp:</span>
+<span id="cb5-20"><a></a>        smtp.login(<span class="st">&quot;usuario@gmail.com&quot;</span>, <span class="st">&quot;app_password&quot;</span>)</span>
+<span id="cb5-21"><a></a>        smtp.send_message(msg)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="automatización-con-task-scheduler" class="slide level2 scrollable">
 <h2>Automatización con Task Scheduler</h2>
-<p>El script puede ejecutarse automáticamente en Windows:</p>
+<p>Pasos para programar la ejecución mensual en Windows:</p>
 <ol type="1">
-<li>Guardar el script como <code>reporte_mensual.py</code></li>
-<li>Abrir <strong>Programador de tareas</strong> (Task Scheduler)</li>
-<li>Crear tarea → Acción → <code>python reporte_mensual.py</code></li>
-<li>Configurar la frecuencia (diaria, semanal, mensual)</li>
+<li>Abrir <strong>Programador de tareas</strong> → Crear tarea básica</li>
+<li><strong>Desencadenador</strong>: mensualmente, día 1 a las 08:00</li>
+<li><strong>Acción</strong>: Iniciar un programa
+<ul>
+<li>Programa: <code>C:\Python312\python.exe</code></li>
+<li>Argumentos: <code>C:\reportes\reporte_mensual.py</code></li>
+</ul></li>
+<li>Probar la tarea manualmente antes de activarla</li>
 </ol>
+</section>
+<section id="modelo-de-control-de-gestión-integrado" class="slide level2">
+<h2>Modelo de control de gestión integrado</h2>
+<pre><code>Plan Estratégico (Clase 1)
+  └── Misión · Visión · BSC · Objetivos SMART
+       ↓
+Set de KPIs (Clase 2)
+  └── Fichas · Perspectivas · Fuentes de datos
+       ↓
+Cálculo y visualización (Clase 3)
+  └── Pandas · Plotly · DataFrame consolidado
+       ↓
+Reporte Excel formateado (Clase 4)
+  └── Formato · Semáforo · Colores institucionales
+       ↓
+Automatización y despacho (Clase 5)
+  └── Script maestro · Correo · Task Scheduler
+       ↓
+Presentación del modelo (Clase 6)</code></pre>
 </section>
 <section id="trabajo-de-la-sesión" class="slide level2 scrollable">
 <h2>Trabajo de la sesión</h2>
 <ol type="1">
-<li>Generar el reporte de KPIs en Excel con formato y semáforo</li>
-<li>Incluir al menos un gráfico de tendencia</li>
-<li>Configurar el script de envío automático</li>
-<li>Integrar el script completo: carga → cálculo → reporte → despacho</li>
+<li>Insertar gráficos Plotly en el reporte Excel (Clase 4)</li>
+<li>Ensamblar el script maestro completo</li>
+<li>Probar el flujo de punta a punta con datos reales</li>
+<li>Configurar envío automático</li>
+<li>Preparar la presentación del Taller Final</li>
 </ol>
 </section>
 <section id="próxima-clase" class="slide level2">
@@ -1266,8 +1333,8 @@ margin: 0.5em 0;
 <p><strong>Clase 6 — Presentación del Taller Final</strong></p>
 <ul>
 <li>Presentación del modelo de control de gestión aplicado</li>
-<li>Retroalimentación grupal</li>
-<li>Cierre del diplomado</li>
+<li>15 minutos por grupo + 5 de preguntas</li>
+<li>Criterios de evaluación</li>
 </ul>
 
 

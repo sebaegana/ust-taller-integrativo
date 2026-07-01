@@ -1,6 +1,6 @@
 ---
 title: "Módulo V: Taller Integrativo"
-subtitle: "Clase 3 — Diseño de Indicadores KPI"
+subtitle: "Clase 3 — Reportería en Python: cálculo y visualización"
 institution: "Universidad Santo Tomás"
 lang: es
 date: today
@@ -37,100 +37,166 @@ library(fontawesome)
 
 # Módulo V
 
-## Clase 3: Diseño de Indicadores KPI
+## Clase 3: Reportería en Python
 
-### Construcción de métricas alineadas al plan estratégico
+### Cálculo y visualización de KPIs con Pandas y Plotly
 
 ---
 
 ## Objetivo de la sesión
 
-- Diferenciar tipos de indicadores (lead vs. lag)
-- Construir KPIs por perspectiva del BSC
-- Aplicar criterios de calidad a cada indicador
-- Completar la plantilla de set de indicadores
+- Cargar y limpiar los datos de la organización con Pandas
+- Calcular los KPIs definidos en la Clase 2
+- Visualizar indicadores con Plotly
+- Estructurar un DataFrame de resultados consolidado
 
 ---
 
-## ¿Qué es un KPI?
+## Flujo de trabajo
 
-Un KPI (Key Performance Indicator) es una métrica que mide el avance hacia un objetivo estratégico.
-
-Un buen KPI es:
-
-- **Relevante** — mide lo que importa para la estrategia
-- **Accionable** — genera decisiones cuando se desvía
-- **Oportuno** — disponible cuando se necesita
-- **Confiable** — basado en datos verificables
-
----
-
-## Indicadores lead vs. lag
-
-:::: {.columns}
-::: {.column width="50%"}
-**Lag indicators**
-Miden resultados pasados
-
-- Rentabilidad del período
-- Satisfacción de clientes (encuesta)
-- Rotación de personal
-:::
-::: {.column width="50%"}
-**Lead indicators**
-Predicen resultados futuros
-
-- Horas de capacitación
-- Número de contactos comerciales
-- Tiempo de ciclo de proceso
-:::
-::::
-
-Un sistema de control equilibra ambos tipos.
+```
+Datos fuente (Excel / CSV)
+     ↓
+Carga con Pandas
+     ↓
+Limpieza y transformación
+     ↓
+Cálculo de KPIs
+     ↓
+Visualización (Plotly)
+     ↓
+Exportación de resultados
+     ↓
+Reporte formal  ← Clase 4
+```
 
 ---
 
-## Ficha de un indicador
+## Carga de datos
 
-Cada KPI debe tener documentados:
+```python
+import pandas as pd
 
-| Campo | Descripción |
-|---|---|
-| Nombre | Denominación del indicador |
-| Objetivo estratégico | A qué objetivo responde |
-| Perspectiva BSC | Financiera / Clientes / Procesos / Aprendizaje |
-| Fórmula | Cómo se calcula |
-| Fuente de datos | De dónde proviene la información |
-| Frecuencia | Con qué periodicidad se mide |
-| Meta | Valor objetivo |
-| Responsable | Quién lo gestiona |
+# Desde Excel
+df = pd.read_excel("datos_organizacion.xlsx", sheet_name="ventas")
+
+# Desde CSV
+df = pd.read_csv("datos_organizacion.csv", encoding="utf-8")
+
+# Vista rápida
+df.head()
+df.info()
+df.describe()
+```
 
 ---
 
-## Tipos de control y sus indicadores
+## Limpieza básica
 
-| Tipo de control | Ejemplos de KPI |
-|---|---|
-| Control financiero | Margen, ROI, EBITDA, liquidez |
-| Control operacional | Tiempo de ciclo, productividad, calidad |
-| Control comercial | Tasa de conversión, retención, NPS |
-| Control estratégico | Avance BSC, cumplimiento de objetivos |
+```python
+# Eliminar filas con valores nulos en columnas clave
+df = df.dropna(subset=["ventas", "periodo"])
+
+# Convertir fechas
+df["periodo"] = pd.to_datetime(df["periodo"])
+
+# Renombrar columnas
+df = df.rename(columns={"Ventas Netas": "ventas", "Costos Op.": "costos"})
+
+# Filtrar período relevante
+df = df[df["periodo"].dt.year == 2024]
+```
+
+---
+
+## Cálculo de KPIs
+
+```python
+# Margen operacional
+df["margen"] = (df["ventas"] - df["costos"]) / df["ventas"] * 100
+
+# Tasa de conversión
+df["tasa_conv"] = df["ventas_cerradas"] / df["contactos"] * 100
+
+# Agrupado por mes
+resumen = df.groupby(df["periodo"].dt.month).agg(
+    ventas=("ventas", "sum"),
+    costos=("costos", "sum")
+).assign(margen=lambda x: (x["ventas"] - x["costos"]) / x["ventas"] * 100)
+```
+
+---
+
+## Visualización con Plotly
+
+```python
+import plotly.express as px
+
+# Gráfico de línea con meta
+fig = px.line(
+    resumen.reset_index(),
+    x="periodo",
+    y="margen",
+    title="Margen Operacional Mensual",
+    labels={"margen": "Margen (%)", "periodo": "Mes"}
+)
+fig.add_hline(y=20, line_dash="dash",
+              annotation_text="Meta: 20%",
+              line_color="red")
+fig.show()
+```
+
+---
+
+## Visualización de múltiples KPIs
+
+```python
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
+fig = make_subplots(rows=2, cols=2,
+    subplot_titles=["Margen", "Conversión", "Retención", "NPS"])
+
+fig.add_trace(go.Scatter(x=df["mes"], y=df["margen"]),  row=1, col=1)
+fig.add_trace(go.Bar(x=df["mes"],    y=df["tasa_conv"]), row=1, col=2)
+fig.add_trace(go.Scatter(x=df["mes"], y=df["retencion"]),row=2, col=1)
+fig.add_trace(go.Bar(x=df["mes"],    y=df["nps"]),       row=2, col=2)
+
+fig.update_layout(title="Dashboard de KPIs", showlegend=False)
+fig.show()
+```
+
+---
+
+## Exportar resultados
+
+```python
+# Exportar DataFrame de KPIs
+resumen.to_excel("kpis_calculados.xlsx", index=True)
+resumen.to_csv("kpis_calculados.csv",   index=True)
+
+# Exportar gráfico como imagen
+fig.write_image("dashboard_kpis.png")
+fig.write_html("dashboard_kpis.html")
+```
 
 ---
 
 ## Trabajo de la sesión
 
-1. Revisar los objetivos estratégicos definidos en Clase 2
-2. Identificar al menos 2 KPIs por perspectiva del BSC
-3. Completar la ficha de cada indicador
-4. Identificar las fuentes de datos disponibles en la organización
+1. Cargar los datos de la organización en Python
+2. Limpiar y preparar el DataFrame
+3. Calcular los KPIs definidos en la Clase 2
+4. Generar al menos un gráfico por indicador
+5. Exportar el DataFrame de resultados a Excel
 
 ---
 
 ## Próxima clase
 
-**Clase 4 — KPIs en Python**
+**Clase 4 — Reportería en Python: generación de reportes Excel**
 
-- Carga y limpieza de datos con Pandas
-- Cálculo de indicadores con Python
-- Visualización de KPIs con Matplotlib / Plotly
+- Estructura de un reporte de control de gestión
+- Formato profesional con openpyxl
+- Semáforo de cumplimiento de metas
+- Integración de gráficos en el reporte

@@ -1,6 +1,6 @@
 ---
 title: "Módulo V: Taller Integrativo"
-subtitle: "Clase 2 — Construcción del Plan Estratégico"
+subtitle: "Clase 2 — Diseño de Indicadores KPI"
 institution: "Universidad Santo Tomás"
 lang: es
 date: today
@@ -37,100 +37,151 @@ library(fontawesome)
 
 # Módulo V
 
-## Clase 2: Construcción del Plan Estratégico
+## Clase 2: Diseño de Indicadores KPI
 
-### De la definiciones estratégicas al mapa de objetivos
+### Construir métricas que conectan la estrategia con los datos
 
 ---
 
 ## Objetivo de la sesión
 
-- Definir Misión, Visión y Valores de la organización
-- Construir objetivos estratégicos SMART
-- Elaborar el mapa estratégico (BSC)
-- Consolidar el Plan Estratégico completo
+- Diferenciar tipos de indicadores (lead vs. lag)
+- Construir la ficha completa de cada KPI
+- Definir el set de indicadores por perspectiva del BSC
+- Identificar las fuentes de datos disponibles en la organización
 
 ---
 
-## Definiciones estratégicas
+## ¿Qué es un KPI?
 
-Una buena definición estratégica responde tres preguntas:
+Un KPI (Key Performance Indicator) es una métrica que mide el avance hacia un objetivo estratégico.
 
-- **Misión** — ¿Para qué existimos?
-- **Visión** — ¿A dónde queremos llegar?
-- **Valores** — ¿Cómo nos comportamos en el camino?
+Un buen KPI es:
 
-Estas definiciones anclan todos los indicadores que construiremos en las clases siguientes.
-
----
-
-## Objetivos estratégicos SMART
-
-Los objetivos del plan deben ser:
-
-| Criterio | Descripción |
-|---|---|
-| **S** — Específico | Claro, sin ambigüedad |
-| **M** — Medible | Asociado a un indicador |
-| **A** — Alcanzable | Realista para la organización |
-| **R** — Relevante | Alineado con la estrategia |
-| **T** — Temporal | Con fecha de cumplimiento |
+- **Relevante** — mide lo que importa para la estrategia
+- **Accionable** — genera decisiones cuando se desvía
+- **Oportuno** — disponible cuando se necesita
+- **Confiable** — basado en datos verificables
 
 ---
 
-## Mapa estratégico — perspectivas del BSC
-
-El Balanced Scorecard organiza los objetivos en cuatro perspectivas:
+## Indicadores lead vs. lag
 
 :::: {.columns}
 ::: {.column width="50%"}
-**Perspectiva financiera**
-Resultados económicos y rentabilidad
+**Lag indicators**
+Miden resultados pasados
 
-**Perspectiva de clientes**
-Propuesta de valor y satisfacción
+- Rentabilidad del período
+- Satisfacción de clientes
+- Rotación de personal
+- Ventas del mes
 :::
 ::: {.column width="50%"}
-**Perspectiva de procesos internos**
-Eficiencia operacional
+**Lead indicators**
+Predicen resultados futuros
 
-**Perspectiva de aprendizaje y crecimiento**
-Capacidades, tecnología y cultura
+- Horas de capacitación
+- Contactos comerciales activos
+- Tiempo de ciclo de proceso
+- NPS de clientes actuales
+:::
+::::
+
+Un sistema de control equilibra ambos tipos.
+
+---
+
+## Tipos de control y sus indicadores
+
+| Tipo de control | Ejemplos de KPI |
+|---|---|
+| **Control financiero** | Margen, ROI, EBITDA, liquidez |
+| **Control operacional** | Tiempo de ciclo, productividad, calidad |
+| **Control comercial** | Tasa de conversión, retención, NPS |
+| **Control estratégico** | Avance BSC, cumplimiento de objetivos |
+
+---
+
+## Ficha de un indicador
+
+Cada KPI debe documentar:
+
+| Campo | Descripción |
+|---|---|
+| Nombre | Denominación del indicador |
+| Objetivo estratégico | A qué objetivo responde |
+| Perspectiva BSC | Financiera / Clientes / Procesos / Aprendizaje |
+| Fórmula | Cómo se calcula |
+| Fuente de datos | De dónde proviene la información |
+| Frecuencia | Con qué periodicidad se mide |
+| Meta | Valor objetivo |
+| Responsable | Quién lo gestiona |
+
+---
+
+## KPIs por perspectiva del BSC
+
+:::: {.columns}
+::: {.column width="50%"}
+**Financiera**
+- Margen operacional
+- ROI
+- Crecimiento de ingresos
+
+**Clientes**
+- NPS
+- Tasa de retención
+- Satisfacción promedio
+:::
+::: {.column width="50%"}
+**Procesos internos**
+- Tiempo de ciclo
+- Tasa de error
+- Productividad por área
+
+**Aprendizaje y crecimiento**
+- Horas de capacitación
+- Rotación de personal
+- Adopción de herramientas digitales
 :::
 ::::
 
 ---
 
-## Del diagnóstico al plan
+## De la ficha al dato
+
+La ficha define el KPI; los datos lo hacen real:
 
 ```
-FODA / PESTEL
+Ficha del indicador
      ↓
-Definiciones estratégicas (Misión, Visión, Valores)
+Fuente de datos identificada
      ↓
-Objetivos estratégicos SMART
+Formato del dato (Excel, BD, sistema)
      ↓
-Mapa estratégico (BSC)
+Carga en Python  ← Clase 3
      ↓
-Indicadores KPI (Clase 3)
+Cálculo y visualización  ← Clase 3
 ```
 
 ---
 
 ## Trabajo de la sesión
 
-1. Redactar Misión, Visión y Valores de la organización
-2. Definir entre 4 y 6 objetivos estratégicos SMART
-3. Ubicar cada objetivo en las perspectivas del BSC
-4. Construir el mapa estratégico en la plantilla
+1. Revisar los objetivos del Plan Estratégico (Clase 1)
+2. Definir al menos 2 KPIs por perspectiva del BSC
+3. Completar la ficha de cada indicador
+4. Identificar las fuentes de datos disponibles
+5. Verificar que los datos existen y son accesibles
 
 ---
 
 ## Próxima clase
 
-**Clase 3 — Diseño de Indicadores KPI**
+**Clase 3 — Reportería en Python: cálculo y visualización**
 
-- Tipos de indicadores (lead y lag)
-- Construcción de KPIs por perspectiva
-- Criterios de calidad de un indicador
-- Plantilla de set de indicadores
+- Carga de datos con Pandas
+- Cálculo de KPIs definidos en esta clase
+- Visualización con Plotly
+- Exportación de resultados

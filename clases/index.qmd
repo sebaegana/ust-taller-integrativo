@@ -8,13 +8,20 @@ En esta sección se encuentran las diapositivas y materiales de cada sesión del
 
 ## Clases
 
-- [Clase 1: Introducción al Taller e Integración Estratégica](m05-clase01-introduccion-diagnostico.qmd)
-- [Clase 2: Construcción del Plan Estratégico](m05-clase02-plan-estrategico.qmd)
-- [Clase 3: Diseño de Indicadores KPI](m05-clase03-kpi-diseno.qmd)
-- [Clase 4: KPIs en Python](m05-clase04-kpi-python.qmd)
-- [Clase 5: Reportería Automatizada en Python](m05-clase05-reporteria-python.qmd)
+- [Clase 1: Plan Estratégico](m05-clase01-introduccion-diagnostico.qmd)
+- [Clase 2: Diseño de Indicadores KPI](m05-clase02-plan-estrategico.qmd)
+- [Clase 3: Reportería en Python — cálculo y visualización](m05-clase03-kpi-diseno.qmd)
+- [Clase 4: Reportería en Python — generación de reportes Excel](m05-clase04-kpi-python.qmd)
+- [Clase 5: Reportería en Python — automatización y despacho](m05-clase05-reporteria-python.qmd)
 - [Clase 6: Presentación del Taller Final](m05-clase06-presentacion-taller.qmd)
 
-## Nota de uso
+## Distribución del módulo
 
-Las clases 1 y 2 integran los contenidos de Planificación Estratégica (M1). Las clases 3 y 4 conectan Control de Gestión (M2) con Python (M4). La clase 5 articula Sistemas de Información (M3) con la automatización en Python. La clase 6 es la instancia de presentación del proyecto integrador.
+| Clase | Contenido | Unidad |
+|---|---|---|
+| 1 | Plan Estratégico: diagnóstico y construcción | Plan Estratégico |
+| 2 | Diseño de Indicadores KPI y fichas | KPI |
+| 3 | Cálculo y visualización de KPIs en Python | Reportería |
+| 4 | Generación de reportes Excel con formato | Reportería |
+| 5 | Automatización, despacho y script maestro | Reportería |
+| 6 | Presentación del Taller Final | Modelo aplicado |

@@ -1140,7 +1140,7 @@ margin: 0.5em 0;
 
 <section id="title-slide" class="quarto-title-block center">
   <h1 class="title">Módulo V: Taller Integrativo</h1>
-  <p class="subtitle">Clase 4 — KPIs en Python</p>
+  <p class="subtitle">Clase 4 — Reportería en Python: generación de reportes Excel</p>
 
 <div class="quarto-title-authors">
 </div>
@@ -1165,96 +1165,152 @@ margin: 0.5em 0;
 <h1>Módulo V</h1>
 
 </section>
-<section id="clase-4-kpis-en-python" class="slide level2">
-<h2>Clase 4: KPIs en Python</h2>
-<h3 id="cálculo-y-visualización-de-indicadores-con-pandas-y-plotly">Cálculo y visualización de indicadores con Pandas y Plotly</h3>
+<section id="clase-4-reportería-en-python" class="slide level2">
+<h2>Clase 4: Reportería en Python</h2>
+<h3 id="generación-de-reportes-excel-con-formato-profesional">Generación de reportes Excel con formato profesional</h3>
 </section>
 <section id="objetivo-de-la-sesión" class="slide level2">
 <h2>Objetivo de la sesión</h2>
 <ul>
-<li>Cargar y limpiar datos con Pandas</li>
-<li>Calcular los KPIs definidos en la Clase 3</li>
-<li>Visualizar indicadores con Matplotlib y Plotly</li>
-<li>Integrar los resultados en un DataFrame estructurado</li>
+<li>Estructurar un reporte de control de gestión</li>
+<li>Generar archivos Excel con formato profesional usando openpyxl</li>
+<li>Implementar semáforo de cumplimiento de metas</li>
+<li>Integrar gráficos de Plotly en el reporte</li>
 </ul>
 </section>
-<section id="flujo-de-trabajo-en-python" class="slide level2">
-<h2>Flujo de trabajo en Python</h2>
-<pre><code>Datos fuente (Excel / CSV / BD)
-     ↓
-Carga con Pandas (read_excel / read_csv)
-     ↓
-Limpieza y transformación (dropna, merge, groupby)
-     ↓
-Cálculo de KPIs (apply, assign, query)
-     ↓
-Visualización (Matplotlib / Plotly)
-     ↓
-Exportación (to_excel / to_csv)</code></pre>
+<section id="qué-hace-un-buen-reporte-de-control-de-gestión" class="slide level2">
+<h2>¿Qué hace un buen reporte de control de gestión?</h2>
+<p>Un reporte efectivo debe:</p>
+<ul>
+<li>Mostrar los KPIs respecto de su <strong>meta</strong></li>
+<li>Indicar la <strong>tendencia</strong> (mejora / deterioro)</li>
+<li>Señalar <strong>desviaciones</strong> que requieren acción</li>
+<li>Llegar al tomador de decisiones <strong>en el momento adecuado</strong></li>
+<li>Ser <strong>reproducible</strong>: mismo script, mismo resultado</li>
+</ul>
 </section>
-<section id="carga-de-datos" class="slide level2">
-<h2>Carga de datos</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb2-2"><a></a></span>
-<span id="cb2-3"><a></a><span class="co"># Desde Excel</span></span>
-<span id="cb2-4"><a></a>df <span class="op">=</span> pd.read_excel(<span class="st">&quot;datos_organizacion.xlsx&quot;</span>, sheet_name<span class="op">=</span><span class="st">&quot;ventas&quot;</span>)</span>
-<span id="cb2-5"><a></a></span>
-<span id="cb2-6"><a></a><span class="co"># Desde CSV</span></span>
-<span id="cb2-7"><a></a>df <span class="op">=</span> pd.read_csv(<span class="st">&quot;datos_organizacion.csv&quot;</span>, encoding<span class="op">=</span><span class="st">&quot;utf-8&quot;</span>)</span>
-<span id="cb2-8"><a></a></span>
-<span id="cb2-9"><a></a><span class="co"># Vista rápida</span></span>
-<span id="cb2-10"><a></a>df.head()</span>
-<span id="cb2-11"><a></a>df.info()</span>
-<span id="cb2-12"><a></a>df.describe()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="estructura-del-reporte" class="slide level2">
+<h2>Estructura del reporte</h2>
+<pre><code>Portada
+  └── Nombre organización, período, fecha
+Resumen ejecutivo
+  └── KPIs principales con semáforo
+Detalle por perspectiva BSC
+  ├── Perspectiva Financiera
+  ├── Perspectiva Clientes
+  ├── Perspectiva Procesos
+  └── Perspectiva Aprendizaje
+Gráficos de tendencia
+Conclusiones y alertas</code></pre>
 </section>
-<section id="cálculo-de-un-kpi" class="slide level2">
-<h2>Cálculo de un KPI</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a><span class="co"># Ejemplo: Tasa de conversión comercial</span></span>
-<span id="cb3-2"><a></a>df[<span class="st">&quot;tasa_conversion&quot;</span>] <span class="op">=</span> df[<span class="st">&quot;ventas_cerradas&quot;</span>] <span class="op">/</span> df[<span class="st">&quot;contactos_totales&quot;</span>] <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb3-3"><a></a></span>
-<span id="cb3-4"><a></a><span class="co"># Ejemplo: Margen operacional</span></span>
-<span id="cb3-5"><a></a>df[<span class="st">&quot;margen_operacional&quot;</span>] <span class="op">=</span> (</span>
-<span id="cb3-6"><a></a>    (df[<span class="st">&quot;ingresos&quot;</span>] <span class="op">-</span> df[<span class="st">&quot;costos_operacionales&quot;</span>]) <span class="op">/</span> df[<span class="st">&quot;ingresos&quot;</span>] <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb3-7"><a></a>)</span>
-<span id="cb3-8"><a></a></span>
-<span id="cb3-9"><a></a><span class="co"># Agrupado por período</span></span>
-<span id="cb3-10"><a></a>resumen <span class="op">=</span> df.groupby(<span class="st">&quot;mes&quot;</span>).agg(</span>
-<span id="cb3-11"><a></a>    ventas<span class="op">=</span>(<span class="st">&quot;ventas_cerradas&quot;</span>, <span class="st">&quot;sum&quot;</span>),</span>
-<span id="cb3-12"><a></a>    contactos<span class="op">=</span>(<span class="st">&quot;contactos_totales&quot;</span>, <span class="st">&quot;sum&quot;</span>)</span>
-<span id="cb3-13"><a></a>).assign(tasa_conversion<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="st">&quot;ventas&quot;</span>] <span class="op">/</span> x[<span class="st">&quot;contactos&quot;</span>] <span class="op">*</span> <span class="dv">100</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="crear-el-libro-excel-con-openpyxl" class="slide level2">
+<h2>Crear el libro Excel con openpyxl</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a><span class="im">from</span> openpyxl <span class="im">import</span> Workbook</span>
+<span id="cb2-2"><a></a><span class="im">from</span> openpyxl.styles <span class="im">import</span> Font, PatternFill, Alignment, Border, Side</span>
+<span id="cb2-3"><a></a></span>
+<span id="cb2-4"><a></a>wb <span class="op">=</span> Workbook()</span>
+<span id="cb2-5"><a></a>ws <span class="op">=</span> wb.active</span>
+<span id="cb2-6"><a></a>ws.title <span class="op">=</span> <span class="st">&quot;Resumen KPIs&quot;</span></span>
+<span id="cb2-7"><a></a></span>
+<span id="cb2-8"><a></a><span class="co"># Ajustar ancho de columnas</span></span>
+<span id="cb2-9"><a></a>ws.column_dimensions[<span class="st">&quot;A&quot;</span>].width <span class="op">=</span> <span class="dv">35</span></span>
+<span id="cb2-10"><a></a>ws.column_dimensions[<span class="st">&quot;B&quot;</span>].width <span class="op">=</span> <span class="dv">18</span></span>
+<span id="cb2-11"><a></a>ws.column_dimensions[<span class="st">&quot;C&quot;</span>].width <span class="op">=</span> <span class="dv">18</span></span>
+<span id="cb2-12"><a></a>ws.column_dimensions[<span class="st">&quot;D&quot;</span>].width <span class="op">=</span> <span class="dv">18</span></span>
+<span id="cb2-13"><a></a>ws.column_dimensions[<span class="st">&quot;E&quot;</span>].width <span class="op">=</span> <span class="dv">12</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="visualización-con-plotly" class="slide level2">
-<h2>Visualización con Plotly</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
-<span id="cb4-2"><a></a></span>
-<span id="cb4-3"><a></a>fig <span class="op">=</span> px.line(</span>
-<span id="cb4-4"><a></a>    resumen.reset_index(),</span>
-<span id="cb4-5"><a></a>    x<span class="op">=</span><span class="st">&quot;mes&quot;</span>,</span>
-<span id="cb4-6"><a></a>    y<span class="op">=</span><span class="st">&quot;tasa_conversion&quot;</span>,</span>
-<span id="cb4-7"><a></a>    title<span class="op">=</span><span class="st">&quot;Tasa de Conversión Mensual&quot;</span>,</span>
-<span id="cb4-8"><a></a>    labels<span class="op">=</span>{<span class="st">&quot;tasa_conversion&quot;</span>: <span class="st">&quot;Tasa (%)&quot;</span>, <span class="st">&quot;mes&quot;</span>: <span class="st">&quot;Mes&quot;</span>}</span>
-<span id="cb4-9"><a></a>)</span>
-<span id="cb4-10"><a></a></span>
-<span id="cb4-11"><a></a>fig.add_hline(y<span class="op">=</span><span class="dv">25</span>, line_dash<span class="op">=</span><span class="st">&quot;dash&quot;</span>, annotation_text<span class="op">=</span><span class="st">&quot;Meta: 25%&quot;</span>)</span>
-<span id="cb4-12"><a></a>fig.show()</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="encabezado-con-formato-ust" class="slide level2">
+<h2>Encabezado con formato UST</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a><span class="co"># Colores UST</span></span>
+<span id="cb3-2"><a></a>VERDE_UST  <span class="op">=</span> <span class="st">&quot;1D5C35&quot;</span></span>
+<span id="cb3-3"><a></a>LIMA_UST   <span class="op">=</span> <span class="st">&quot;8FA62A&quot;</span></span>
+<span id="cb3-4"><a></a>VERDE_SOFT <span class="op">=</span> <span class="st">&quot;E8F0EB&quot;</span></span>
+<span id="cb3-5"><a></a></span>
+<span id="cb3-6"><a></a><span class="co"># Título del reporte</span></span>
+<span id="cb3-7"><a></a>ws[<span class="st">&quot;A1&quot;</span>] <span class="op">=</span> <span class="st">&quot;Reporte de Control de Gestión&quot;</span></span>
+<span id="cb3-8"><a></a>ws[<span class="st">&quot;A1&quot;</span>].font <span class="op">=</span> Font(bold<span class="op">=</span><span class="va">True</span>, size<span class="op">=</span><span class="dv">16</span>, color<span class="op">=</span><span class="st">&quot;FFFFFF&quot;</span>)</span>
+<span id="cb3-9"><a></a>ws[<span class="st">&quot;A1&quot;</span>].fill <span class="op">=</span> PatternFill(<span class="st">&quot;solid&quot;</span>, fgColor<span class="op">=</span>VERDE_UST)</span>
+<span id="cb3-10"><a></a>ws[<span class="st">&quot;A1&quot;</span>].alignment <span class="op">=</span> Alignment(horizontal<span class="op">=</span><span class="st">&quot;center&quot;</span>)</span>
+<span id="cb3-11"><a></a>ws.merge_cells(<span class="st">&quot;A1:E1&quot;</span>)</span>
+<span id="cb3-12"><a></a></span>
+<span id="cb3-13"><a></a><span class="co"># Subtítulo</span></span>
+<span id="cb3-14"><a></a>ws[<span class="st">&quot;A2&quot;</span>] <span class="op">=</span> <span class="ss">f&quot;Período: </span><span class="sc">{</span>periodo<span class="sc">}</span><span class="ss"> | Organización: </span><span class="sc">{</span>nombre_org<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb3-15"><a></a>ws[<span class="st">&quot;A2&quot;</span>].font <span class="op">=</span> Font(italic<span class="op">=</span><span class="va">True</span>, size<span class="op">=</span><span class="dv">11</span>, color<span class="op">=</span>VERDE_UST)</span>
+<span id="cb3-16"><a></a>ws.merge_cells(<span class="st">&quot;A2:E2&quot;</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="encabezados-de-tabla" class="slide level2">
+<h2>Encabezados de tabla</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a></a>headers <span class="op">=</span> [<span class="st">&quot;Indicador&quot;</span>, <span class="st">&quot;Valor actual&quot;</span>, <span class="st">&quot;Meta&quot;</span>, <span class="st">&quot;Desviación&quot;</span>, <span class="st">&quot;Estado&quot;</span>]</span>
+<span id="cb4-2"><a></a>col_colors <span class="op">=</span> [VERDE_UST] <span class="op">*</span> <span class="dv">5</span></span>
+<span id="cb4-3"><a></a></span>
+<span id="cb4-4"><a></a><span class="cf">for</span> col, (header, color) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(headers, col_colors), start<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb4-5"><a></a>    cell <span class="op">=</span> ws.cell(row<span class="op">=</span><span class="dv">4</span>, column<span class="op">=</span>col, value<span class="op">=</span>header)</span>
+<span id="cb4-6"><a></a>    cell.font      <span class="op">=</span> Font(bold<span class="op">=</span><span class="va">True</span>, color<span class="op">=</span><span class="st">&quot;FFFFFF&quot;</span>)</span>
+<span id="cb4-7"><a></a>    cell.fill      <span class="op">=</span> PatternFill(<span class="st">&quot;solid&quot;</span>, fgColor<span class="op">=</span>color)</span>
+<span id="cb4-8"><a></a>    cell.alignment <span class="op">=</span> Alignment(horizontal<span class="op">=</span><span class="st">&quot;center&quot;</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="semáforo-de-indicadores" class="slide level2">
+<h2>Semáforo de indicadores</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a></a><span class="kw">def</span> estado_kpi(valor, meta, mayor_es_mejor<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb5-2"><a></a>    ratio <span class="op">=</span> valor <span class="op">/</span> meta <span class="cf">if</span> meta <span class="op">!=</span> <span class="dv">0</span> <span class="cf">else</span> <span class="dv">0</span></span>
+<span id="cb5-3"><a></a>    <span class="cf">if</span> mayor_es_mejor:</span>
+<span id="cb5-4"><a></a>        <span class="cf">if</span> ratio <span class="op">&gt;=</span> <span class="fl">1.0</span>:    <span class="cf">return</span> <span class="st">&quot;Verde&quot;</span>,    <span class="st">&quot;70AD47&quot;</span></span>
+<span id="cb5-5"><a></a>        <span class="cf">elif</span> ratio <span class="op">&gt;=</span> <span class="fl">0.85</span>: <span class="cf">return</span> <span class="st">&quot;Amarillo&quot;</span>, <span class="st">&quot;FFC000&quot;</span></span>
+<span id="cb5-6"><a></a>        <span class="cf">else</span>:               <span class="cf">return</span> <span class="st">&quot;Rojo&quot;</span>,     <span class="st">&quot;FF0000&quot;</span></span>
+<span id="cb5-7"><a></a>    <span class="cf">else</span>:</span>
+<span id="cb5-8"><a></a>        <span class="cf">if</span> ratio <span class="op">&lt;=</span> <span class="fl">1.0</span>:    <span class="cf">return</span> <span class="st">&quot;Verde&quot;</span>,    <span class="st">&quot;70AD47&quot;</span></span>
+<span id="cb5-9"><a></a>        <span class="cf">elif</span> ratio <span class="op">&lt;=</span> <span class="fl">1.15</span>: <span class="cf">return</span> <span class="st">&quot;Amarillo&quot;</span>, <span class="st">&quot;FFC000&quot;</span></span>
+<span id="cb5-10"><a></a>        <span class="cf">else</span>:               <span class="cf">return</span> <span class="st">&quot;Rojo&quot;</span>,     <span class="st">&quot;FF0000&quot;</span></span>
+<span id="cb5-11"><a></a></span>
+<span id="cb5-12"><a></a><span class="co"># Aplicar a cada fila</span></span>
+<span id="cb5-13"><a></a><span class="cf">for</span> i, row <span class="kw">in</span> df_kpis.iterrows():</span>
+<span id="cb5-14"><a></a>    estado, color <span class="op">=</span> estado_kpi(row[<span class="st">&quot;valor&quot;</span>], row[<span class="st">&quot;meta&quot;</span>])</span>
+<span id="cb5-15"><a></a>    cell <span class="op">=</span> ws.cell(row<span class="op">=</span><span class="dv">5</span><span class="op">+</span>i, column<span class="op">=</span><span class="dv">5</span>, value<span class="op">=</span>estado)</span>
+<span id="cb5-16"><a></a>    cell.fill <span class="op">=</span> PatternFill(<span class="st">&quot;solid&quot;</span>, fgColor<span class="op">=</span>color)</span>
+<span id="cb5-17"><a></a>    cell.font <span class="op">=</span> Font(bold<span class="op">=</span><span class="va">True</span>, color<span class="op">=</span><span class="st">&quot;FFFFFF&quot;</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="escribir-filas-de-kpis" class="slide level2">
+<h2>Escribir filas de KPIs</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a></a><span class="cf">for</span> i, row <span class="kw">in</span> df_kpis.iterrows():</span>
+<span id="cb6-2"><a></a>    desviacion <span class="op">=</span> row[<span class="st">&quot;valor&quot;</span>] <span class="op">-</span> row[<span class="st">&quot;meta&quot;</span>]</span>
+<span id="cb6-3"><a></a>    estado, color <span class="op">=</span> estado_kpi(row[<span class="st">&quot;valor&quot;</span>], row[<span class="st">&quot;meta&quot;</span>],</span>
+<span id="cb6-4"><a></a>                               row[<span class="st">&quot;mayor_es_mejor&quot;</span>])</span>
+<span id="cb6-5"><a></a>    fila <span class="op">=</span> <span class="dv">5</span> <span class="op">+</span> i</span>
+<span id="cb6-6"><a></a></span>
+<span id="cb6-7"><a></a>    ws.cell(row<span class="op">=</span>fila, column<span class="op">=</span><span class="dv">1</span>, value<span class="op">=</span>row[<span class="st">&quot;nombre&quot;</span>])</span>
+<span id="cb6-8"><a></a>    ws.cell(row<span class="op">=</span>fila, column<span class="op">=</span><span class="dv">2</span>, value<span class="op">=</span>row[<span class="st">&quot;valor&quot;</span>])</span>
+<span id="cb6-9"><a></a>    ws.cell(row<span class="op">=</span>fila, column<span class="op">=</span><span class="dv">3</span>, value<span class="op">=</span>row[<span class="st">&quot;meta&quot;</span>])</span>
+<span id="cb6-10"><a></a>    ws.cell(row<span class="op">=</span>fila, column<span class="op">=</span><span class="dv">4</span>, value<span class="op">=</span>desviacion)</span>
+<span id="cb6-11"><a></a></span>
+<span id="cb6-12"><a></a>    estado_cell <span class="op">=</span> ws.cell(row<span class="op">=</span>fila, column<span class="op">=</span><span class="dv">5</span>, value<span class="op">=</span>estado)</span>
+<span id="cb6-13"><a></a>    estado_cell.fill <span class="op">=</span> PatternFill(<span class="st">&quot;solid&quot;</span>, fgColor<span class="op">=</span>color)</span>
+<span id="cb6-14"><a></a>    estado_cell.font <span class="op">=</span> Font(bold<span class="op">=</span><span class="va">True</span>, color<span class="op">=</span><span class="st">&quot;FFFFFF&quot;</span>)</span>
+<span id="cb6-15"><a></a></span>
+<span id="cb6-16"><a></a>    <span class="co"># Filas alternas</span></span>
+<span id="cb6-17"><a></a>    <span class="cf">if</span> i <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb6-18"><a></a>        <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">5</span>):</span>
+<span id="cb6-19"><a></a>            ws.cell(row<span class="op">=</span>fila, column<span class="op">=</span>col).fill <span class="op">=</span> PatternFill(</span>
+<span id="cb6-20"><a></a>                <span class="st">&quot;solid&quot;</span>, fgColor<span class="op">=</span>VERDE_SOFT)</span>
+<span id="cb6-21"><a></a></span>
+<span id="cb6-22"><a></a>wb.save(<span class="st">&quot;reporte_control_gestion.xlsx&quot;</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="trabajo-de-la-sesión" class="slide level2 scrollable">
 <h2>Trabajo de la sesión</h2>
 <ol type="1">
-<li>Cargar los datos de la organización en Python</li>
-<li>Calcular al menos 4 KPIs definidos en la Clase 3</li>
-<li>Generar un gráfico por indicador</li>
-<li>Exportar el DataFrame de resultados a Excel</li>
+<li>Integrar los KPIs calculados en Clase 3 en la plantilla de reporte</li>
+<li>Agregar formato: encabezado, colores UST, bordes</li>
+<li>Implementar el semáforo de cumplimiento</li>
+<li>Guardar el archivo Excel formateado</li>
 </ol>
 </section>
 <section id="próxima-clase" class="slide level2">
 <h2>Próxima clase</h2>
-<p><strong>Clase 5 — Reportería Automatizada en Python</strong></p>
+<p><strong>Clase 5 — Reportería en Python: automatización y despacho</strong></p>
 <ul>
-<li>Estructura de un informe automatizado</li>
-<li>Generación de reportes en Excel con formato</li>
-<li>Envío automático de informes</li>
-<li>Integración en el flujo de control de gestión</li>
+<li>Integrar gráficos en el reporte Excel</li>
+<li>Automatizar el flujo completo (carga → cálculo → reporte)</li>
+<li>Configurar envío automático por correo</li>
+<li>Programar ejecución periódica con Task Scheduler</li>
 </ul>
 
 

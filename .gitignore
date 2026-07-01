@@ -7,3 +7,5 @@ renv/library/
 renv/local/
 renv/lock
 .Rprofile
+
+**/*.quarto_ipynb

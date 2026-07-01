@@ -1,6 +1,6 @@
 ---
 title: "Módulo V: Taller Integrativo"
-subtitle: "Clase 1 — Introducción al Taller e Integración Estratégica"
+subtitle: "Clase 1 — Plan Estratégico"
 institution: "Universidad Santo Tomás"
 lang: es
 date: today
@@ -37,29 +37,31 @@ library(fontawesome)
 
 # Módulo V
 
-## Clase 1: Introducción al Taller e Integración Estratégica
+## Clase 1: Plan Estratégico
 
-### Propósito, estructura y punto de partida del proyecto integrador
+### Del diagnóstico a la construcción del plan
 
 ---
 
 ## Objetivo de la sesión
 
 - Presentar el propósito y la estructura del Taller Integrativo
-- Revisar los conceptos clave de los módulos anteriores
-- Definir el proyecto integrador y sus entregables
-- Iniciar el diagnóstico estratégico de la organización elegida
+- Definir la organización del proyecto integrador
+- Realizar el diagnóstico estratégico (análisis interno y externo)
+- Construir el plan estratégico completo: Misión, Visión, BSC y objetivos
 
 ---
 
 ## ¿Qué es el Taller Integrativo?
 
-El Módulo V es el espacio donde articulamos todo lo aprendido:
+El Módulo V integra todo lo aprendido en el diplomado:
 
-- **M1** — Planificación Estratégica
-- **M2** — Control de Gestión y KPIs
-- **M3** — Sistemas de Información y Power BI
-- **M4** — Python para Control de Gestión
+| Módulo | Aporte al taller |
+|---|---|
+| M1 — Planificación Estratégica | Plan, BSC, objetivos |
+| M2 — Control de Gestión | Indicadores, tipos de control |
+| M3 — Sistemas de Información | Datos, Power BI |
+| M4 — Python para Control de Gestión | Cálculo, reportes, automatización |
 
 El producto final es un **modelo de control de gestión aplicado** a una organización real.
 
@@ -69,15 +71,16 @@ El producto final es un **modelo de control de gestión aplicado** a una organiz
 
 | Entregable | Clase |
 |---|---|
-| Diagnóstico estratégico | Clase 1–2 |
-| Plan Estratégico completo | Clase 2 |
-| Set de indicadores KPI | Clase 3–4 |
-| Dashboard y reportes en Python | Clase 5 |
+| Plan Estratégico completo | Clase 1 |
+| Set de indicadores KPI | Clase 2 |
+| Cálculo y visualización en Python | Clase 3 |
+| Reporte Excel con formato | Clase 4 |
+| Automatización y despacho | Clase 5 |
 | Presentación final integrada | Clase 6 |
 
 ---
 
-## Punto de partida: la organización
+## La organización del proyecto
 
 Para el proyecto integrador necesitas definir:
 
@@ -87,9 +90,13 @@ Para el proyecto integrador necesitas definir:
 
 ---
 
-## Diagnóstico estratégico — marco de trabajo
+# Diagnóstico estratégico
 
-El diagnóstico integra herramientas de M1:
+## Análisis interno y externo
+
+---
+
+## Diagnóstico estratégico — marco de trabajo
 
 :::: {.columns}
 ::: {.column width="50%"}
@@ -98,6 +105,7 @@ El diagnóstico integra herramientas de M1:
 - Fortalezas y debilidades
 - Capacidades clave
 - Recursos disponibles
+- Ventajas competitivas
 :::
 ::: {.column width="50%"}
 **Análisis externo**
@@ -105,25 +113,118 @@ El diagnóstico integra herramientas de M1:
 - Oportunidades y amenazas
 - PESTEL
 - Cinco Fuerzas de Porter
+- Tendencias del sector
 :::
 ::::
+
+---
+
+## FODA — estructura de trabajo
+
+| | **Positivo** | **Negativo** |
+|---|---|---|
+| **Interno** | Fortalezas | Debilidades |
+| **Externo** | Oportunidades | Amenazas |
+
+El FODA no es un fin: es el insumo para definir los objetivos estratégicos.
+
+---
+
+## PESTEL — análisis del macroentorno
+
+| Factor | Preguntas clave |
+|---|---|
+| **P**olítico | Regulaciones, estabilidad, políticas públicas |
+| **E**conómico | Crecimiento, tipo de cambio, inflación |
+| **S**ocial | Tendencias demográficas, cultura, comportamiento |
+| **T**ecnológico | Innovación, digitalización, automatización |
+| **E**cológico | Sostenibilidad, normativas ambientales |
+| **L**egal | Marco normativo, cumplimiento |
+
+---
+
+# Plan Estratégico
+
+## Definiciones estratégicas y BSC
+
+---
+
+## Definiciones estratégicas
+
+Tres preguntas fundamentales:
+
+- **Misión** — ¿Para qué existimos?
+- **Visión** — ¿A dónde queremos llegar?
+- **Valores** — ¿Cómo nos comportamos en el camino?
+
+Estas definiciones anclan todos los indicadores que construiremos en la Clase 2.
+
+---
+
+## Objetivos estratégicos SMART
+
+| Criterio | Descripción |
+|---|---|
+| **S** — Específico | Claro, sin ambigüedad |
+| **M** — Medible | Asociado a un indicador |
+| **A** — Alcanzable | Realista para la organización |
+| **R** — Relevante | Alineado con la estrategia |
+| **T** — Temporal | Con fecha de cumplimiento |
+
+---
+
+## Mapa estratégico — perspectivas del BSC
+
+:::: {.columns}
+::: {.column width="50%"}
+**Perspectiva financiera**
+Resultados económicos y rentabilidad
+
+**Perspectiva de clientes**
+Propuesta de valor y satisfacción
+:::
+::: {.column width="50%"}
+**Perspectiva de procesos internos**
+Eficiencia operacional
+
+**Perspectiva de aprendizaje y crecimiento**
+Capacidades, tecnología y cultura
+:::
+::::
+
+---
+
+## Del diagnóstico al plan
+
+```
+FODA / PESTEL
+     ↓
+Misión · Visión · Valores
+     ↓
+Objetivos estratégicos SMART
+     ↓
+Mapa estratégico (BSC)
+     ↓
+Indicadores KPI  ← Clase 2
+```
 
 ---
 
 ## Trabajo de la sesión
 
 1. Definir la organización del proyecto integrador
-2. Completar el análisis FODA preliminar
-3. Identificar el desafío estratégico central
-4. Presentar al docente para validación
+2. Completar el análisis FODA y PESTEL
+3. Redactar Misión, Visión y Valores
+4. Definir entre 4 y 6 objetivos estratégicos SMART
+5. Ubicar cada objetivo en las perspectivas del BSC
 
 ---
 
 ## Próxima clase
 
-**Clase 2 — Construcción del Plan Estratégico**
+**Clase 2 — Diseño de Indicadores KPI**
 
-- Misión, Visión y Valores
-- Objetivos estratégicos SMART
-- Mapa estratégico (BSC)
-- Plantilla del Plan Estratégico completa
+- Lead vs. lag indicators
+- Ficha de KPI por objetivo
+- Set de indicadores por perspectiva del BSC
+- Fuentes de datos disponibles en la organización

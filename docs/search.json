@@ -49,312 +49,438 @@
     "text": "Contacto\nSebastián Egaña Santibáñez Docente del módulo\n\nCorreo: sebaegana@gmail.com\nLinkedIn: linkedin.com/in/sebastian-egana-santibanez\nSitio web: segana.netlify.app\nGitHub: github.com/sebaegana\n\nSi tienes preguntas sobre el taller, escribe indicando la clase o el material al que haces referencia para poder responder con contexto."
   },
   {
-    "objectID": "clases/m05-clase05-reporteria-python.html#clase-5-reportería-automatizada-en-python",
-    "href": "clases/m05-clase05-reporteria-python.html#clase-5-reportería-automatizada-en-python",
+    "objectID": "clases/m05-clase05-reporteria-python.html#clase-5-reportería-en-python",
+    "href": "clases/m05-clase05-reporteria-python.html#clase-5-reportería-en-python",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Clase 5: Reportería Automatizada en Python",
-    "text": "Clase 5: Reportería Automatizada en Python\nDel cálculo de KPIs al despacho automático de informes"
+    "section": "Clase 5: Reportería en Python",
+    "text": "Clase 5: Reportería en Python\nAutomatización y despacho del modelo completo"
   },
   {
     "objectID": "clases/m05-clase05-reporteria-python.html#objetivo-de-la-sesión",
     "href": "clases/m05-clase05-reporteria-python.html#objetivo-de-la-sesión",
     "title": "Módulo V: Taller Integrativo",
     "section": "Objetivo de la sesión",
-    "text": "Objetivo de la sesión\n\nEstructurar un informe de control de gestión\nGenerar reportes en Excel con formato y gráficos desde Python\nAutomatizar el proceso de reporte con un script\nConfigurar el envío automático de informes"
+    "text": "Objetivo de la sesión\n\nIntegrar gráficos Plotly en el reporte Excel\nConstruir el script maestro que automatiza el flujo completo\nConfigurar el envío automático del reporte por correo\nProgramar la ejecución periódica con Task Scheduler\nConsolidar el modelo de control de gestión integrado"
   },
   {
-    "objectID": "clases/m05-clase05-reporteria-python.html#qué-hace-un-buen-reporte-de-control-de-gestión",
-    "href": "clases/m05-clase05-reporteria-python.html#qué-hace-un-buen-reporte-de-control-de-gestión",
+    "objectID": "clases/m05-clase05-reporteria-python.html#el-flujo-completo-automatizado",
+    "href": "clases/m05-clase05-reporteria-python.html#el-flujo-completo-automatizado",
     "title": "Módulo V: Taller Integrativo",
-    "section": "¿Qué hace un buen reporte de control de gestión?",
-    "text": "¿Qué hace un buen reporte de control de gestión?\nUn reporte efectivo debe:\n\nMostrar los KPIs respecto de su meta\nIndicar la tendencia (mejora / deterioro)\nSeñalar desviaciones que requieren acción\nLlegar al tomador de decisiones en el momento adecuado"
+    "section": "El flujo completo automatizado",
+    "text": "El flujo completo automatizado\ndatos_fuente.xlsx\n     ↓  pd.read_excel()\nDataFrame limpio\n     ↓  groupby / assign\nKPIs calculados\n     ↓  openpyxl\nReporte Excel formateado\n     ↓  smtplib\nCorreo a destinatarios\n     ↓  Task Scheduler\nEjecución mensual automática"
   },
   {
-    "objectID": "clases/m05-clase05-reporteria-python.html#generación-de-reportes-en-excel",
-    "href": "clases/m05-clase05-reporteria-python.html#generación-de-reportes-en-excel",
+    "objectID": "clases/m05-clase05-reporteria-python.html#insertar-gráficos-plotly-en-excel",
+    "href": "clases/m05-clase05-reporteria-python.html#insertar-gráficos-plotly-en-excel",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Generación de reportes en Excel",
-    "text": "Generación de reportes en Excel\nimport pandas as pd\nfrom openpyxl import Workbook\nfrom openpyxl.styles import Font, PatternFill, Alignment\n\n# Crear libro de trabajo\nwb = Workbook()\nws = wb.active\nws.title = \"Reporte KPIs\"\n\n# Encabezados con formato\nencabezados = [\"Indicador\", \"Valor actual\", \"Meta\", \"Desviación\", \"Estado\"]\nfor col, enc in enumerate(encabezados, start=1):\n    celda = ws.cell(row=1, column=col, value=enc)\n    celda.font = Font(bold=True)\n    celda.fill = PatternFill(\"solid\", fgColor=\"1a3a6b\")\n\nwb.save(\"reporte_kpis.xlsx\")"
+    "section": "Insertar gráficos Plotly en Excel",
+    "text": "Insertar gráficos Plotly en Excel\nimport plotly.express as px\nfrom openpyxl.drawing.image import Image as XLImage\nimport io, kaleido\n\n# Generar gráfico como imagen en memoria\nfig = px.line(resumen, x=\"mes\", y=\"margen\",\n              title=\"Margen Operacional\")\nfig.add_hline(y=20, line_dash=\"dash\", line_color=\"red\")\n\nbuf = io.BytesIO()\nfig.write_image(buf, format=\"png\", width=700, height=350)\nbuf.seek(0)\n\n# Insertar en la hoja Excel\nimg = XLImage(buf)\nimg.anchor = \"A20\"\nws.add_image(img)\nwb.save(\"reporte_control_gestion.xlsx\")"
   },
   {
-    "objectID": "clases/m05-clase05-reporteria-python.html#semáforo-de-indicadores",
-    "href": "clases/m05-clase05-reporteria-python.html#semáforo-de-indicadores",
+    "objectID": "clases/m05-clase05-reporteria-python.html#script-maestro-estructura",
+    "href": "clases/m05-clase05-reporteria-python.html#script-maestro-estructura",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Semáforo de indicadores",
-    "text": "Semáforo de indicadores\ndef estado_kpi(valor, meta, mayor_es_mejor=True):\n    ratio = valor / meta\n    if mayor_es_mejor:\n        if ratio &gt;= 1.0:   return \"Verde\"\n        elif ratio &gt;= 0.8: return \"Amarillo\"\n        else:              return \"Rojo\"\n    else:\n        if ratio &lt;= 1.0:   return \"Verde\"\n        elif ratio &lt;= 1.2: return \"Amarillo\"\n        else:              return \"Rojo\""
+    "section": "Script maestro — estructura",
+    "text": "Script maestro — estructura\n# reporte_mensual.py\n\nimport pandas as pd\nfrom datetime import datetime\nfrom pathlib import Path\n\nPERIODO   = datetime.now().strftime(\"%Y-%m\")\nDATOS     = Path(\"datos/datos_organizacion.xlsx\")\nSALIDA    = Path(f\"reportes/reporte_{PERIODO}.xlsx\")\nDESTINOS  = [\"gerencia@empresa.cl\", \"control@empresa.cl\"]\n\ndef main():\n    df      = cargar_datos(DATOS)\n    kpis    = calcular_kpis(df)\n    reporte = generar_reporte(kpis, SALIDA)\n    enviar_reporte(reporte, DESTINOS)\n    print(f\"Reporte {PERIODO} enviado correctamente.\")\n\nif __name__ == \"__main__\":\n    main()"
   },
   {
-    "objectID": "clases/m05-clase05-reporteria-python.html#envío-automático-de-informes",
-    "href": "clases/m05-clase05-reporteria-python.html#envío-automático-de-informes",
+    "objectID": "clases/m05-clase05-reporteria-python.html#funciones-del-script-maestro",
+    "href": "clases/m05-clase05-reporteria-python.html#funciones-del-script-maestro",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Envío automático de informes",
-    "text": "Envío automático de informes\nimport smtplib\nfrom email.message import EmailMessage\n\ndef enviar_reporte(destinatario, archivo):\n    msg = EmailMessage()\n    msg[\"Subject\"] = \"Reporte mensual de KPIs\"\n    msg[\"From\"] = \"control.gestion@organizacion.cl\"\n    msg[\"To\"] = destinatario\n    msg.set_content(\"Adjunto el reporte mensual de indicadores.\")\n\n    with open(archivo, \"rb\") as f:\n        msg.add_attachment(f.read(), maintype=\"application\",\n                          subtype=\"vnd.openxmlformats-officedocument.spreadsheetml.sheet\",\n                          filename=archivo)\n\n    with smtplib.SMTP_SSL(\"smtp.gmail.com\", 465) as smtp:\n        smtp.login(\"usuario\", \"contraseña\")\n        smtp.send_message(msg)"
+    "section": "Funciones del script maestro",
+    "text": "Funciones del script maestro\ndef cargar_datos(ruta):\n    df = pd.read_excel(ruta)\n    df[\"periodo\"] = pd.to_datetime(df[\"periodo\"])\n    return df.dropna(subset=[\"ventas\"])\n\ndef calcular_kpis(df):\n    return df.groupby(df[\"periodo\"].dt.month).agg(\n        ventas=(\"ventas\", \"sum\"),\n        costos=(\"costos\", \"sum\")\n    ).assign(\n        margen=lambda x: (x.ventas - x.costos) / x.ventas * 100\n    )\n\ndef generar_reporte(kpis, ruta_salida):\n    # (código de Clase 4: openpyxl + semáforo + gráficos)\n    ...\n    return ruta_salida\n\ndef enviar_reporte(ruta, destinatarios):\n    # (código de envío por correo)\n    ..."
+  },
+  {
+    "objectID": "clases/m05-clase05-reporteria-python.html#envío-automático-por-correo",
+    "href": "clases/m05-clase05-reporteria-python.html#envío-automático-por-correo",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Envío automático por correo",
+    "text": "Envío automático por correo\nimport smtplib\nfrom email.message import EmailMessage\n\ndef enviar_reporte(ruta_archivo, destinatarios):\n    msg = EmailMessage()\n    msg[\"Subject\"] = f\"Reporte Control de Gestión — {PERIODO}\"\n    msg[\"From\"]    = \"sistema.control@empresa.cl\"\n    msg[\"To\"]      = \", \".join(destinatarios)\n    msg.set_content(\n        f\"Se adjunta el reporte mensual de KPIs correspondiente a {PERIODO}.\"\n    )\n    with open(ruta_archivo, \"rb\") as f:\n        msg.add_attachment(\n            f.read(),\n            maintype=\"application\",\n            subtype=\"vnd.openxmlformats-officedocument.spreadsheetml.sheet\",\n            filename=ruta_archivo.name\n        )\n    with smtplib.SMTP_SSL(\"smtp.gmail.com\", 465) as smtp:\n        smtp.login(\"usuario@gmail.com\", \"app_password\")\n        smtp.send_message(msg)"
   },
   {
     "objectID": "clases/m05-clase05-reporteria-python.html#automatización-con-task-scheduler",
     "href": "clases/m05-clase05-reporteria-python.html#automatización-con-task-scheduler",
     "title": "Módulo V: Taller Integrativo",
     "section": "Automatización con Task Scheduler",
-    "text": "Automatización con Task Scheduler\nEl script puede ejecutarse automáticamente en Windows:\n\nGuardar el script como reporte_mensual.py\nAbrir Programador de tareas (Task Scheduler)\nCrear tarea → Acción → python reporte_mensual.py\nConfigurar la frecuencia (diaria, semanal, mensual)"
+    "text": "Automatización con Task Scheduler\nPasos para programar la ejecución mensual en Windows:\n\nAbrir Programador de tareas → Crear tarea básica\nDesencadenador: mensualmente, día 1 a las 08:00\nAcción: Iniciar un programa\n\nPrograma: C:\\Python312\\python.exe\nArgumentos: C:\\reportes\\reporte_mensual.py\n\nProbar la tarea manualmente antes de activarla"
+  },
+  {
+    "objectID": "clases/m05-clase05-reporteria-python.html#modelo-de-control-de-gestión-integrado",
+    "href": "clases/m05-clase05-reporteria-python.html#modelo-de-control-de-gestión-integrado",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Modelo de control de gestión integrado",
+    "text": "Modelo de control de gestión integrado\nPlan Estratégico (Clase 1)\n  └── Misión · Visión · BSC · Objetivos SMART\n       ↓\nSet de KPIs (Clase 2)\n  └── Fichas · Perspectivas · Fuentes de datos\n       ↓\nCálculo y visualización (Clase 3)\n  └── Pandas · Plotly · DataFrame consolidado\n       ↓\nReporte Excel formateado (Clase 4)\n  └── Formato · Semáforo · Colores institucionales\n       ↓\nAutomatización y despacho (Clase 5)\n  └── Script maestro · Correo · Task Scheduler\n       ↓\nPresentación del modelo (Clase 6)"
   },
   {
     "objectID": "clases/m05-clase05-reporteria-python.html#trabajo-de-la-sesión",
     "href": "clases/m05-clase05-reporteria-python.html#trabajo-de-la-sesión",
     "title": "Módulo V: Taller Integrativo",
     "section": "Trabajo de la sesión",
-    "text": "Trabajo de la sesión\n\nGenerar el reporte de KPIs en Excel con formato y semáforo\nIncluir al menos un gráfico de tendencia\nConfigurar el script de envío automático\nIntegrar el script completo: carga → cálculo → reporte → despacho"
+    "text": "Trabajo de la sesión\n\nInsertar gráficos Plotly en el reporte Excel (Clase 4)\nEnsamblar el script maestro completo\nProbar el flujo de punta a punta con datos reales\nConfigurar envío automático\nPreparar la presentación del Taller Final"
   },
   {
     "objectID": "clases/m05-clase05-reporteria-python.html#próxima-clase",
     "href": "clases/m05-clase05-reporteria-python.html#próxima-clase",
     "title": "Módulo V: Taller Integrativo",
     "section": "Próxima clase",
-    "text": "Próxima clase\nClase 6 — Presentación del Taller Final\n\nPresentación del modelo de control de gestión aplicado\nRetroalimentación grupal\nCierre del diplomado"
+    "text": "Próxima clase\nClase 6 — Presentación del Taller Final\n\nPresentación del modelo de control de gestión aplicado\n15 minutos por grupo + 5 de preguntas\nCriterios de evaluación"
   },
   {
-    "objectID": "clases/m05-clase03-kpi-diseno.html#clase-3-diseño-de-indicadores-kpi",
-    "href": "clases/m05-clase03-kpi-diseno.html#clase-3-diseño-de-indicadores-kpi",
+    "objectID": "clases/m05-clase03-kpi-diseno.html#clase-3-reportería-en-python",
+    "href": "clases/m05-clase03-kpi-diseno.html#clase-3-reportería-en-python",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Clase 3: Diseño de Indicadores KPI",
-    "text": "Clase 3: Diseño de Indicadores KPI\nConstrucción de métricas alineadas al plan estratégico"
+    "section": "Clase 3: Reportería en Python",
+    "text": "Clase 3: Reportería en Python\nCálculo y visualización de KPIs con Pandas y Plotly"
   },
   {
     "objectID": "clases/m05-clase03-kpi-diseno.html#objetivo-de-la-sesión",
     "href": "clases/m05-clase03-kpi-diseno.html#objetivo-de-la-sesión",
     "title": "Módulo V: Taller Integrativo",
     "section": "Objetivo de la sesión",
-    "text": "Objetivo de la sesión\n\nDiferenciar tipos de indicadores (lead vs. lag)\nConstruir KPIs por perspectiva del BSC\nAplicar criterios de calidad a cada indicador\nCompletar la plantilla de set de indicadores"
+    "text": "Objetivo de la sesión\n\nCargar y limpiar los datos de la organización con Pandas\nCalcular los KPIs definidos en la Clase 2\nVisualizar indicadores con Plotly\nEstructurar un DataFrame de resultados consolidado"
   },
   {
-    "objectID": "clases/m05-clase03-kpi-diseno.html#qué-es-un-kpi",
-    "href": "clases/m05-clase03-kpi-diseno.html#qué-es-un-kpi",
+    "objectID": "clases/m05-clase03-kpi-diseno.html#flujo-de-trabajo",
+    "href": "clases/m05-clase03-kpi-diseno.html#flujo-de-trabajo",
     "title": "Módulo V: Taller Integrativo",
-    "section": "¿Qué es un KPI?",
-    "text": "¿Qué es un KPI?\nUn KPI (Key Performance Indicator) es una métrica que mide el avance hacia un objetivo estratégico.\nUn buen KPI es:\n\nRelevante — mide lo que importa para la estrategia\nAccionable — genera decisiones cuando se desvía\nOportuno — disponible cuando se necesita\nConfiable — basado en datos verificables"
+    "section": "Flujo de trabajo",
+    "text": "Flujo de trabajo\nDatos fuente (Excel / CSV)\n     ↓\nCarga con Pandas\n     ↓\nLimpieza y transformación\n     ↓\nCálculo de KPIs\n     ↓\nVisualización (Plotly)\n     ↓\nExportación de resultados\n     ↓\nReporte formal  ← Clase 4"
   },
   {
-    "objectID": "clases/m05-clase03-kpi-diseno.html#indicadores-lead-vs.-lag",
-    "href": "clases/m05-clase03-kpi-diseno.html#indicadores-lead-vs.-lag",
+    "objectID": "clases/m05-clase03-kpi-diseno.html#carga-de-datos",
+    "href": "clases/m05-clase03-kpi-diseno.html#carga-de-datos",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Indicadores lead vs. lag",
-    "text": "Indicadores lead vs. lag\n\n\nLag indicators Miden resultados pasados\n\nRentabilidad del período\nSatisfacción de clientes (encuesta)\nRotación de personal\n\n\nLead indicators Predicen resultados futuros\n\nHoras de capacitación\nNúmero de contactos comerciales\nTiempo de ciclo de proceso\n\n\nUn sistema de control equilibra ambos tipos."
+    "section": "Carga de datos",
+    "text": "Carga de datos\nimport pandas as pd\n\n# Desde Excel\ndf = pd.read_excel(\"datos_organizacion.xlsx\", sheet_name=\"ventas\")\n\n# Desde CSV\ndf = pd.read_csv(\"datos_organizacion.csv\", encoding=\"utf-8\")\n\n# Vista rápida\ndf.head()\ndf.info()\ndf.describe()"
   },
   {
-    "objectID": "clases/m05-clase03-kpi-diseno.html#ficha-de-un-indicador",
-    "href": "clases/m05-clase03-kpi-diseno.html#ficha-de-un-indicador",
+    "objectID": "clases/m05-clase03-kpi-diseno.html#limpieza-básica",
+    "href": "clases/m05-clase03-kpi-diseno.html#limpieza-básica",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Ficha de un indicador",
-    "text": "Ficha de un indicador\nCada KPI debe tener documentados:\n\n\n\nCampo\nDescripción\n\n\n\n\nNombre\nDenominación del indicador\n\n\nObjetivo estratégico\nA qué objetivo responde\n\n\nPerspectiva BSC\nFinanciera / Clientes / Procesos / Aprendizaje\n\n\nFórmula\nCómo se calcula\n\n\nFuente de datos\nDe dónde proviene la información\n\n\nFrecuencia\nCon qué periodicidad se mide\n\n\nMeta\nValor objetivo\n\n\nResponsable\nQuién lo gestiona"
+    "section": "Limpieza básica",
+    "text": "Limpieza básica\n# Eliminar filas con valores nulos en columnas clave\ndf = df.dropna(subset=[\"ventas\", \"periodo\"])\n\n# Convertir fechas\ndf[\"periodo\"] = pd.to_datetime(df[\"periodo\"])\n\n# Renombrar columnas\ndf = df.rename(columns={\"Ventas Netas\": \"ventas\", \"Costos Op.\": \"costos\"})\n\n# Filtrar período relevante\ndf = df[df[\"periodo\"].dt.year == 2024]"
   },
   {
-    "objectID": "clases/m05-clase03-kpi-diseno.html#tipos-de-control-y-sus-indicadores",
-    "href": "clases/m05-clase03-kpi-diseno.html#tipos-de-control-y-sus-indicadores",
+    "objectID": "clases/m05-clase03-kpi-diseno.html#cálculo-de-kpis",
+    "href": "clases/m05-clase03-kpi-diseno.html#cálculo-de-kpis",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Tipos de control y sus indicadores",
-    "text": "Tipos de control y sus indicadores\n\n\n\nTipo de control\nEjemplos de KPI\n\n\n\n\nControl financiero\nMargen, ROI, EBITDA, liquidez\n\n\nControl operacional\nTiempo de ciclo, productividad, calidad\n\n\nControl comercial\nTasa de conversión, retención, NPS\n\n\nControl estratégico\nAvance BSC, cumplimiento de objetivos"
+    "section": "Cálculo de KPIs",
+    "text": "Cálculo de KPIs\n# Margen operacional\ndf[\"margen\"] = (df[\"ventas\"] - df[\"costos\"]) / df[\"ventas\"] * 100\n\n# Tasa de conversión\ndf[\"tasa_conv\"] = df[\"ventas_cerradas\"] / df[\"contactos\"] * 100\n\n# Agrupado por mes\nresumen = df.groupby(df[\"periodo\"].dt.month).agg(\n    ventas=(\"ventas\", \"sum\"),\n    costos=(\"costos\", \"sum\")\n).assign(margen=lambda x: (x[\"ventas\"] - x[\"costos\"]) / x[\"ventas\"] * 100)"
+  },
+  {
+    "objectID": "clases/m05-clase03-kpi-diseno.html#visualización-con-plotly",
+    "href": "clases/m05-clase03-kpi-diseno.html#visualización-con-plotly",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Visualización con Plotly",
+    "text": "Visualización con Plotly\nimport plotly.express as px\n\n# Gráfico de línea con meta\nfig = px.line(\n    resumen.reset_index(),\n    x=\"periodo\",\n    y=\"margen\",\n    title=\"Margen Operacional Mensual\",\n    labels={\"margen\": \"Margen (%)\", \"periodo\": \"Mes\"}\n)\nfig.add_hline(y=20, line_dash=\"dash\",\n              annotation_text=\"Meta: 20%\",\n              line_color=\"red\")\nfig.show()"
+  },
+  {
+    "objectID": "clases/m05-clase03-kpi-diseno.html#visualización-de-múltiples-kpis",
+    "href": "clases/m05-clase03-kpi-diseno.html#visualización-de-múltiples-kpis",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Visualización de múltiples KPIs",
+    "text": "Visualización de múltiples KPIs\nimport plotly.graph_objects as go\nfrom plotly.subplots import make_subplots\n\nfig = make_subplots(rows=2, cols=2,\n    subplot_titles=[\"Margen\", \"Conversión\", \"Retención\", \"NPS\"])\n\nfig.add_trace(go.Scatter(x=df[\"mes\"], y=df[\"margen\"]),  row=1, col=1)\nfig.add_trace(go.Bar(x=df[\"mes\"],    y=df[\"tasa_conv\"]), row=1, col=2)\nfig.add_trace(go.Scatter(x=df[\"mes\"], y=df[\"retencion\"]),row=2, col=1)\nfig.add_trace(go.Bar(x=df[\"mes\"],    y=df[\"nps\"]),       row=2, col=2)\n\nfig.update_layout(title=\"Dashboard de KPIs\", showlegend=False)\nfig.show()"
+  },
+  {
+    "objectID": "clases/m05-clase03-kpi-diseno.html#exportar-resultados",
+    "href": "clases/m05-clase03-kpi-diseno.html#exportar-resultados",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Exportar resultados",
+    "text": "Exportar resultados\n# Exportar DataFrame de KPIs\nresumen.to_excel(\"kpis_calculados.xlsx\", index=True)\nresumen.to_csv(\"kpis_calculados.csv\",   index=True)\n\n# Exportar gráfico como imagen\nfig.write_image(\"dashboard_kpis.png\")\nfig.write_html(\"dashboard_kpis.html\")"
   },
   {
     "objectID": "clases/m05-clase03-kpi-diseno.html#trabajo-de-la-sesión",
     "href": "clases/m05-clase03-kpi-diseno.html#trabajo-de-la-sesión",
     "title": "Módulo V: Taller Integrativo",
     "section": "Trabajo de la sesión",
-    "text": "Trabajo de la sesión\n\nRevisar los objetivos estratégicos definidos en Clase 2\nIdentificar al menos 2 KPIs por perspectiva del BSC\nCompletar la ficha de cada indicador\nIdentificar las fuentes de datos disponibles en la organización"
+    "text": "Trabajo de la sesión\n\nCargar los datos de la organización en Python\nLimpiar y preparar el DataFrame\nCalcular los KPIs definidos en la Clase 2\nGenerar al menos un gráfico por indicador\nExportar el DataFrame de resultados a Excel"
   },
   {
     "objectID": "clases/m05-clase03-kpi-diseno.html#próxima-clase",
     "href": "clases/m05-clase03-kpi-diseno.html#próxima-clase",
     "title": "Módulo V: Taller Integrativo",
     "section": "Próxima clase",
-    "text": "Próxima clase\nClase 4 — KPIs en Python\n\nCarga y limpieza de datos con Pandas\nCálculo de indicadores con Python\nVisualización de KPIs con Matplotlib / Plotly"
+    "text": "Próxima clase\nClase 4 — Reportería en Python: generación de reportes Excel\n\nEstructura de un reporte de control de gestión\nFormato profesional con openpyxl\nSemáforo de cumplimiento de metas\nIntegración de gráficos en el reporte"
   },
   {
-    "objectID": "clases/m05-clase01-introduccion-diagnostico.html#clase-1-introducción-al-taller-e-integración-estratégica",
-    "href": "clases/m05-clase01-introduccion-diagnostico.html#clase-1-introducción-al-taller-e-integración-estratégica",
+    "objectID": "clases/m05-clase01-introduccion-diagnostico.html#clase-1-plan-estratégico",
+    "href": "clases/m05-clase01-introduccion-diagnostico.html#clase-1-plan-estratégico",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Clase 1: Introducción al Taller e Integración Estratégica",
-    "text": "Clase 1: Introducción al Taller e Integración Estratégica\nPropósito, estructura y punto de partida del proyecto integrador"
+    "section": "Clase 1: Plan Estratégico",
+    "text": "Clase 1: Plan Estratégico\nDel diagnóstico a la construcción del plan"
   },
   {
     "objectID": "clases/m05-clase01-introduccion-diagnostico.html#objetivo-de-la-sesión",
     "href": "clases/m05-clase01-introduccion-diagnostico.html#objetivo-de-la-sesión",
     "title": "Módulo V: Taller Integrativo",
     "section": "Objetivo de la sesión",
-    "text": "Objetivo de la sesión\n\nPresentar el propósito y la estructura del Taller Integrativo\nRevisar los conceptos clave de los módulos anteriores\nDefinir el proyecto integrador y sus entregables\nIniciar el diagnóstico estratégico de la organización elegida"
+    "text": "Objetivo de la sesión\n\nPresentar el propósito y la estructura del Taller Integrativo\nDefinir la organización del proyecto integrador\nRealizar el diagnóstico estratégico (análisis interno y externo)\nConstruir el plan estratégico completo: Misión, Visión, BSC y objetivos"
   },
   {
     "objectID": "clases/m05-clase01-introduccion-diagnostico.html#qué-es-el-taller-integrativo",
     "href": "clases/m05-clase01-introduccion-diagnostico.html#qué-es-el-taller-integrativo",
     "title": "Módulo V: Taller Integrativo",
     "section": "¿Qué es el Taller Integrativo?",
-    "text": "¿Qué es el Taller Integrativo?\nEl Módulo V es el espacio donde articulamos todo lo aprendido:\n\nM1 — Planificación Estratégica\nM2 — Control de Gestión y KPIs\nM3 — Sistemas de Información y Power BI\nM4 — Python para Control de Gestión\n\nEl producto final es un modelo de control de gestión aplicado a una organización real."
+    "text": "¿Qué es el Taller Integrativo?\nEl Módulo V integra todo lo aprendido en el diplomado:\n\n\n\n\n\n\n\nMódulo\nAporte al taller\n\n\n\n\nM1 — Planificación Estratégica\nPlan, BSC, objetivos\n\n\nM2 — Control de Gestión\nIndicadores, tipos de control\n\n\nM3 — Sistemas de Información\nDatos, Power BI\n\n\nM4 — Python para Control de Gestión\nCálculo, reportes, automatización\n\n\n\nEl producto final es un modelo de control de gestión aplicado a una organización real."
   },
   {
     "objectID": "clases/m05-clase01-introduccion-diagnostico.html#entregables-del-taller",
     "href": "clases/m05-clase01-introduccion-diagnostico.html#entregables-del-taller",
     "title": "Módulo V: Taller Integrativo",
     "section": "Entregables del taller",
-    "text": "Entregables del taller\n\n\n\nEntregable\nClase\n\n\n\n\nDiagnóstico estratégico\nClase 1–2\n\n\nPlan Estratégico completo\nClase 2\n\n\nSet de indicadores KPI\nClase 3–4\n\n\nDashboard y reportes en Python\nClase 5\n\n\nPresentación final integrada\nClase 6"
+    "text": "Entregables del taller\n\n\n\nEntregable\nClase\n\n\n\n\nPlan Estratégico completo\nClase 1\n\n\nSet de indicadores KPI\nClase 2\n\n\nCálculo y visualización en Python\nClase 3\n\n\nReporte Excel con formato\nClase 4\n\n\nAutomatización y despacho\nClase 5\n\n\nPresentación final integrada\nClase 6"
   },
   {
-    "objectID": "clases/m05-clase01-introduccion-diagnostico.html#punto-de-partida-la-organización",
-    "href": "clases/m05-clase01-introduccion-diagnostico.html#punto-de-partida-la-organización",
+    "objectID": "clases/m05-clase01-introduccion-diagnostico.html#la-organización-del-proyecto",
+    "href": "clases/m05-clase01-introduccion-diagnostico.html#la-organización-del-proyecto",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Punto de partida: la organización",
-    "text": "Punto de partida: la organización\nPara el proyecto integrador necesitas definir:\n\n¿Qué organización? — pública, privada o sin fines de lucro\n¿Cuál es el contexto? — industria, tamaño, situación actual\n¿Cuál es el desafío estratégico? — el problema que el modelo de control debe abordar"
+    "section": "La organización del proyecto",
+    "text": "La organización del proyecto\nPara el proyecto integrador necesitas definir:\n\n¿Qué organización? — pública, privada o sin fines de lucro\n¿Cuál es el contexto? — industria, tamaño, situación actual\n¿Cuál es el desafío estratégico? — el problema que el modelo de control debe abordar"
+  },
+  {
+    "objectID": "clases/m05-clase01-introduccion-diagnostico.html#análisis-interno-y-externo",
+    "href": "clases/m05-clase01-introduccion-diagnostico.html#análisis-interno-y-externo",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Análisis interno y externo",
+    "text": "Análisis interno y externo"
   },
   {
     "objectID": "clases/m05-clase01-introduccion-diagnostico.html#diagnóstico-estratégico-marco-de-trabajo",
     "href": "clases/m05-clase01-introduccion-diagnostico.html#diagnóstico-estratégico-marco-de-trabajo",
     "title": "Módulo V: Taller Integrativo",
     "section": "Diagnóstico estratégico — marco de trabajo",
-    "text": "Diagnóstico estratégico — marco de trabajo\nEl diagnóstico integra herramientas de M1:\n\n\nAnálisis interno\n\nFortalezas y debilidades\nCapacidades clave\nRecursos disponibles\n\n\nAnálisis externo\n\nOportunidades y amenazas\nPESTEL\nCinco Fuerzas de Porter"
+    "text": "Diagnóstico estratégico — marco de trabajo\n\n\nAnálisis interno\n\nFortalezas y debilidades\nCapacidades clave\nRecursos disponibles\nVentajas competitivas\n\n\nAnálisis externo\n\nOportunidades y amenazas\nPESTEL\nCinco Fuerzas de Porter\nTendencias del sector"
+  },
+  {
+    "objectID": "clases/m05-clase01-introduccion-diagnostico.html#foda-estructura-de-trabajo",
+    "href": "clases/m05-clase01-introduccion-diagnostico.html#foda-estructura-de-trabajo",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "FODA — estructura de trabajo",
+    "text": "FODA — estructura de trabajo\n\n\n\n\nPositivo\nNegativo\n\n\n\n\nInterno\nFortalezas\nDebilidades\n\n\nExterno\nOportunidades\nAmenazas\n\n\n\nEl FODA no es un fin: es el insumo para definir los objetivos estratégicos."
+  },
+  {
+    "objectID": "clases/m05-clase01-introduccion-diagnostico.html#pestel-análisis-del-macroentorno",
+    "href": "clases/m05-clase01-introduccion-diagnostico.html#pestel-análisis-del-macroentorno",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "PESTEL — análisis del macroentorno",
+    "text": "PESTEL — análisis del macroentorno\n\n\n\nFactor\nPreguntas clave\n\n\n\n\nPolítico\nRegulaciones, estabilidad, políticas públicas\n\n\nEconómico\nCrecimiento, tipo de cambio, inflación\n\n\nSocial\nTendencias demográficas, cultura, comportamiento\n\n\nTecnológico\nInnovación, digitalización, automatización\n\n\nEcológico\nSostenibilidad, normativas ambientales\n\n\nLegal\nMarco normativo, cumplimiento"
+  },
+  {
+    "objectID": "clases/m05-clase01-introduccion-diagnostico.html#definiciones-estratégicas-y-bsc",
+    "href": "clases/m05-clase01-introduccion-diagnostico.html#definiciones-estratégicas-y-bsc",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Definiciones estratégicas y BSC",
+    "text": "Definiciones estratégicas y BSC"
+  },
+  {
+    "objectID": "clases/m05-clase01-introduccion-diagnostico.html#definiciones-estratégicas",
+    "href": "clases/m05-clase01-introduccion-diagnostico.html#definiciones-estratégicas",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Definiciones estratégicas",
+    "text": "Definiciones estratégicas\nTres preguntas fundamentales:\n\nMisión — ¿Para qué existimos?\nVisión — ¿A dónde queremos llegar?\nValores — ¿Cómo nos comportamos en el camino?\n\nEstas definiciones anclan todos los indicadores que construiremos en la Clase 2."
+  },
+  {
+    "objectID": "clases/m05-clase01-introduccion-diagnostico.html#objetivos-estratégicos-smart",
+    "href": "clases/m05-clase01-introduccion-diagnostico.html#objetivos-estratégicos-smart",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Objetivos estratégicos SMART",
+    "text": "Objetivos estratégicos SMART\n\n\n\nCriterio\nDescripción\n\n\n\n\nS — Específico\nClaro, sin ambigüedad\n\n\nM — Medible\nAsociado a un indicador\n\n\nA — Alcanzable\nRealista para la organización\n\n\nR — Relevante\nAlineado con la estrategia\n\n\nT — Temporal\nCon fecha de cumplimiento"
+  },
+  {
+    "objectID": "clases/m05-clase01-introduccion-diagnostico.html#mapa-estratégico-perspectivas-del-bsc",
+    "href": "clases/m05-clase01-introduccion-diagnostico.html#mapa-estratégico-perspectivas-del-bsc",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Mapa estratégico — perspectivas del BSC",
+    "text": "Mapa estratégico — perspectivas del BSC\n\n\nPerspectiva financiera Resultados económicos y rentabilidad\nPerspectiva de clientes Propuesta de valor y satisfacción\n\nPerspectiva de procesos internos Eficiencia operacional\nPerspectiva de aprendizaje y crecimiento Capacidades, tecnología y cultura"
+  },
+  {
+    "objectID": "clases/m05-clase01-introduccion-diagnostico.html#del-diagnóstico-al-plan",
+    "href": "clases/m05-clase01-introduccion-diagnostico.html#del-diagnóstico-al-plan",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Del diagnóstico al plan",
+    "text": "Del diagnóstico al plan\nFODA / PESTEL\n     ↓\nMisión · Visión · Valores\n     ↓\nObjetivos estratégicos SMART\n     ↓\nMapa estratégico (BSC)\n     ↓\nIndicadores KPI  ← Clase 2"
   },
   {
     "objectID": "clases/m05-clase01-introduccion-diagnostico.html#trabajo-de-la-sesión",
     "href": "clases/m05-clase01-introduccion-diagnostico.html#trabajo-de-la-sesión",
     "title": "Módulo V: Taller Integrativo",
     "section": "Trabajo de la sesión",
-    "text": "Trabajo de la sesión\n\nDefinir la organización del proyecto integrador\nCompletar el análisis FODA preliminar\nIdentificar el desafío estratégico central\nPresentar al docente para validación"
+    "text": "Trabajo de la sesión\n\nDefinir la organización del proyecto integrador\nCompletar el análisis FODA y PESTEL\nRedactar Misión, Visión y Valores\nDefinir entre 4 y 6 objetivos estratégicos SMART\nUbicar cada objetivo en las perspectivas del BSC"
   },
   {
     "objectID": "clases/m05-clase01-introduccion-diagnostico.html#próxima-clase",
     "href": "clases/m05-clase01-introduccion-diagnostico.html#próxima-clase",
     "title": "Módulo V: Taller Integrativo",
     "section": "Próxima clase",
-    "text": "Próxima clase\nClase 2 — Construcción del Plan Estratégico\n\nMisión, Visión y Valores\nObjetivos estratégicos SMART\nMapa estratégico (BSC)\nPlantilla del Plan Estratégico completa"
+    "text": "Próxima clase\nClase 2 — Diseño de Indicadores KPI\n\nLead vs. lag indicators\nFicha de KPI por objetivo\nSet de indicadores por perspectiva del BSC\nFuentes de datos disponibles en la organización"
   },
   {
     "objectID": "clases/index.html",
     "href": "clases/index.html",
     "title": "Clases y materiales",
     "section": "",
-    "text": "En esta sección se encuentran las diapositivas y materiales de cada sesión del módulo.\n\n\n\nClase 1: Introducción al Taller e Integración Estratégica\nClase 2: Construcción del Plan Estratégico\nClase 3: Diseño de Indicadores KPI\nClase 4: KPIs en Python\nClase 5: Reportería Automatizada en Python\nClase 6: Presentación del Taller Final\n\n\n\n\nLas clases 1 y 2 integran los contenidos de Planificación Estratégica (M1). Las clases 3 y 4 conectan Control de Gestión (M2) con Python (M4). La clase 5 articula Sistemas de Información (M3) con la automatización en Python. La clase 6 es la instancia de presentación del proyecto integrador."
+    "text": "En esta sección se encuentran las diapositivas y materiales de cada sesión del módulo.\n\n\n\nClase 1: Plan Estratégico\nClase 2: Diseño de Indicadores KPI\nClase 3: Reportería en Python — cálculo y visualización\nClase 4: Reportería en Python — generación de reportes Excel\nClase 5: Reportería en Python — automatización y despacho\nClase 6: Presentación del Taller Final\n\n\n\n\n\n\n\nClase\nContenido\nUnidad\n\n\n\n\n1\nPlan Estratégico: diagnóstico y construcción\nPlan Estratégico\n\n\n2\nDiseño de Indicadores KPI y fichas\nKPI\n\n\n3\nCálculo y visualización de KPIs en Python\nReportería\n\n\n4\nGeneración de reportes Excel con formato\nReportería\n\n\n5\nAutomatización, despacho y script maestro\nReportería\n\n\n6\nPresentación del Taller Final\nModelo aplicado"
   },
   {
     "objectID": "clases/index.html#clases",
     "href": "clases/index.html#clases",
     "title": "Clases y materiales",
     "section": "",
-    "text": "Clase 1: Introducción al Taller e Integración Estratégica\nClase 2: Construcción del Plan Estratégico\nClase 3: Diseño de Indicadores KPI\nClase 4: KPIs en Python\nClase 5: Reportería Automatizada en Python\nClase 6: Presentación del Taller Final"
+    "text": "Clase 1: Plan Estratégico\nClase 2: Diseño de Indicadores KPI\nClase 3: Reportería en Python — cálculo y visualización\nClase 4: Reportería en Python — generación de reportes Excel\nClase 5: Reportería en Python — automatización y despacho\nClase 6: Presentación del Taller Final"
   },
   {
-    "objectID": "clases/index.html#nota-de-uso",
-    "href": "clases/index.html#nota-de-uso",
+    "objectID": "clases/index.html#distribución-del-módulo",
+    "href": "clases/index.html#distribución-del-módulo",
     "title": "Clases y materiales",
     "section": "",
-    "text": "Las clases 1 y 2 integran los contenidos de Planificación Estratégica (M1). Las clases 3 y 4 conectan Control de Gestión (M2) con Python (M4). La clase 5 articula Sistemas de Información (M3) con la automatización en Python. La clase 6 es la instancia de presentación del proyecto integrador."
+    "text": "Clase\nContenido\nUnidad\n\n\n\n\n1\nPlan Estratégico: diagnóstico y construcción\nPlan Estratégico\n\n\n2\nDiseño de Indicadores KPI y fichas\nKPI\n\n\n3\nCálculo y visualización de KPIs en Python\nReportería\n\n\n4\nGeneración de reportes Excel con formato\nReportería\n\n\n5\nAutomatización, despacho y script maestro\nReportería\n\n\n6\nPresentación del Taller Final\nModelo aplicado"
   },
   {
-    "objectID": "clases/m05-clase02-plan-estrategico.html#clase-2-construcción-del-plan-estratégico",
-    "href": "clases/m05-clase02-plan-estrategico.html#clase-2-construcción-del-plan-estratégico",
+    "objectID": "clases/m05-clase02-plan-estrategico.html#clase-2-diseño-de-indicadores-kpi",
+    "href": "clases/m05-clase02-plan-estrategico.html#clase-2-diseño-de-indicadores-kpi",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Clase 2: Construcción del Plan Estratégico",
-    "text": "Clase 2: Construcción del Plan Estratégico\nDe la definiciones estratégicas al mapa de objetivos"
+    "section": "Clase 2: Diseño de Indicadores KPI",
+    "text": "Clase 2: Diseño de Indicadores KPI\nConstruir métricas que conectan la estrategia con los datos"
   },
   {
     "objectID": "clases/m05-clase02-plan-estrategico.html#objetivo-de-la-sesión",
     "href": "clases/m05-clase02-plan-estrategico.html#objetivo-de-la-sesión",
     "title": "Módulo V: Taller Integrativo",
     "section": "Objetivo de la sesión",
-    "text": "Objetivo de la sesión\n\nDefinir Misión, Visión y Valores de la organización\nConstruir objetivos estratégicos SMART\nElaborar el mapa estratégico (BSC)\nConsolidar el Plan Estratégico completo"
+    "text": "Objetivo de la sesión\n\nDiferenciar tipos de indicadores (lead vs. lag)\nConstruir la ficha completa de cada KPI\nDefinir el set de indicadores por perspectiva del BSC\nIdentificar las fuentes de datos disponibles en la organización"
   },
   {
-    "objectID": "clases/m05-clase02-plan-estrategico.html#definiciones-estratégicas",
-    "href": "clases/m05-clase02-plan-estrategico.html#definiciones-estratégicas",
+    "objectID": "clases/m05-clase02-plan-estrategico.html#qué-es-un-kpi",
+    "href": "clases/m05-clase02-plan-estrategico.html#qué-es-un-kpi",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Definiciones estratégicas",
-    "text": "Definiciones estratégicas\nUna buena definición estratégica responde tres preguntas:\n\nMisión — ¿Para qué existimos?\nVisión — ¿A dónde queremos llegar?\nValores — ¿Cómo nos comportamos en el camino?\n\nEstas definiciones anclan todos los indicadores que construiremos en las clases siguientes."
+    "section": "¿Qué es un KPI?",
+    "text": "¿Qué es un KPI?\nUn KPI (Key Performance Indicator) es una métrica que mide el avance hacia un objetivo estratégico.\nUn buen KPI es:\n\nRelevante — mide lo que importa para la estrategia\nAccionable — genera decisiones cuando se desvía\nOportuno — disponible cuando se necesita\nConfiable — basado en datos verificables"
   },
   {
-    "objectID": "clases/m05-clase02-plan-estrategico.html#objetivos-estratégicos-smart",
-    "href": "clases/m05-clase02-plan-estrategico.html#objetivos-estratégicos-smart",
+    "objectID": "clases/m05-clase02-plan-estrategico.html#indicadores-lead-vs.-lag",
+    "href": "clases/m05-clase02-plan-estrategico.html#indicadores-lead-vs.-lag",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Objetivos estratégicos SMART",
-    "text": "Objetivos estratégicos SMART\nLos objetivos del plan deben ser:\n\n\n\nCriterio\nDescripción\n\n\n\n\nS — Específico\nClaro, sin ambigüedad\n\n\nM — Medible\nAsociado a un indicador\n\n\nA — Alcanzable\nRealista para la organización\n\n\nR — Relevante\nAlineado con la estrategia\n\n\nT — Temporal\nCon fecha de cumplimiento"
+    "section": "Indicadores lead vs. lag",
+    "text": "Indicadores lead vs. lag\n\n\nLag indicators Miden resultados pasados\n\nRentabilidad del período\nSatisfacción de clientes\nRotación de personal\nVentas del mes\n\n\nLead indicators Predicen resultados futuros\n\nHoras de capacitación\nContactos comerciales activos\nTiempo de ciclo de proceso\nNPS de clientes actuales\n\n\nUn sistema de control equilibra ambos tipos."
   },
   {
-    "objectID": "clases/m05-clase02-plan-estrategico.html#mapa-estratégico-perspectivas-del-bsc",
-    "href": "clases/m05-clase02-plan-estrategico.html#mapa-estratégico-perspectivas-del-bsc",
+    "objectID": "clases/m05-clase02-plan-estrategico.html#tipos-de-control-y-sus-indicadores",
+    "href": "clases/m05-clase02-plan-estrategico.html#tipos-de-control-y-sus-indicadores",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Mapa estratégico — perspectivas del BSC",
-    "text": "Mapa estratégico — perspectivas del BSC\nEl Balanced Scorecard organiza los objetivos en cuatro perspectivas:\n\n\nPerspectiva financiera Resultados económicos y rentabilidad\nPerspectiva de clientes Propuesta de valor y satisfacción\n\nPerspectiva de procesos internos Eficiencia operacional\nPerspectiva de aprendizaje y crecimiento Capacidades, tecnología y cultura"
+    "section": "Tipos de control y sus indicadores",
+    "text": "Tipos de control y sus indicadores\n\n\n\nTipo de control\nEjemplos de KPI\n\n\n\n\nControl financiero\nMargen, ROI, EBITDA, liquidez\n\n\nControl operacional\nTiempo de ciclo, productividad, calidad\n\n\nControl comercial\nTasa de conversión, retención, NPS\n\n\nControl estratégico\nAvance BSC, cumplimiento de objetivos"
   },
   {
-    "objectID": "clases/m05-clase02-plan-estrategico.html#del-diagnóstico-al-plan",
-    "href": "clases/m05-clase02-plan-estrategico.html#del-diagnóstico-al-plan",
+    "objectID": "clases/m05-clase02-plan-estrategico.html#ficha-de-un-indicador",
+    "href": "clases/m05-clase02-plan-estrategico.html#ficha-de-un-indicador",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Del diagnóstico al plan",
-    "text": "Del diagnóstico al plan\nFODA / PESTEL\n     ↓\nDefiniciones estratégicas (Misión, Visión, Valores)\n     ↓\nObjetivos estratégicos SMART\n     ↓\nMapa estratégico (BSC)\n     ↓\nIndicadores KPI (Clase 3)"
+    "section": "Ficha de un indicador",
+    "text": "Ficha de un indicador\nCada KPI debe documentar:\n\n\n\nCampo\nDescripción\n\n\n\n\nNombre\nDenominación del indicador\n\n\nObjetivo estratégico\nA qué objetivo responde\n\n\nPerspectiva BSC\nFinanciera / Clientes / Procesos / Aprendizaje\n\n\nFórmula\nCómo se calcula\n\n\nFuente de datos\nDe dónde proviene la información\n\n\nFrecuencia\nCon qué periodicidad se mide\n\n\nMeta\nValor objetivo\n\n\nResponsable\nQuién lo gestiona"
+  },
+  {
+    "objectID": "clases/m05-clase02-plan-estrategico.html#kpis-por-perspectiva-del-bsc",
+    "href": "clases/m05-clase02-plan-estrategico.html#kpis-por-perspectiva-del-bsc",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "KPIs por perspectiva del BSC",
+    "text": "KPIs por perspectiva del BSC\n\n\nFinanciera - Margen operacional - ROI - Crecimiento de ingresos\nClientes - NPS - Tasa de retención - Satisfacción promedio\n\nProcesos internos - Tiempo de ciclo - Tasa de error - Productividad por área\nAprendizaje y crecimiento - Horas de capacitación - Rotación de personal - Adopción de herramientas digitales"
+  },
+  {
+    "objectID": "clases/m05-clase02-plan-estrategico.html#de-la-ficha-al-dato",
+    "href": "clases/m05-clase02-plan-estrategico.html#de-la-ficha-al-dato",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "De la ficha al dato",
+    "text": "De la ficha al dato\nLa ficha define el KPI; los datos lo hacen real:\nFicha del indicador\n     ↓\nFuente de datos identificada\n     ↓\nFormato del dato (Excel, BD, sistema)\n     ↓\nCarga en Python  ← Clase 3\n     ↓\nCálculo y visualización  ← Clase 3"
   },
   {
     "objectID": "clases/m05-clase02-plan-estrategico.html#trabajo-de-la-sesión",
     "href": "clases/m05-clase02-plan-estrategico.html#trabajo-de-la-sesión",
     "title": "Módulo V: Taller Integrativo",
     "section": "Trabajo de la sesión",
-    "text": "Trabajo de la sesión\n\nRedactar Misión, Visión y Valores de la organización\nDefinir entre 4 y 6 objetivos estratégicos SMART\nUbicar cada objetivo en las perspectivas del BSC\nConstruir el mapa estratégico en la plantilla"
+    "text": "Trabajo de la sesión\n\nRevisar los objetivos del Plan Estratégico (Clase 1)\nDefinir al menos 2 KPIs por perspectiva del BSC\nCompletar la ficha de cada indicador\nIdentificar las fuentes de datos disponibles\nVerificar que los datos existen y son accesibles"
   },
   {
     "objectID": "clases/m05-clase02-plan-estrategico.html#próxima-clase",
     "href": "clases/m05-clase02-plan-estrategico.html#próxima-clase",
     "title": "Módulo V: Taller Integrativo",
     "section": "Próxima clase",
-    "text": "Próxima clase\nClase 3 — Diseño de Indicadores KPI\n\nTipos de indicadores (lead y lag)\nConstrucción de KPIs por perspectiva\nCriterios de calidad de un indicador\nPlantilla de set de indicadores"
+    "text": "Próxima clase\nClase 3 — Reportería en Python: cálculo y visualización\n\nCarga de datos con Pandas\nCálculo de KPIs definidos en esta clase\nVisualización con Plotly\nExportación de resultados"
   },
   {
-    "objectID": "clases/m05-clase04-kpi-python.html#clase-4-kpis-en-python",
-    "href": "clases/m05-clase04-kpi-python.html#clase-4-kpis-en-python",
+    "objectID": "clases/m05-clase04-kpi-python.html#clase-4-reportería-en-python",
+    "href": "clases/m05-clase04-kpi-python.html#clase-4-reportería-en-python",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Clase 4: KPIs en Python",
-    "text": "Clase 4: KPIs en Python\nCálculo y visualización de indicadores con Pandas y Plotly"
+    "section": "Clase 4: Reportería en Python",
+    "text": "Clase 4: Reportería en Python\nGeneración de reportes Excel con formato profesional"
   },
   {
     "objectID": "clases/m05-clase04-kpi-python.html#objetivo-de-la-sesión",
     "href": "clases/m05-clase04-kpi-python.html#objetivo-de-la-sesión",
     "title": "Módulo V: Taller Integrativo",
     "section": "Objetivo de la sesión",
-    "text": "Objetivo de la sesión\n\nCargar y limpiar datos con Pandas\nCalcular los KPIs definidos en la Clase 3\nVisualizar indicadores con Matplotlib y Plotly\nIntegrar los resultados en un DataFrame estructurado"
+    "text": "Objetivo de la sesión\n\nEstructurar un reporte de control de gestión\nGenerar archivos Excel con formato profesional usando openpyxl\nImplementar semáforo de cumplimiento de metas\nIntegrar gráficos de Plotly en el reporte"
   },
   {
-    "objectID": "clases/m05-clase04-kpi-python.html#flujo-de-trabajo-en-python",
-    "href": "clases/m05-clase04-kpi-python.html#flujo-de-trabajo-en-python",
+    "objectID": "clases/m05-clase04-kpi-python.html#qué-hace-un-buen-reporte-de-control-de-gestión",
+    "href": "clases/m05-clase04-kpi-python.html#qué-hace-un-buen-reporte-de-control-de-gestión",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Flujo de trabajo en Python",
-    "text": "Flujo de trabajo en Python\nDatos fuente (Excel / CSV / BD)\n     ↓\nCarga con Pandas (read_excel / read_csv)\n     ↓\nLimpieza y transformación (dropna, merge, groupby)\n     ↓\nCálculo de KPIs (apply, assign, query)\n     ↓\nVisualización (Matplotlib / Plotly)\n     ↓\nExportación (to_excel / to_csv)"
+    "section": "¿Qué hace un buen reporte de control de gestión?",
+    "text": "¿Qué hace un buen reporte de control de gestión?\nUn reporte efectivo debe:\n\nMostrar los KPIs respecto de su meta\nIndicar la tendencia (mejora / deterioro)\nSeñalar desviaciones que requieren acción\nLlegar al tomador de decisiones en el momento adecuado\nSer reproducible: mismo script, mismo resultado"
   },
   {
-    "objectID": "clases/m05-clase04-kpi-python.html#carga-de-datos",
-    "href": "clases/m05-clase04-kpi-python.html#carga-de-datos",
+    "objectID": "clases/m05-clase04-kpi-python.html#estructura-del-reporte",
+    "href": "clases/m05-clase04-kpi-python.html#estructura-del-reporte",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Carga de datos",
-    "text": "Carga de datos\nimport pandas as pd\n\n# Desde Excel\ndf = pd.read_excel(\"datos_organizacion.xlsx\", sheet_name=\"ventas\")\n\n# Desde CSV\ndf = pd.read_csv(\"datos_organizacion.csv\", encoding=\"utf-8\")\n\n# Vista rápida\ndf.head()\ndf.info()\ndf.describe()"
+    "section": "Estructura del reporte",
+    "text": "Estructura del reporte\nPortada\n  └── Nombre organización, período, fecha\nResumen ejecutivo\n  └── KPIs principales con semáforo\nDetalle por perspectiva BSC\n  ├── Perspectiva Financiera\n  ├── Perspectiva Clientes\n  ├── Perspectiva Procesos\n  └── Perspectiva Aprendizaje\nGráficos de tendencia\nConclusiones y alertas"
   },
   {
-    "objectID": "clases/m05-clase04-kpi-python.html#cálculo-de-un-kpi",
-    "href": "clases/m05-clase04-kpi-python.html#cálculo-de-un-kpi",
+    "objectID": "clases/m05-clase04-kpi-python.html#crear-el-libro-excel-con-openpyxl",
+    "href": "clases/m05-clase04-kpi-python.html#crear-el-libro-excel-con-openpyxl",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Cálculo de un KPI",
-    "text": "Cálculo de un KPI\n# Ejemplo: Tasa de conversión comercial\ndf[\"tasa_conversion\"] = df[\"ventas_cerradas\"] / df[\"contactos_totales\"] * 100\n\n# Ejemplo: Margen operacional\ndf[\"margen_operacional\"] = (\n    (df[\"ingresos\"] - df[\"costos_operacionales\"]) / df[\"ingresos\"] * 100\n)\n\n# Agrupado por período\nresumen = df.groupby(\"mes\").agg(\n    ventas=(\"ventas_cerradas\", \"sum\"),\n    contactos=(\"contactos_totales\", \"sum\")\n).assign(tasa_conversion=lambda x: x[\"ventas\"] / x[\"contactos\"] * 100)"
+    "section": "Crear el libro Excel con openpyxl",
+    "text": "Crear el libro Excel con openpyxl\nfrom openpyxl import Workbook\nfrom openpyxl.styles import Font, PatternFill, Alignment, Border, Side\n\nwb = Workbook()\nws = wb.active\nws.title = \"Resumen KPIs\"\n\n# Ajustar ancho de columnas\nws.column_dimensions[\"A\"].width = 35\nws.column_dimensions[\"B\"].width = 18\nws.column_dimensions[\"C\"].width = 18\nws.column_dimensions[\"D\"].width = 18\nws.column_dimensions[\"E\"].width = 12"
   },
   {
-    "objectID": "clases/m05-clase04-kpi-python.html#visualización-con-plotly",
-    "href": "clases/m05-clase04-kpi-python.html#visualización-con-plotly",
+    "objectID": "clases/m05-clase04-kpi-python.html#encabezado-con-formato-ust",
+    "href": "clases/m05-clase04-kpi-python.html#encabezado-con-formato-ust",
     "title": "Módulo V: Taller Integrativo",
-    "section": "Visualización con Plotly",
-    "text": "Visualización con Plotly\nimport plotly.express as px\n\nfig = px.line(\n    resumen.reset_index(),\n    x=\"mes\",\n    y=\"tasa_conversion\",\n    title=\"Tasa de Conversión Mensual\",\n    labels={\"tasa_conversion\": \"Tasa (%)\", \"mes\": \"Mes\"}\n)\n\nfig.add_hline(y=25, line_dash=\"dash\", annotation_text=\"Meta: 25%\")\nfig.show()"
+    "section": "Encabezado con formato UST",
+    "text": "Encabezado con formato UST\n# Colores UST\nVERDE_UST  = \"1D5C35\"\nLIMA_UST   = \"8FA62A\"\nVERDE_SOFT = \"E8F0EB\"\n\n# Título del reporte\nws[\"A1\"] = \"Reporte de Control de Gestión\"\nws[\"A1\"].font = Font(bold=True, size=16, color=\"FFFFFF\")\nws[\"A1\"].fill = PatternFill(\"solid\", fgColor=VERDE_UST)\nws[\"A1\"].alignment = Alignment(horizontal=\"center\")\nws.merge_cells(\"A1:E1\")\n\n# Subtítulo\nws[\"A2\"] = f\"Período: {periodo} | Organización: {nombre_org}\"\nws[\"A2\"].font = Font(italic=True, size=11, color=VERDE_UST)\nws.merge_cells(\"A2:E2\")"
+  },
+  {
+    "objectID": "clases/m05-clase04-kpi-python.html#encabezados-de-tabla",
+    "href": "clases/m05-clase04-kpi-python.html#encabezados-de-tabla",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Encabezados de tabla",
+    "text": "Encabezados de tabla\nheaders = [\"Indicador\", \"Valor actual\", \"Meta\", \"Desviación\", \"Estado\"]\ncol_colors = [VERDE_UST] * 5\n\nfor col, (header, color) in enumerate(zip(headers, col_colors), start=1):\n    cell = ws.cell(row=4, column=col, value=header)\n    cell.font      = Font(bold=True, color=\"FFFFFF\")\n    cell.fill      = PatternFill(\"solid\", fgColor=color)\n    cell.alignment = Alignment(horizontal=\"center\")"
+  },
+  {
+    "objectID": "clases/m05-clase04-kpi-python.html#semáforo-de-indicadores",
+    "href": "clases/m05-clase04-kpi-python.html#semáforo-de-indicadores",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Semáforo de indicadores",
+    "text": "Semáforo de indicadores\ndef estado_kpi(valor, meta, mayor_es_mejor=True):\n    ratio = valor / meta if meta != 0 else 0\n    if mayor_es_mejor:\n        if ratio &gt;= 1.0:    return \"Verde\",    \"70AD47\"\n        elif ratio &gt;= 0.85: return \"Amarillo\", \"FFC000\"\n        else:               return \"Rojo\",     \"FF0000\"\n    else:\n        if ratio &lt;= 1.0:    return \"Verde\",    \"70AD47\"\n        elif ratio &lt;= 1.15: return \"Amarillo\", \"FFC000\"\n        else:               return \"Rojo\",     \"FF0000\"\n\n# Aplicar a cada fila\nfor i, row in df_kpis.iterrows():\n    estado, color = estado_kpi(row[\"valor\"], row[\"meta\"])\n    cell = ws.cell(row=5+i, column=5, value=estado)\n    cell.fill = PatternFill(\"solid\", fgColor=color)\n    cell.font = Font(bold=True, color=\"FFFFFF\")"
+  },
+  {
+    "objectID": "clases/m05-clase04-kpi-python.html#escribir-filas-de-kpis",
+    "href": "clases/m05-clase04-kpi-python.html#escribir-filas-de-kpis",
+    "title": "Módulo V: Taller Integrativo",
+    "section": "Escribir filas de KPIs",
+    "text": "Escribir filas de KPIs\nfor i, row in df_kpis.iterrows():\n    desviacion = row[\"valor\"] - row[\"meta\"]\n    estado, color = estado_kpi(row[\"valor\"], row[\"meta\"],\n                               row[\"mayor_es_mejor\"])\n    fila = 5 + i\n\n    ws.cell(row=fila, column=1, value=row[\"nombre\"])\n    ws.cell(row=fila, column=2, value=row[\"valor\"])\n    ws.cell(row=fila, column=3, value=row[\"meta\"])\n    ws.cell(row=fila, column=4, value=desviacion)\n\n    estado_cell = ws.cell(row=fila, column=5, value=estado)\n    estado_cell.fill = PatternFill(\"solid\", fgColor=color)\n    estado_cell.font = Font(bold=True, color=\"FFFFFF\")\n\n    # Filas alternas\n    if i % 2 == 0:\n        for col in range(1, 5):\n            ws.cell(row=fila, column=col).fill = PatternFill(\n                \"solid\", fgColor=VERDE_SOFT)\n\nwb.save(\"reporte_control_gestion.xlsx\")"
   },
   {
     "objectID": "clases/m05-clase04-kpi-python.html#trabajo-de-la-sesión",
     "href": "clases/m05-clase04-kpi-python.html#trabajo-de-la-sesión",
     "title": "Módulo V: Taller Integrativo",
     "section": "Trabajo de la sesión",
-    "text": "Trabajo de la sesión\n\nCargar los datos de la organización en Python\nCalcular al menos 4 KPIs definidos en la Clase 3\nGenerar un gráfico por indicador\nExportar el DataFrame de resultados a Excel"
+    "text": "Trabajo de la sesión\n\nIntegrar los KPIs calculados en Clase 3 en la plantilla de reporte\nAgregar formato: encabezado, colores UST, bordes\nImplementar el semáforo de cumplimiento\nGuardar el archivo Excel formateado"
   },
   {
     "objectID": "clases/m05-clase04-kpi-python.html#próxima-clase",
     "href": "clases/m05-clase04-kpi-python.html#próxima-clase",
     "title": "Módulo V: Taller Integrativo",
     "section": "Próxima clase",
-    "text": "Próxima clase\nClase 5 — Reportería Automatizada en Python\n\nEstructura de un informe automatizado\nGeneración de reportes en Excel con formato\nEnvío automático de informes\nIntegración en el flujo de control de gestión"
+    "text": "Próxima clase\nClase 5 — Reportería en Python: automatización y despacho\n\nIntegrar gráficos en el reporte Excel\nAutomatizar el flujo completo (carga → cálculo → reporte)\nConfigurar envío automático por correo\nProgramar ejecución periódica con Task Scheduler"
   },
   {
     "objectID": "clases/m05-clase06-presentacion-taller.html#clase-6-presentación-del-taller-final",
@@ -424,7 +550,7 @@
     "href": "index.html#estructura-del-módulo",
     "title": "Módulo V: Taller Integrativo",
     "section": "Estructura del módulo",
-    "text": "Estructura del módulo\nEl taller se desarrolla en 6 clases que cubren las cuatro unidades del módulo:\n\nClases 1–2 — Plan Estratégico: diagnóstico y construcción\nClases 3–4 — Indicadores KPI: diseño y desarrollo en Python\nClase 5 — Reportería automatizada en Python\nClase 6 — Presentación del Taller Final"
+    "text": "Estructura del módulo\nEl taller se desarrolla en 6 clases:\n\n\n\nClase\nContenido\n\n\n\n\n1\nPlan Estratégico: diagnóstico y construcción del plan\n\n\n2\nDiseño de Indicadores KPI\n\n\n3\nReportería en Python: cálculo y visualización\n\n\n4\nReportería en Python: generación de reportes Excel\n\n\n5\nReportería en Python: automatización y despacho\n\n\n6\nPresentación del Taller Final"
   },
   {
     "objectID": "index.html#cómo-usar-este-sitio",

@@ -1,6 +1,6 @@
 ---
 title: "Módulo V: Taller Integrativo"
-subtitle: "Clase 5 — Reportería Automatizada en Python"
+subtitle: "Clase 5 — Reportería en Python: automatización y despacho"
 institution: "Universidad Santo Tomás"
 lang: es
 date: today
@@ -37,93 +37,143 @@ library(fontawesome)
 
 # Módulo V
 
-## Clase 5: Reportería Automatizada en Python
+## Clase 5: Reportería en Python
 
-### Del cálculo de KPIs al despacho automático de informes
+### Automatización y despacho del modelo completo
 
 ---
 
 ## Objetivo de la sesión
 
-- Estructurar un informe de control de gestión
-- Generar reportes en Excel con formato y gráficos desde Python
-- Automatizar el proceso de reporte con un script
-- Configurar el envío automático de informes
+- Integrar gráficos Plotly en el reporte Excel
+- Construir el script maestro que automatiza el flujo completo
+- Configurar el envío automático del reporte por correo
+- Programar la ejecución periódica con Task Scheduler
+- Consolidar el modelo de control de gestión integrado
 
 ---
 
-## ¿Qué hace un buen reporte de control de gestión?
+## El flujo completo automatizado
 
-Un reporte efectivo debe:
-
-- Mostrar los KPIs respecto de su **meta**
-- Indicar la **tendencia** (mejora / deterioro)
-- Señalar **desviaciones** que requieren acción
-- Llegar al tomador de decisiones **en el momento adecuado**
+```
+datos_fuente.xlsx
+     ↓  pd.read_excel()
+DataFrame limpio
+     ↓  groupby / assign
+KPIs calculados
+     ↓  openpyxl
+Reporte Excel formateado
+     ↓  smtplib
+Correo a destinatarios
+     ↓  Task Scheduler
+Ejecución mensual automática
+```
 
 ---
 
-## Generación de reportes en Excel
+## Insertar gráficos Plotly en Excel
 
 ```python
+import plotly.express as px
+from openpyxl.drawing.image import Image as XLImage
+import io, kaleido
+
+# Generar gráfico como imagen en memoria
+fig = px.line(resumen, x="mes", y="margen",
+              title="Margen Operacional")
+fig.add_hline(y=20, line_dash="dash", line_color="red")
+
+buf = io.BytesIO()
+fig.write_image(buf, format="png", width=700, height=350)
+buf.seek(0)
+
+# Insertar en la hoja Excel
+img = XLImage(buf)
+img.anchor = "A20"
+ws.add_image(img)
+wb.save("reporte_control_gestion.xlsx")
+```
+
+---
+
+## Script maestro — estructura
+
+```python
+# reporte_mensual.py
+
 import pandas as pd
-from openpyxl import Workbook
-from openpyxl.styles import Font, PatternFill, Alignment
+from datetime import datetime
+from pathlib import Path
 
-# Crear libro de trabajo
-wb = Workbook()
-ws = wb.active
-ws.title = "Reporte KPIs"
+PERIODO   = datetime.now().strftime("%Y-%m")
+DATOS     = Path("datos/datos_organizacion.xlsx")
+SALIDA    = Path(f"reportes/reporte_{PERIODO}.xlsx")
+DESTINOS  = ["gerencia@empresa.cl", "control@empresa.cl"]
 
-# Encabezados con formato
-encabezados = ["Indicador", "Valor actual", "Meta", "Desviación", "Estado"]
-for col, enc in enumerate(encabezados, start=1):
-    celda = ws.cell(row=1, column=col, value=enc)
-    celda.font = Font(bold=True)
-    celda.fill = PatternFill("solid", fgColor="1a3a6b")
+def main():
+    df      = cargar_datos(DATOS)
+    kpis    = calcular_kpis(df)
+    reporte = generar_reporte(kpis, SALIDA)
+    enviar_reporte(reporte, DESTINOS)
+    print(f"Reporte {PERIODO} enviado correctamente.")
 
-wb.save("reporte_kpis.xlsx")
+if __name__ == "__main__":
+    main()
 ```
 
 ---
 
-## Semáforo de indicadores
+## Funciones del script maestro
 
 ```python
-def estado_kpi(valor, meta, mayor_es_mejor=True):
-    ratio = valor / meta
-    if mayor_es_mejor:
-        if ratio >= 1.0:   return "Verde"
-        elif ratio >= 0.8: return "Amarillo"
-        else:              return "Rojo"
-    else:
-        if ratio <= 1.0:   return "Verde"
-        elif ratio <= 1.2: return "Amarillo"
-        else:              return "Rojo"
+def cargar_datos(ruta):
+    df = pd.read_excel(ruta)
+    df["periodo"] = pd.to_datetime(df["periodo"])
+    return df.dropna(subset=["ventas"])
+
+def calcular_kpis(df):
+    return df.groupby(df["periodo"].dt.month).agg(
+        ventas=("ventas", "sum"),
+        costos=("costos", "sum")
+    ).assign(
+        margen=lambda x: (x.ventas - x.costos) / x.ventas * 100
+    )
+
+def generar_reporte(kpis, ruta_salida):
+    # (código de Clase 4: openpyxl + semáforo + gráficos)
+    ...
+    return ruta_salida
+
+def enviar_reporte(ruta, destinatarios):
+    # (código de envío por correo)
+    ...
 ```
 
 ---
 
-## Envío automático de informes
+## Envío automático por correo
 
 ```python
 import smtplib
 from email.message import EmailMessage
 
-def enviar_reporte(destinatario, archivo):
+def enviar_reporte(ruta_archivo, destinatarios):
     msg = EmailMessage()
-    msg["Subject"] = "Reporte mensual de KPIs"
-    msg["From"] = "control.gestion@organizacion.cl"
-    msg["To"] = destinatario
-    msg.set_content("Adjunto el reporte mensual de indicadores.")
-
-    with open(archivo, "rb") as f:
-        msg.add_attachment(f.read(), maintype="application",
-                          subtype="vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                          filename=archivo)
-
+    msg["Subject"] = f"Reporte Control de Gestión — {PERIODO}"
+    msg["From"]    = "sistema.control@empresa.cl"
+    msg["To"]      = ", ".join(destinatarios)
+    msg.set_content(
+        f"Se adjunta el reporte mensual de KPIs correspondiente a {PERIODO}."
+    )
+    with open(ruta_archivo, "rb") as f:
+        msg.add_attachment(
+            f.read(),
+            maintype="application",
+            subtype="vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            filename=ruta_archivo.name
+        )
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-        smtp.login("usuario", "contraseña")
+        smtp.login("usuario@gmail.com", "app_password")
         smtp.send_message(msg)
 ```
 
@@ -131,21 +181,47 @@ def enviar_reporte(destinatario, archivo):
 
 ## Automatización con Task Scheduler
 
-El script puede ejecutarse automáticamente en Windows:
+Pasos para programar la ejecución mensual en Windows:
 
-1. Guardar el script como `reporte_mensual.py`
-2. Abrir **Programador de tareas** (Task Scheduler)
-3. Crear tarea → Acción → `python reporte_mensual.py`
-4. Configurar la frecuencia (diaria, semanal, mensual)
+1. Abrir **Programador de tareas** → Crear tarea básica
+2. **Desencadenador**: mensualmente, día 1 a las 08:00
+3. **Acción**: Iniciar un programa
+   - Programa: `C:\Python312\python.exe`
+   - Argumentos: `C:\reportes\reporte_mensual.py`
+4. Probar la tarea manualmente antes de activarla
+
+---
+
+## Modelo de control de gestión integrado
+
+```
+Plan Estratégico (Clase 1)
+  └── Misión · Visión · BSC · Objetivos SMART
+       ↓
+Set de KPIs (Clase 2)
+  └── Fichas · Perspectivas · Fuentes de datos
+       ↓
+Cálculo y visualización (Clase 3)
+  └── Pandas · Plotly · DataFrame consolidado
+       ↓
+Reporte Excel formateado (Clase 4)
+  └── Formato · Semáforo · Colores institucionales
+       ↓
+Automatización y despacho (Clase 5)
+  └── Script maestro · Correo · Task Scheduler
+       ↓
+Presentación del modelo (Clase 6)
+```
 
 ---
 
 ## Trabajo de la sesión
 
-1. Generar el reporte de KPIs en Excel con formato y semáforo
-2. Incluir al menos un gráfico de tendencia
-3. Configurar el script de envío automático
-4. Integrar el script completo: carga → cálculo → reporte → despacho
+1. Insertar gráficos Plotly en el reporte Excel (Clase 4)
+2. Ensamblar el script maestro completo
+3. Probar el flujo de punta a punta con datos reales
+4. Configurar envío automático
+5. Preparar la presentación del Taller Final
 
 ---
 
@@ -154,5 +230,5 @@ El script puede ejecutarse automáticamente en Windows:
 **Clase 6 — Presentación del Taller Final**
 
 - Presentación del modelo de control de gestión aplicado
-- Retroalimentación grupal
-- Cierre del diplomado
+- 15 minutos por grupo + 5 de preguntas
+- Criterios de evaluación
