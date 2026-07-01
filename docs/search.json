@@ -123,7 +123,7 @@
     "href": "clases/m05-clase05-reporteria-python.html#la-url-pública",
     "title": "Módulo V: Taller Integrativo",
     "section": "La URL pública",
-    "text": "La URL pública\nLa app queda disponible en una URL con este formato:\nhttps://[usuario]-[repo]-app-[hash].streamlit.app\nEjemplo:\nhttps://grupo1-dashboard-kpi-app-a3f7b2.streamlit.app\nCualquier persona con el enlace puede ver el dashboard desde el browser, sin instalar nada."
+    "text": "La URL pública\nLa app queda disponible en una URL con este formato:\nhttps://[usuario]-[repo]-app-[hash].streamlit.app\nEjemplo del curso:\nhttps://ust-dashboard-kpi.streamlit.app\nCualquier persona con el enlace puede ver el dashboard desde el browser, sin instalar nada."
   },
   {
     "objectID": "clases/m05-clase05-reporteria-python.html#actualizar-la-app-después-del-deploy",

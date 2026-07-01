@@ -182,9 +182,9 @@ La app queda disponible en una URL con este formato:
 https://[usuario]-[repo]-app-[hash].streamlit.app
 ```
 
-**Ejemplo:**
+**Ejemplo del curso:**
 ```
-https://grupo1-dashboard-kpi-app-a3f7b2.streamlit.app
+https://ust-dashboard-kpi.streamlit.app
 ```
 
 Cualquier persona con el enlace puede ver el dashboard desde el browser, sin instalar nada.
