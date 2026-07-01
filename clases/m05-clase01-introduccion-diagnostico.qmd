@@ -13,7 +13,8 @@ format:
     self-contained: true
     incremental: false
     transition: slide
-    footer: "© Sebastián Egaña Santibáñez — UST"
+    logo: "imagenes/logo_ust.png"
+    footer: "Taller Integrativo — Data Analytics para el Control de Gestión | UST"
     include-in-header: styles.html
   pdf:
     toc: false
