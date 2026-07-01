@@ -9,3 +9,6 @@ renv/lock
 .Rprofile
 
 **/*.quarto_ipynb
+
+# Contexto de sesión — solo local, no se sube al repo
+_contexto/
