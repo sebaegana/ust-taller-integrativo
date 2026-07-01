@@ -1,0 +1,146 @@
+---
+title: "Módulo V: Taller Integrativo"
+subtitle: "Clase 4 — KPIs en Python"
+institution: "Universidad Santo Tomás"
+lang: es
+date: today
+format:
+  revealjs:
+    theme: simple
+    center: false
+    slide-number: true
+    scrollable: true
+    self-contained: true
+    incremental: false
+    transition: slide
+    footer: "© Sebastián Egaña Santibáñez — UST"
+    include-in-header: styles.html
+  pdf:
+    toc: false
+    papersize: a4
+    geometry: margin=1in
+---
+
+```{r load_packages, message=FALSE, warning=FALSE, include=FALSE}
+library(fontawesome)
+```
+
+# Contacto
+
+- `r fa("envelope", fill = "steelblue")` sebaegana\@gmail.com
+- `r fa("globe", fill = "steelblue")` <https://segana.netlify.app>
+- `r fa("linkedin", fill = "steelblue")` <https://www.linkedin.com/in/sebastian-egana-santibanez/>
+- `r fa("github", fill = "steelblue")` <https://github.com/sebaegana>
+
+---
+
+# Módulo V
+
+## Clase 4: KPIs en Python
+
+### Cálculo y visualización de indicadores con Pandas y Plotly
+
+---
+
+## Objetivo de la sesión
+
+- Cargar y limpiar datos con Pandas
+- Calcular los KPIs definidos en la Clase 3
+- Visualizar indicadores con Matplotlib y Plotly
+- Integrar los resultados en un DataFrame estructurado
+
+---
+
+## Flujo de trabajo en Python
+
+```
+Datos fuente (Excel / CSV / BD)
+     ↓
+Carga con Pandas (read_excel / read_csv)
+     ↓
+Limpieza y transformación (dropna, merge, groupby)
+     ↓
+Cálculo de KPIs (apply, assign, query)
+     ↓
+Visualización (Matplotlib / Plotly)
+     ↓
+Exportación (to_excel / to_csv)
+```
+
+---
+
+## Carga de datos
+
+```python
+import pandas as pd
+
+# Desde Excel
+df = pd.read_excel("datos_organizacion.xlsx", sheet_name="ventas")
+
+# Desde CSV
+df = pd.read_csv("datos_organizacion.csv", encoding="utf-8")
+
+# Vista rápida
+df.head()
+df.info()
+df.describe()
+```
+
+---
+
+## Cálculo de un KPI
+
+```python
+# Ejemplo: Tasa de conversión comercial
+df["tasa_conversion"] = df["ventas_cerradas"] / df["contactos_totales"] * 100
+
+# Ejemplo: Margen operacional
+df["margen_operacional"] = (
+    (df["ingresos"] - df["costos_operacionales"]) / df["ingresos"] * 100
+)
+
+# Agrupado por período
+resumen = df.groupby("mes").agg(
+    ventas=("ventas_cerradas", "sum"),
+    contactos=("contactos_totales", "sum")
+).assign(tasa_conversion=lambda x: x["ventas"] / x["contactos"] * 100)
+```
+
+---
+
+## Visualización con Plotly
+
+```python
+import plotly.express as px
+
+fig = px.line(
+    resumen.reset_index(),
+    x="mes",
+    y="tasa_conversion",
+    title="Tasa de Conversión Mensual",
+    labels={"tasa_conversion": "Tasa (%)", "mes": "Mes"}
+)
+
+fig.add_hline(y=25, line_dash="dash", annotation_text="Meta: 25%")
+fig.show()
+```
+
+---
+
+## Trabajo de la sesión
+
+1. Cargar los datos de la organización en Python
+2. Calcular al menos 4 KPIs definidos en la Clase 3
+3. Generar un gráfico por indicador
+4. Exportar el DataFrame de resultados a Excel
+
+---
+
+## Próxima clase
+
+**Clase 5 — Reportería Automatizada en Python**
+
+- Estructura de un informe automatizado
+- Generación de reportes en Excel con formato
+- Envío automático de informes
+- Integración en el flujo de control de gestión

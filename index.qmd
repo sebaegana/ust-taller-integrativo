@@ -1,0 +1,34 @@
+---
+title: "Módulo V: Taller Integrativo"
+subtitle: "Data Analytics para el Control de Gestión — Universidad Santo Tomás"
+date: last-modified
+lang: es
+format:
+  html:
+    toc: true
+    theme: cosmo
+    number-sections: false
+---
+
+Bienvenidas y bienvenidos al sitio del **Módulo V: Taller Integrativo** del Diplomado en Data Analytics para el Control de Gestión de la Universidad Santo Tomás.
+
+Este módulo integra los aprendizajes de los cuatro módulos anteriores en un proyecto aplicado, donde construirás un modelo de control de gestión completo: desde el diagnóstico estratégico hasta la reportería automatizada en Python.
+
+## Estructura del módulo
+
+El taller se desarrolla en **6 clases** que cubren las cuatro unidades del módulo:
+
+- **Clases 1–2** — Plan Estratégico: diagnóstico y construcción
+- **Clases 3–4** — Indicadores KPI: diseño y desarrollo en Python
+- **Clase 5** — Reportería automatizada en Python
+- **Clase 6** — Presentación del Taller Final
+
+## Cómo usar este sitio
+
+- En `Clases` encontrarás las diapositivas y materiales de cada sesión
+- En `Recursos` hay referencias de apoyo de todos los módulos del diplomado
+- En `Contacto` están los canales del docente
+
+## Propósito del taller
+
+El objetivo es que puedas diseñar, implementar y construir un modelo de control de gestión que integre planificación estratégica, indicadores KPI y reportería automatizada, aplicado a una organización real.

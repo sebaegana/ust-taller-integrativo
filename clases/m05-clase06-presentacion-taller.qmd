@@ -1,0 +1,126 @@
+---
+title: "Módulo V: Taller Integrativo"
+subtitle: "Clase 6 — Presentación del Taller Final"
+institution: "Universidad Santo Tomás"
+lang: es
+date: today
+format:
+  revealjs:
+    theme: simple
+    center: false
+    slide-number: true
+    scrollable: true
+    self-contained: true
+    incremental: false
+    transition: slide
+    footer: "© Sebastián Egaña Santibáñez — UST"
+    include-in-header: styles.html
+  pdf:
+    toc: false
+    papersize: a4
+    geometry: margin=1in
+---
+
+```{r load_packages, message=FALSE, warning=FALSE, include=FALSE}
+library(fontawesome)
+```
+
+# Contacto
+
+- `r fa("envelope", fill = "steelblue")` sebaegana\@gmail.com
+- `r fa("globe", fill = "steelblue")` <https://segana.netlify.app>
+- `r fa("linkedin", fill = "steelblue")` <https://www.linkedin.com/in/sebastian-egana-santibanez/>
+- `r fa("github", fill = "steelblue")` <https://github.com/sebaegana>
+
+---
+
+# Módulo V
+
+## Clase 6: Presentación del Taller Final
+
+### Modelo de Control de Gestión Aplicado
+
+---
+
+## Objetivo de la sesión
+
+- Presentar el modelo de control de gestión desarrollado
+- Demostrar la integración de los módulos del diplomado
+- Recibir retroalimentación del docente y los compañeros
+- Reflexionar sobre la aplicación del modelo en la organización
+
+---
+
+## Estructura de la presentación
+
+Cada grupo dispone de **15 minutos** de presentación más **5 minutos** de preguntas:
+
+| Sección | Tiempo |
+|---|---|
+| Contexto de la organización | 2 min |
+| Diagnóstico estratégico (FODA / PESTEL) | 2 min |
+| Plan Estratégico y mapa BSC | 3 min |
+| Set de indicadores KPI | 3 min |
+| Dashboard y reporte automatizado en Python | 3 min |
+| Conclusiones y aprendizajes | 2 min |
+
+---
+
+## Criterios de evaluación
+
+| Criterio | Ponderación |
+|---|---|
+| Coherencia estratégica (M1 + M2) | 25% |
+| Calidad y pertinencia de los KPIs | 25% |
+| Implementación en Python (M4) | 25% |
+| Reporte y automatización (M3 + M4) | 15% |
+| Presentación y claridad | 10% |
+
+---
+
+## Lo que debe mostrar el modelo integrado
+
+Un modelo completo articula:
+
+```
+Contexto organizacional
+     ↓
+Plan Estratégico (Misión → Visión → BSC)
+     ↓
+Set de KPIs por perspectiva
+     ↓
+Cálculo de indicadores en Python (Pandas)
+     ↓
+Dashboard de seguimiento (Plotly)
+     ↓
+Reporte automatizado (Excel + despacho)
+```
+
+---
+
+## Preguntas orientadoras para la presentación
+
+- ¿Qué problema estratégico resuelve el modelo de control?
+- ¿Cómo se conectan los KPIs con los objetivos del plan?
+- ¿Qué decisiones permite tomar el sistema implementado?
+- ¿Qué desafíos encontraron y cómo los resolvieron?
+
+---
+
+## Cierre del diplomado
+
+El Diplomado en Data Analytics para el Control de Gestión les ha entregado herramientas para:
+
+- `r fa("chart-line", fill = "steelblue")` Diseñar estrategias y medir su avance
+- `r fa("table", fill = "steelblue")` Construir sistemas de control con indicadores KPI
+- `r fa("database", fill = "steelblue")` Gestionar información con herramientas tecnológicas
+- `r fa("code", fill = "steelblue")` Automatizar análisis y reportería con Python
+
+---
+
+## ¡Muchas gracias!
+
+**Sebastián Egaña Santibáñez**
+
+- `r fa("envelope", fill = "steelblue")` sebaegana\@gmail.com
+- `r fa("linkedin", fill = "steelblue")` <https://www.linkedin.com/in/sebastian-egana-santibanez/>

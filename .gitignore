@@ -1,0 +1,9 @@
+/.quarto/
+/clases/.quarto/
+*.Rhistory
+*.RData
+*.Rproj.user
+renv/library/
+renv/local/
+renv/lock
+.Rprofile

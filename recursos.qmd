@@ -1,0 +1,38 @@
+---
+title: "Recursos"
+format: html
+---
+
+# Recursos de apoyo
+
+Esta página reúne referencias útiles para el taller y para los módulos anteriores del diplomado que se integran en él.
+
+## Módulo I — Planificación Estratégica
+
+- Kaplan, R. & Norton, D. *The Balanced Scorecard*. Referencia base para mapas estratégicos y medición de la estrategia.
+- Porter, M. *Competitive Strategy*. Fundamento para el análisis de entorno y ventajas competitivas.
+- Herramientas: FODA, PESTEL, Cinco Fuerzas de Porter, Canvas de Propuesta de Valor.
+
+## Módulo II — Control de Gestión
+
+- Anthony, R. & Govindarajan, V. *Management Control Systems*. Referencia amplia sobre sistemas de control organizacional.
+- Kaplan, R. & Norton, D. *Strategy Maps*. Extensión del BSC hacia la gestión de activos intangibles.
+- Recursos: plantillas de KPI, tableros de mando, indicadores financieros y no financieros.
+
+## Módulo III — Sistemas de Información
+
+- [Microsoft Power BI Documentation](https://learn.microsoft.com/power-bi/): referencia oficial para modelado y visualización de datos.
+- [Google Analytics Help](https://support.google.com/analytics/): análisis de datos no estructurados desde fuentes digitales.
+- Herramientas: Power BI, Excel avanzado, Business Intelligence, Big Data.
+
+## Módulo IV — Python para Control de Gestión
+
+- [Python Documentation](https://docs.python.org/3/): referencia oficial del lenguaje.
+- [Pandas Documentation](https://pandas.pydata.org/docs/): manipulación y análisis de datos con DataFrames.
+- [Matplotlib](https://matplotlib.org/) y [Plotly](https://plotly.com/python/): visualización de datos en Python.
+- [OpenPyXL](https://openpyxl.readthedocs.io/): lectura y escritura de archivos Excel desde Python.
+
+## Módulo V — Taller Integrativo
+
+- Materiales de clase disponibles en la sección `Clases` de este sitio.
+- Plantillas de plan estratégico, KPI e informes usadas durante el taller.

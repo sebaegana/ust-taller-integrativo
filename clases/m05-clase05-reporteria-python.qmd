@@ -1,0 +1,157 @@
+---
+title: "Módulo V: Taller Integrativo"
+subtitle: "Clase 5 — Reportería Automatizada en Python"
+institution: "Universidad Santo Tomás"
+lang: es
+date: today
+format:
+  revealjs:
+    theme: simple
+    center: false
+    slide-number: true
+    scrollable: true
+    self-contained: true
+    incremental: false
+    transition: slide
+    footer: "© Sebastián Egaña Santibáñez — UST"
+    include-in-header: styles.html
+  pdf:
+    toc: false
+    papersize: a4
+    geometry: margin=1in
+---
+
+```{r load_packages, message=FALSE, warning=FALSE, include=FALSE}
+library(fontawesome)
+```
+
+# Contacto
+
+- `r fa("envelope", fill = "steelblue")` sebaegana\@gmail.com
+- `r fa("globe", fill = "steelblue")` <https://segana.netlify.app>
+- `r fa("linkedin", fill = "steelblue")` <https://www.linkedin.com/in/sebastian-egana-santibanez/>
+- `r fa("github", fill = "steelblue")` <https://github.com/sebaegana>
+
+---
+
+# Módulo V
+
+## Clase 5: Reportería Automatizada en Python
+
+### Del cálculo de KPIs al despacho automático de informes
+
+---
+
+## Objetivo de la sesión
+
+- Estructurar un informe de control de gestión
+- Generar reportes en Excel con formato y gráficos desde Python
+- Automatizar el proceso de reporte con un script
+- Configurar el envío automático de informes
+
+---
+
+## ¿Qué hace un buen reporte de control de gestión?
+
+Un reporte efectivo debe:
+
+- Mostrar los KPIs respecto de su **meta**
+- Indicar la **tendencia** (mejora / deterioro)
+- Señalar **desviaciones** que requieren acción
+- Llegar al tomador de decisiones **en el momento adecuado**
+
+---
+
+## Generación de reportes en Excel
+
+```python
+import pandas as pd
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment
+
+# Crear libro de trabajo
+wb = Workbook()
+ws = wb.active
+ws.title = "Reporte KPIs"
+
+# Encabezados con formato
+encabezados = ["Indicador", "Valor actual", "Meta", "Desviación", "Estado"]
+for col, enc in enumerate(encabezados, start=1):
+    celda = ws.cell(row=1, column=col, value=enc)
+    celda.font = Font(bold=True)
+    celda.fill = PatternFill("solid", fgColor="1a3a6b")
+
+wb.save("reporte_kpis.xlsx")
+```
+
+---
+
+## Semáforo de indicadores
+
+```python
+def estado_kpi(valor, meta, mayor_es_mejor=True):
+    ratio = valor / meta
+    if mayor_es_mejor:
+        if ratio >= 1.0:   return "Verde"
+        elif ratio >= 0.8: return "Amarillo"
+        else:              return "Rojo"
+    else:
+        if ratio <= 1.0:   return "Verde"
+        elif ratio <= 1.2: return "Amarillo"
+        else:              return "Rojo"
+```
+
+---
+
+## Envío automático de informes
+
+```python
+import smtplib
+from email.message import EmailMessage
+
+def enviar_reporte(destinatario, archivo):
+    msg = EmailMessage()
+    msg["Subject"] = "Reporte mensual de KPIs"
+    msg["From"] = "control.gestion@organizacion.cl"
+    msg["To"] = destinatario
+    msg.set_content("Adjunto el reporte mensual de indicadores.")
+
+    with open(archivo, "rb") as f:
+        msg.add_attachment(f.read(), maintype="application",
+                          subtype="vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                          filename=archivo)
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+        smtp.login("usuario", "contraseña")
+        smtp.send_message(msg)
+```
+
+---
+
+## Automatización con Task Scheduler
+
+El script puede ejecutarse automáticamente en Windows:
+
+1. Guardar el script como `reporte_mensual.py`
+2. Abrir **Programador de tareas** (Task Scheduler)
+3. Crear tarea → Acción → `python reporte_mensual.py`
+4. Configurar la frecuencia (diaria, semanal, mensual)
+
+---
+
+## Trabajo de la sesión
+
+1. Generar el reporte de KPIs en Excel con formato y semáforo
+2. Incluir al menos un gráfico de tendencia
+3. Configurar el script de envío automático
+4. Integrar el script completo: carga → cálculo → reporte → despacho
+
+---
+
+## Próxima clase
+
+**Clase 6 — Presentación del Taller Final**
+
+- Presentación del modelo de control de gestión aplicado
+- Retroalimentación grupal
+- Cierre del diplomado

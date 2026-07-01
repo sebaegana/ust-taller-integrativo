@@ -1,0 +1,16 @@
+---
+title: "Contacto"
+format: html
+---
+
+# Contacto
+
+**Sebastián Egaña Santibáñez**
+Docente del módulo
+
+- Correo: [sebaegana@gmail.com](mailto:sebaegana@gmail.com)
+- LinkedIn: [linkedin.com/in/sebastian-egana-santibanez](https://www.linkedin.com/in/sebastian-egana-santibanez/)
+- Sitio web: [segana.netlify.app](https://segana.netlify.app)
+- GitHub: [github.com/sebaegana](https://github.com/sebaegana)
+
+Si tienes preguntas sobre el taller, escribe indicando la clase o el material al que haces referencia para poder responder con contexto.

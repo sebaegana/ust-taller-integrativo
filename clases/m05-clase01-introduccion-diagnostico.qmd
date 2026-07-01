@@ -1,0 +1,128 @@
+---
+title: "Módulo V: Taller Integrativo"
+subtitle: "Clase 1 — Introducción al Taller e Integración Estratégica"
+institution: "Universidad Santo Tomás"
+lang: es
+date: today
+format:
+  revealjs:
+    theme: simple
+    center: false
+    slide-number: true
+    scrollable: true
+    self-contained: true
+    incremental: false
+    transition: slide
+    footer: "© Sebastián Egaña Santibáñez — UST"
+    include-in-header: styles.html
+  pdf:
+    toc: false
+    papersize: a4
+    geometry: margin=1in
+---
+
+```{r load_packages, message=FALSE, warning=FALSE, include=FALSE}
+library(fontawesome)
+```
+
+# Contacto
+
+- `r fa("envelope", fill = "steelblue")` sebaegana\@gmail.com
+- `r fa("globe", fill = "steelblue")` <https://segana.netlify.app>
+- `r fa("linkedin", fill = "steelblue")` <https://www.linkedin.com/in/sebastian-egana-santibanez/>
+- `r fa("github", fill = "steelblue")` <https://github.com/sebaegana>
+
+---
+
+# Módulo V
+
+## Clase 1: Introducción al Taller e Integración Estratégica
+
+### Propósito, estructura y punto de partida del proyecto integrador
+
+---
+
+## Objetivo de la sesión
+
+- Presentar el propósito y la estructura del Taller Integrativo
+- Revisar los conceptos clave de los módulos anteriores
+- Definir el proyecto integrador y sus entregables
+- Iniciar el diagnóstico estratégico de la organización elegida
+
+---
+
+## ¿Qué es el Taller Integrativo?
+
+El Módulo V es el espacio donde articulamos todo lo aprendido:
+
+- **M1** — Planificación Estratégica
+- **M2** — Control de Gestión y KPIs
+- **M3** — Sistemas de Información y Power BI
+- **M4** — Python para Control de Gestión
+
+El producto final es un **modelo de control de gestión aplicado** a una organización real.
+
+---
+
+## Entregables del taller
+
+| Entregable | Clase |
+|---|---|
+| Diagnóstico estratégico | Clase 1–2 |
+| Plan Estratégico completo | Clase 2 |
+| Set de indicadores KPI | Clase 3–4 |
+| Dashboard y reportes en Python | Clase 5 |
+| Presentación final integrada | Clase 6 |
+
+---
+
+## Punto de partida: la organización
+
+Para el proyecto integrador necesitas definir:
+
+- **¿Qué organización?** — pública, privada o sin fines de lucro
+- **¿Cuál es el contexto?** — industria, tamaño, situación actual
+- **¿Cuál es el desafío estratégico?** — el problema que el modelo de control debe abordar
+
+---
+
+## Diagnóstico estratégico — marco de trabajo
+
+El diagnóstico integra herramientas de M1:
+
+:::: {.columns}
+::: {.column width="50%"}
+**Análisis interno**
+
+- Fortalezas y debilidades
+- Capacidades clave
+- Recursos disponibles
+:::
+::: {.column width="50%"}
+**Análisis externo**
+
+- Oportunidades y amenazas
+- PESTEL
+- Cinco Fuerzas de Porter
+:::
+::::
+
+---
+
+## Trabajo de la sesión
+
+1. Definir la organización del proyecto integrador
+2. Completar el análisis FODA preliminar
+3. Identificar el desafío estratégico central
+4. Presentar al docente para validación
+
+---
+
+## Próxima clase
+
+**Clase 2 — Construcción del Plan Estratégico**
+
+- Misión, Visión y Valores
+- Objetivos estratégicos SMART
+- Mapa estratégico (BSC)
+- Plantilla del Plan Estratégico completa

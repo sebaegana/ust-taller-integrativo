@@ -1,0 +1,135 @@
+---
+title: "Módulo V: Taller Integrativo"
+subtitle: "Clase 2 — Construcción del Plan Estratégico"
+institution: "Universidad Santo Tomás"
+lang: es
+date: today
+format:
+  revealjs:
+    theme: simple
+    center: false
+    slide-number: true
+    scrollable: true
+    self-contained: true
+    incremental: false
+    transition: slide
+    footer: "© Sebastián Egaña Santibáñez — UST"
+    include-in-header: styles.html
+  pdf:
+    toc: false
+    papersize: a4
+    geometry: margin=1in
+---
+
+```{r load_packages, message=FALSE, warning=FALSE, include=FALSE}
+library(fontawesome)
+```
+
+# Contacto
+
+- `r fa("envelope", fill = "steelblue")` sebaegana\@gmail.com
+- `r fa("globe", fill = "steelblue")` <https://segana.netlify.app>
+- `r fa("linkedin", fill = "steelblue")` <https://www.linkedin.com/in/sebastian-egana-santibanez/>
+- `r fa("github", fill = "steelblue")` <https://github.com/sebaegana>
+
+---
+
+# Módulo V
+
+## Clase 2: Construcción del Plan Estratégico
+
+### De la definiciones estratégicas al mapa de objetivos
+
+---
+
+## Objetivo de la sesión
+
+- Definir Misión, Visión y Valores de la organización
+- Construir objetivos estratégicos SMART
+- Elaborar el mapa estratégico (BSC)
+- Consolidar el Plan Estratégico completo
+
+---
+
+## Definiciones estratégicas
+
+Una buena definición estratégica responde tres preguntas:
+
+- **Misión** — ¿Para qué existimos?
+- **Visión** — ¿A dónde queremos llegar?
+- **Valores** — ¿Cómo nos comportamos en el camino?
+
+Estas definiciones anclan todos los indicadores que construiremos en las clases siguientes.
+
+---
+
+## Objetivos estratégicos SMART
+
+Los objetivos del plan deben ser:
+
+| Criterio | Descripción |
+|---|---|
+| **S** — Específico | Claro, sin ambigüedad |
+| **M** — Medible | Asociado a un indicador |
+| **A** — Alcanzable | Realista para la organización |
+| **R** — Relevante | Alineado con la estrategia |
+| **T** — Temporal | Con fecha de cumplimiento |
+
+---
+
+## Mapa estratégico — perspectivas del BSC
+
+El Balanced Scorecard organiza los objetivos en cuatro perspectivas:
+
+:::: {.columns}
+::: {.column width="50%"}
+**Perspectiva financiera**
+Resultados económicos y rentabilidad
+
+**Perspectiva de clientes**
+Propuesta de valor y satisfacción
+:::
+::: {.column width="50%"}
+**Perspectiva de procesos internos**
+Eficiencia operacional
+
+**Perspectiva de aprendizaje y crecimiento**
+Capacidades, tecnología y cultura
+:::
+::::
+
+---
+
+## Del diagnóstico al plan
+
+```
+FODA / PESTEL
+     ↓
+Definiciones estratégicas (Misión, Visión, Valores)
+     ↓
+Objetivos estratégicos SMART
+     ↓
+Mapa estratégico (BSC)
+     ↓
+Indicadores KPI (Clase 3)
+```
+
+---
+
+## Trabajo de la sesión
+
+1. Redactar Misión, Visión y Valores de la organización
+2. Definir entre 4 y 6 objetivos estratégicos SMART
+3. Ubicar cada objetivo en las perspectivas del BSC
+4. Construir el mapa estratégico en la plantilla
+
+---
+
+## Próxima clase
+
+**Clase 3 — Diseño de Indicadores KPI**
+
+- Tipos de indicadores (lead y lag)
+- Construcción de KPIs por perspectiva
+- Criterios de calidad de un indicador
+- Plantilla de set de indicadores
