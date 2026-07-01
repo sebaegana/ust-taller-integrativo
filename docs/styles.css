@@ -1,0 +1,41 @@
+/* css styles — UST Taller Integrativo */
+
+:root {
+  --site-accent:      #1D5C35;
+  --site-accent-lime: #8FA62A;
+  --site-accent-soft: #e8f0eb;
+  --site-text:        #1d2a33;
+}
+
+body {
+  color: var(--site-text);
+  font-family: "Calibri", "Segoe UI", sans-serif;
+}
+
+.navbar {
+  border-bottom: 3px solid var(--site-accent);
+  background-color: #ffffff;
+}
+
+.navbar-brand,
+.nav-link.active {
+  font-weight: 700;
+  color: var(--site-accent) !important;
+}
+
+.quarto-title-block .quarto-title-banner {
+  background: linear-gradient(135deg, var(--site-accent-soft), #ffffff);
+  border-bottom: 1px solid #c8d8cc;
+}
+
+h1, h2, h3 {
+  color: var(--site-accent);
+}
+
+a {
+  color: var(--site-accent);
+}
+
+a:hover {
+  color: var(--site-accent-lime);
+}
