@@ -67,6 +67,13 @@ El producto final es un **modelo de control de gestión aplicado** a una organiz
 
 ---
 
+## Evaluación del taller
+
+- **60% individual**
+- **40% grupal**
+
+---
+
 ## Entregables del taller
 
 | Entregable | Clase |

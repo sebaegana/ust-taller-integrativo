@@ -69,6 +69,8 @@ Cada grupo dispone de **15 minutos** de presentación más **5 minutos** de preg
 
 ## Criterios de evaluación
 
+**60% individual / 40% grupal**
+
 | Criterio | Ponderación |
 |---|---|
 | Coherencia estratégica (M1 + M2) | 25% |
