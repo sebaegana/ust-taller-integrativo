@@ -201,7 +201,7 @@ st.dataframe(pd.DataFrame(filas),
 
 ## Vibe coding en práctica
 
-Cada grupo le pide al LLM (Continue.dev) una funcionalidad nueva para su app.
+Cada grupo le pide a una herramienta de IA (ChatGPT, Claude, o similar) una funcionalidad nueva para su app.
 
 **Ejemplos de prompts para practicar:**
 
@@ -234,7 +234,7 @@ Todo con los datos reales del proyecto integrador.
 2. Implementar la función `semaforo()` en las métricas
 3. Agregar el gráfico de tendencia
 4. Agregar el gráfico de barras de cumplimiento
-5. Usar Continue.dev para agregar una funcionalidad nueva
+5. Usar vibe coding: describe a una herramienta de IA qué funcionalidad quieres agregar
 
 ---
 
