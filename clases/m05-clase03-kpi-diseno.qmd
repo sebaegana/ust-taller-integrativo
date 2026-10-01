@@ -39,13 +39,13 @@ library(fontawesome)
 
 ## Clase 3: Entorno y primeros pasos en Streamlit
 
-### VS Code · Ollama · Qwen · vibe coding
+### VS Code · Herramienta de IA · vibe coding
 
 ---
 
 ## Objetivo de la sesión
 
-- Instalar y configurar el entorno de trabajo: VS Code + Ollama + Continue.dev
+- Instalar y configurar el entorno de trabajo: VS Code + Streamlit
 - Entender qué es vibe coding y cómo usarlo para aprender más rápido
 - Construir la primera app Streamlit con los KPIs del proyecto
 - Tener la app corriendo en `localhost` al final de la clase
@@ -55,15 +55,13 @@ library(fontawesome)
 ## El stack de esta clase
 
 ```
-VS Code          ← editor de código
+VS Code              ← editor de código
     +
-Ollama           ← servidor de LLM local (sin internet, sin cuenta)
+Herramienta de IA    ← ChatGPT, Claude, o similar
     +
-Qwen2.5-Coder   ← modelo especializado en código
+Streamlit            ← framework para construir la app
     +
-Continue.dev     ← extensión que conecta el LLM con VS Code
-    +
-Streamlit        ← framework para construir la app
+Pandas + Plotly      ← manipulación y visualización de datos
 ```
 
 ---
@@ -72,79 +70,12 @@ Streamlit        ← framework para construir la app
 
 1. Ir a [code.visualstudio.com](https://code.visualstudio.com)
 2. Descargar e instalar para Windows
-3. Extensiones recomendadas:
+3. Extensión recomendada:
    - **Python** (Microsoft)
-   - **Continue** (Continue.dev)
 
 ---
 
-## Paso 2 — Instalar Ollama
-
-1. Ir a [ollama.com](https://ollama.com) y descargar el instalador para Windows
-2. Instalar — Ollama corre como servicio en segundo plano
-3. Abrir una terminal y descargar el modelo:
-
-```bash
-ollama pull qwen2.5-coder:7b
-```
-
-El modelo pesa ~4GB, se descarga una sola vez.
-
-:::{.ust-box}
-**¿Computador con menos de 8GB RAM?**
-Usar `qwen2.5-coder:1.5b` — pesa ~1GB y sigue siendo útil para código Python.
-:::
-
----
-
-## Paso 3 — Configurar Continue.dev en VS Code
-
-1. En VS Code → Extensions → buscar **Continue**
-2. Instalar y abrir el panel de Continue (ícono en la barra lateral)
-3. Seleccionar modelo: **Ollama → qwen2.5-coder:7b**
-4. Probar: escribir en el chat `"escribe una función que sume dos números"` → el modelo responde con código
-
----
-
-## ¿Qué es vibe coding?
-
-Programar describiendo en lenguaje natural lo que quieres y dejando que el LLM genere el código.
-
-:::: {.columns}
-::: {.column width="50%"}
-**Sin vibe coding**
-
-Buscar documentación → leer ejemplos → escribir código → depurar errores → repetir
-:::
-::: {.column width="50%"}
-**Con vibe coding**
-
-Describir lo que quieres → el LLM genera el código → entender qué hace → ajustar → avanzar
-:::
-::::
-
-El objetivo no es no aprender — es aprender más rápido viendo código funcional que puedes modificar.
-
----
-
-## Cómo describir bien lo que quieres
-
-Un buen prompt para vibe coding incluye:
-
-1. **Qué hace la app** — contexto general
-2. **Qué quieres en este paso** — acción específica
-3. **Con qué datos** — estructura del CSV o DataFrame
-4. **Qué librerías usar** — Streamlit, Pandas, Plotly
-
-**Ejemplo:**
-
-> "Tengo un CSV con columnas: indicador, valor, meta, perspectiva, periodo.
-> Crea una app Streamlit que muestre una tarjeta st.metric por cada indicador
-> del periodo seleccionado en un st.selectbox del sidebar."
-
----
-
-## Paso 4 — Instalar Streamlit
+## Paso 2 — Instalar Streamlit y dependencias
 
 En la terminal de VS Code:
 
@@ -159,6 +90,44 @@ streamlit hello
 ```
 
 Se abre una app de demostración en el browser — eso confirma que la instalación está correcta.
+
+---
+
+## ¿Qué es vibe coding?
+
+Programar describiendo en lenguaje natural lo que quieres a una herramienta de IA y dejando que genere el código.
+
+:::: {.columns}
+::: {.column width="50%"}
+**Sin vibe coding**
+
+Buscar documentación → leer ejemplos → escribir código → depurar errores → repetir
+:::
+::: {.column width="50%"}
+**Con vibe coding**
+
+Describir lo que quieres → la IA genera el código → entender qué hace → ajustar → avanzar
+:::
+::::
+
+El objetivo no es no aprender — es aprender más rápido viendo código funcional que puedes modificar.
+
+---
+
+## Cómo describir bien lo que quieres a una IA
+
+Un buen prompt para vibe coding incluye:
+
+1. **Qué hace la app** — contexto general
+2. **Qué quieres en este paso** — acción específica
+3. **Con qué datos** — estructura del CSV o DataFrame
+4. **Qué librerías usar** — Streamlit, Pandas, Plotly
+
+**Ejemplo de prompt a ChatGPT, Claude, o similar:**
+
+> "Tengo un CSV con columnas: indicador, valor, meta, perspectiva, periodo.
+> Crea una app Streamlit que muestre una tarjeta st.metric por cada indicador
+> del periodo seleccionado en un st.selectbox del sidebar."
 
 ---
 
@@ -214,11 +183,11 @@ for col, (_, row) in zip(cols, df_ult.iterrows()):
 
 ## Trabajo de la sesión
 
-1. Instalar VS Code + Ollama + Qwen2.5-Coder + Continue.dev
+1. Instalar VS Code
 2. Instalar Streamlit y verificar con `streamlit hello`
 3. Crear `app.py` con la app mínima (título + tabla)
 4. Agregar las tarjetas `st.metric` con los KPIs del proyecto
-5. Usar Continue.dev para pedirle al LLM que agregue algo nuevo
+5. Usar vibe coding: describe a una herramienta de IA qué quieres agregar y copiar el código generado
 
 ---
 
